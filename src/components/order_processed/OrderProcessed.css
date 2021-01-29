@@ -1,0 +1,121 @@
+.OrderProcessed {
+  display: flex;
+  flex-direction: column;
+}
+
+.OrderProcessed .OrderProcessed__OrderNumber {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 30px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.OrderProcessed .OrderProcessed__CustomerName {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 30px;
+  color: #000000;
+  margin-bottom: 25px;
+}
+
+.OrderProcessed .OrderProcessed__OrderConfirmation,
+.OrderProcessed .OrderProcessed__OrderInformation {
+  background: #FFFFFF;
+  border: 1px solid #A3A3A3;
+  padding: 30px 25px;
+}
+
+.OrderProcessed .OrderProcessed__OrderConfirmation {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 50px;
+}
+
+.OrderProcessed__OrderConfirmation .OrderConfirmation__title {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 30px;
+  color: #000000;
+}
+
+.OrderProcessed__OrderConfirmation .OrderConfirmation__content {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.OrderProcessed .OrderProcessed__OrderInformation {
+  display: flex;
+  flex-direction: column;
+}
+
+.OrderProcessed__OrderInformation .OrderInformation__Title {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 30px;
+  color: #000000;
+}
+
+.OrderProcessed__OrderInformation .OrderInformation__Details--Container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+@media screen and (max-width: 599px) {
+  .OrderProcessed__OrderInformation .OrderInformation__Details--Container {
+    flex-direction: column;
+  }
+}
+
+.OrderInformation__Details--Container .OrderInformation__Details {
+  flex-basis: 50%;
+  margin-top: 15px;
+}
+
+.OrderInformation__Details .OrderInformation__Details--Content {
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (max-width: 599px) {
+  .OrderInformation__Details .OrderInformation__Details--Content:not(:first-child) {
+    margin-top: 15px;
+  }
+}
+
+.OrderInformation__Details--Content .Content__Title {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 30px;
+  color: #000000;
+}
+
+.OrderInformation__Details--Content .Content__Details {
+  display: flex;
+  flex-direction: column;
+}
+
+.OrderInformation__Details--Content .Content__Details--Detail {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.Content__Details .Content__Details--Detail,
+.Content__Details--Detail {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 30px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.ProductQuantity.ProductQuantity--read-only .stx-input {
+    background: none;
+    pointer-events: none;
+}

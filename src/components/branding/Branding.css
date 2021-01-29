@@ -1,0 +1,15 @@
+.FieldSet.FieldSet--BrandingInformation {
+font-family: SF Pro Display;
+font-style: normal;
+font-weight: normal;
+font-size: 28px;
+line-height: 30px;
+color: #000000;
+padding: 0 5px;
+}
+
+@media screen and (max-width: 599px) {
+  .FieldSet.FieldSet--BrandingInformation {
+    font-size: 20px;
+  }
+}

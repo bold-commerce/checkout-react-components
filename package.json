@@ -1,0 +1,42 @@
+{
+  "name": "checkout-react-components",
+  "version": "1.0.0",
+  "main": "lib",
+  "author": "Arvinder Bold <arvinder.singh@boldcommerce.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "watch 'yarn build' ./src ",
+    "build": "rm -R ./lib && babel ./src --out-dir ./lib --copy-files"
+  },
+  "peerDependencies": {
+    "axios": "^0.19.2",
+    "@bold-commerce/stacks-ui": "git+https://github.com/bold-commerce/stacks-ui.git#main",
+    "classnames": "^2.2.6",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "dependencies": {
+    "@bold-commerce/stacks-ui": "git+https://github.com/bold-commerce/stacks-ui.git#main",
+    "axios": "^0.19.2",
+    "classnames": "^2.2.6",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-spring": "^8.0.27"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-react": "^7.9.4",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "watch": "^1.0.2"
+  }
+}

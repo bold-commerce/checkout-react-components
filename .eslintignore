@@ -1,0 +1,4 @@
+.babelrc
+*.json
+node_modules/
+lib/
