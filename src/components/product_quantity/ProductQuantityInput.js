@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Input, Button } from '@bold-commerce/stacks-ui';
+import { Input, Button } from '@boldcommerce/stacks-ui';
 import classnames from 'classnames';
 
 const ProductQuantity = ({

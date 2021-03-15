@@ -1,8 +1,8 @@
 import React, {
   useEffect, useState, useCallback, useContext,
 } from 'react';
-import RadioField from '@bold-commerce/stacks-ui/lib/components/radiofield/RadioField';
-import { Price } from '@bold-commerce/stacks-ui';
+import RadioField from '@boldcommerce/stacks-ui/lib/components/radiofield/RadioField';
+import { Price } from '@boldcommerce/stacks-ui';
 import useShippingLines from '../../hooks/useShippingLines';
 import EmptyState from '../empty_state/EmptyState';
 import './ShippingMethod.css';

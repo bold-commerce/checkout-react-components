@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import {
   Button,
-} from '@bold-commerce/stacks-ui';
+} from '@boldcommerce/stacks-ui';
 
 
 import CheckoutContext from '../Context';

@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Price,
-} from '@bold-commerce/stacks-ui';
+} from '@boldcommerce/stacks-ui';
 import Product from '../product/Product';
 import Discount from '../discount/Discount';
 import Breakdown from '../breakdown/Breakdown';

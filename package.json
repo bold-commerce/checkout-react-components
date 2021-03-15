@@ -1,7 +1,7 @@
 {
   "name": "@boldcommerce/checkout-react-components",
   "version": "1.0.0",
-  "main": "lib",
+  "main": "lib/index.js",
   "author": "Arvinder Bold <arvinder.singh@boldcommerce.com>",
   "description": "A React component library for creating checkout experiences utilizing Bold API's.",
   "license": "MIT",

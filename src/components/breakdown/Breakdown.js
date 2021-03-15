@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Price, Button } from '@bold-commerce/stacks-ui';
+import { Price, Button } from '@boldcommerce/stacks-ui';
 import useBreakdown from '../../hooks/useBreakdown';
 import useDiscount from '../../hooks/useDiscount';
 import useTaxes from '../../hooks/useTaxes';

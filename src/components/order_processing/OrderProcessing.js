@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   LoadingSpinner,
-} from '@bold-commerce/stacks-ui';
+} from '@boldcommerce/stacks-ui';
 import './OrderProcessing.css';
 
 

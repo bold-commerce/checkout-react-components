@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputField } from '@bold-commerce/stacks-ui';
+import { InputField } from '@boldcommerce/stacks-ui';
 import useCustomer from '../../hooks/useCustomer';
 
 import './Email.css';

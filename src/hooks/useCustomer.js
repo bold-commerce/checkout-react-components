@@ -28,7 +28,7 @@ const useCustomer = () => {
     }), [customer, csrf]);
 
   const submitCustomer = useCallback(async () => {
-    fetch(`${apiPath}/customer`, {
+    fetch(`${apiPath}/customer/guest`, {
       mode: 'cors',
       method: 'POST',
       credentials: 'include',

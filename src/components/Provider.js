@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import CheckoutContext from './Context';
 import useCsrfToken from '../hooks/useCsrfToken';
 
-const apiBase = 'https://api.staging.boldcommerce.com/checkout/storefront'; // TODO: Update this later
+const apiBase = 'https://api.boldcommerce.com/checkout/storefront';
 
 const defaultAddressState = {
   first_name: '',

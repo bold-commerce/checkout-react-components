@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Button, Price, Details, Image
-} from '@bold-commerce/stacks-ui';
+} from '@boldcommerce/stacks-ui';
 import './Product.css';
 import ProductQuantityInput from '../product_quantity/ProductQuantityInput';
 

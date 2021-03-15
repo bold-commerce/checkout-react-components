@@ -1,7 +1,7 @@
 /* eslint-disable react/forbid-prop-types */
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { InputField, SelectField } from '@bold-commerce/stacks-ui';
+import { InputField, SelectField } from '@boldcommerce/stacks-ui';
 import './Address.css';
 
 const debounce = (callback, wait) => {

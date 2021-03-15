@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import RadioField from '@bold-commerce/stacks-ui/lib/components/radiofield/RadioField';
+import RadioField from '@boldcommerce/stacks-ui/lib/components/radiofield/RadioField';
 import Address from '../address/Address';
 import useAddress from '../../hooks/useAddress';
 import CheckoutContext from '../Context';

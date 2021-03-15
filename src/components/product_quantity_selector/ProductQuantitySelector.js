@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button} from '@bold-commerce/stacks-ui';
+import {Button} from '@boldcommerce/stacks-ui';
 
 const ProductQuantitySelector = ({updateQuantity, qty, lineItemKey}) => (
   <Button

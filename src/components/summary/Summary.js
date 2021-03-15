@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
   Price,
-} from '@bold-commerce/stacks-ui';
+} from '@boldcommerce/stacks-ui';
 import Product from '../product/Product';
 import Discount from '../discount/Discount';
 import Breakdown from '../breakdown/Breakdown';
