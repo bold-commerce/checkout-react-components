@@ -9,20 +9,19 @@ const useLineItems = () => {
   const {
     apiPath,
     csrf,
-    applicationState,
+    lineItems,
     setApplicationState,
   } = useContext(CheckoutContext);
-  const [isLoading, setLoading] = useState(false);
+  const [loadingLineItems, setLoadingLineItems] = useState(false);
 
-
-  const updateQuantity = useCallback(async (quantity, lineItemKey) => {
+  const updateLineItemQuantity = useCallback((quantity, lineItemKey) => {
     const data = {
       quantity,
       line_item_key: lineItemKey,
     };
 
     if (csrf) {
-      await fetch(`${apiPath}/items`, {
+      fetch(`${apiPath}/items`, {
         mode: 'cors',
         method: 'PUT',
         credentials: 'include',
@@ -35,7 +34,7 @@ const useLineItems = () => {
         .then((response) => response.json())
         .then((response) => {
           setApplicationState(response.data.application_state);
-          setLoading(false);
+          setLoadingLineItems(false);
         });
     }
   }, [csrf]);
@@ -59,15 +58,15 @@ const useLineItems = () => {
         .then((response) => response.json())
         .then((response) => {
           setApplicationState(response.data.application_state);
-          setLoading(false);
+          setLoadingLineItems(false);
         });
     }
   }, [csrf]);
 
   return {
-    lineItems: applicationState.line_items,
-    isLoading,
-    updateQuantity,
+    lineItems,
+    loadingLineItems,
+    updateLineItemQuantity,
     removeLineItem,
   };
 };

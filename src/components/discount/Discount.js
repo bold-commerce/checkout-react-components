@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input, Button } from '@boldcommerce/stacks-ui';
 import useDiscount from '../../hooks/useDiscount';
 
@@ -6,12 +6,13 @@ import './Discount.css';
 
 const Discount = () => {
   const {
-    discount,
-    setDiscount,
+    discountCode,
     discountApplied,
-    errors,
-    handleSubmit,
+    discountErrors,
+    submitDiscount,
   } = useDiscount();
+
+  const [discount, setDiscount] = useState(discountCode);
 
   return (
     <div className="SummaryBlock Summary__DiscountForm">
@@ -19,27 +20,25 @@ const Discount = () => {
         <Input
           type="text"
           placeholder="Enter discount code"
-          value={discount ?? ''}
-          messageText={errors && errors[0].message}
-          messageType={errors && 'alert'}
-          onChange={
-            (e) => setDiscount(e.target.value)
-          }
+          value={discount}
+          messagetext={discountErrors && discountErrors[0].message}
+          messageType={discountErrors && 'alert'}
+          onChange={(e) => setDiscount(e.target.value)}
           disabled={discountApplied}
         />
         <Button
           primary={discountApplied || discount.length > 0}
           disabled={discount.length === 0 || discountApplied}
-          onClick={() => handleSubmit()}
+          onClick={() => submitDiscount(discount)}
         >
           Apply
         </Button>
       </div>
       {
-        errors && errors[0].message && (
+        discountErrors && discountErrors[0].message && (
           <div div className="DiscountForm__error">
             {
-              errors[0].message
+              discountErrors[0].message
             }
           </div>
         )

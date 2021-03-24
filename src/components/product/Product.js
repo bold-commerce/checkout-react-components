@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, Price, Details, Image
+  Button, Price, Details, Image,
 } from '@boldcommerce/stacks-ui';
 import './Product.css';
 import ProductQuantityInput from '../product_quantity/ProductQuantityInput';
@@ -40,7 +40,7 @@ const Product = ({
       <ProductQuantityInput
         readOnly={readOnly}
         defaultValue={qty}
-        onChange={(v) => {updateQuantity(v, lineItemKey)}}
+        onChange={(v) => { updateQuantity(v, lineItemKey); }}
       />
       <div className="CartItem__ProductPrice">
         <Price amount={totalPrice} />
@@ -48,7 +48,6 @@ const Product = ({
     </div>
   </>
 );
-
 
 Product.propTypes = {
   title: PropTypes.string.isRequired,

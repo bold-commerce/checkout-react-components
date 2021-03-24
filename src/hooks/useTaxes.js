@@ -1,5 +1,4 @@
 import {
-  useState,
   useContext,
   useEffect,
 } from 'react';
@@ -9,16 +8,13 @@ const useTaxes = () => {
   const {
     apiPath,
     csrf,
-    applicationState,
+    selectedShipping,
+    taxes,
     setApplicationState,
   } = useContext(CheckoutContext);
-  const [errors] = useState();
-  const [isLoading] = useState(false);
-  const taxApplied = applicationState.taxes.length > 0;
-  const tax = applicationState?.taxes;
-  const { shipping } = applicationState;
-  const shippingID = shipping?.selected_shipping?.id;
 
+  const taxesApplied = taxes.length > 0;
+  const shippingID = selectedShipping?.id;
 
   useEffect(() => {
     if (!csrf) return;
@@ -41,10 +37,8 @@ const useTaxes = () => {
   }, [shippingID]);
 
   return {
-    errors,
-    isLoading,
-    taxApplied,
-    tax,
+    taxesApplied,
+    taxes,
   };
 };
 
