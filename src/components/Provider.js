@@ -36,15 +36,24 @@ const CheckoutProvider = (props) => {
   const csrf = useCsrfToken(apiPath, token);
 
   const [appState, setApplicationState] = useState(applicationState);
-  const [shippingAddress, setShippingAddress] = useState({ ...defaultAddressState, ...applicationState.addresses.shipping });
-  const [billingAddress, setBillingAddress] = useState({ ...defaultAddressState, ...applicationState.addresses.billing });
-  const [shippingLines, setShippingLines] = useState([]);
-  const [customer, setCustomer] = useState({ ...defaultCustomerState, ...applicationState.customer });
+  const shippingAddress = { ...defaultAddressState, ...appState.addresses.shipping };
+  const billingAddress = { ...defaultAddressState, ...appState.addresses.billing };
+  const selectedShipping = appState.shipping.selected_shipping;
+  const shippingLines = [...appState.shipping.available_shipping_lines];
+  const lineItems = [...appState.line_items];
+  const customer = { ...defaultCustomerState, ...appState.customer };
+  const discountApplied = appState.discounts.length > 0;
+  const discountCode = appState.discounts[0]?.code ?? '';
+  const { discounts } = appState;
   const [isProcessing, setIsProcessing] = useState(false);
   const [shippingErrors, setShippingErrors] = useState(false);
   const [billingErrors, setBillingErrors] = useState(false);
   const [shippingMethodRequest, setShippingMethodRequest] = useState(false);
-  const [sameAsShipping, setSameAsShipping] = useState(true);
+  const totalPayments = appState?.payments?.length > 0;
+  const paymentStatus = appState?.payments[0]?.status !== '';
+  const orderProcessed = (totalPayments && paymentStatus) ?? false;
+  const taxes = appState?.taxes;
+  const payments = appState?.payments;
 
   const values = {
     applicationState: appState,
@@ -54,17 +63,19 @@ const CheckoutProvider = (props) => {
     setApplicationState,
     initialData,
     customer,
-    setCustomer,
     shippingAddress,
-    setShippingAddress,
-    billingAddress: sameAsShipping ? shippingAddress : billingAddress,
-    sameAsShipping,
-    setSameAsShipping,
-    setBillingAddress,
+    billingAddress,
+    selectedShipping,
+    shippingLines,
+    lineItems,
+    discountApplied,
+    discountCode,
+    discounts,
+    taxes,
+    payments,
     isProcessing,
     setIsProcessing,
-    shippingLines,
-    setShippingLines,
+    orderProcessed,
     shippingErrors,
     billingErrors,
     setShippingErrors,
@@ -72,7 +83,6 @@ const CheckoutProvider = (props) => {
     shippingMethodRequest,
     setShippingMethodRequest,
   };
-
 
   return <CheckoutContext.Provider value={values}>{children}</CheckoutContext.Provider>;
 };

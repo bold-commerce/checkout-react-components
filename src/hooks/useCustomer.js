@@ -5,12 +5,12 @@ import CheckoutContext from '../components/Context';
 
 const useCustomer = () => {
   const {
-    apiPath, csrf, setApplicationState, customer, setCustomer,
+    apiPath, csrf, setApplicationState, customer,
   } = useContext(CheckoutContext);
-  const [errors, setErrors] = useState();
-  const [isLoading, setLoading] = useState(false);
+  const [customerErrors, setCustomerErrors] = useState();
+  const [loadingCustomer, setLoadingCustomer] = useState(false);
 
-  const validateCustomer = useCallback(async () => fetch(`${apiPath}/validate_email_address?email_address=${customer.email_address}`, {
+  const validateCustomer = useCallback((data) => fetch(`${apiPath}/validate_email_address?email_address=${data.email_address}`, {
     mode: 'cors',
     method: 'GET',
     credentials: 'include',
@@ -25,51 +25,45 @@ const useCustomer = () => {
         return response.errors;
       }
       return null;
-    }), [customer, csrf]);
+    }), [csrf]);
 
-  const submitCustomer = useCallback(async () => {
-    fetch(`${apiPath}/customer/guest`, {
+  const updateCustomer = useCallback((data) => {
+    const method = customer.email_address ? 'PUT' : 'POST';
+    const path = customer.email_address ? '/customer' : '/customer/guest';
+
+    fetch(`${apiPath}${path}`, {
       mode: 'cors',
-      method: 'POST',
+      method,
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': csrf,
       },
       body: JSON.stringify({
-        ...customer,
-        platform_id: 1,
+        ...data,
       }),
     })
       .then((response) => response.json())
       .then((response) => {
         setApplicationState(response.data.application_state);
-        setCustomer(response.data.customer);
       });
   }, [customer, csrf]);
 
-  const handleSubmit = useCallback(async () => {
-    setLoading(true);
+  const submitCustomer = useCallback(async (data) => {
+    setLoadingCustomer(true);
 
-    const validationErrors = await validateCustomer();
-    setErrors(validationErrors);
+    const validationErrors = await validateCustomer(data);
+    setCustomerErrors(validationErrors);
 
     if (!validationErrors) {
-      await submitCustomer();
+      await updateCustomer(data);
     }
 
-    setLoading(false);
-  }, [customer, submitCustomer, validateCustomer]);
-
-  const updateCustomer = (value) => {
-    setCustomer((prevState) => ({
-      ...prevState,
-      ...value,
-    }));
-  };
+    setLoadingCustomer(false);
+  }, [customer, updateCustomer, validateCustomer]);
 
   return {
-    customer, setCustomer: updateCustomer, errors, isLoading, handleSubmit,
+    customer, customerErrors, loadingCustomer, submitCustomer,
   };
 };
 

@@ -1,88 +1,30 @@
-import {
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { useContext } from 'react';
 import CheckoutContext from '../components/Context';
 
 const useBreakdown = () => {
   const {
-    applicationState,
+    taxes,
+    payments,
+    discounts,
+    selectedShipping,
+    lineItems,
   } = useContext(CheckoutContext);
-  const [subTotal, setSubtotal] = useState(0);
-  const [shippingTotal, setShippingTotal] = useState(0);
-  const [discountTotal, setDiscountTotal] = useState(0);
-  const [taxesTotal, setTaxesTotal] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [includedTaxes, setIncludedTaxes] = useState(0);
-  const [excludedTaxes, setExcludedTaxes] = useState(0);
-  const [taxesIncluded, setTaxesIncluded] = useState(false);
-  const [remainingBalance, setRemainingBalance] = useState(0);
 
-
-  const lineItems = applicationState.line_items;
-  const {
-    shipping, taxes, discounts, payments,
-  } = applicationState;
-
-  const selectedShipping = shipping.selected_shipping ?? {};
-
-  useEffect(() => {
-    const subTotalLineItems = lineItems.reduce((acc, curr) => acc + curr.product_data.total_price, 0);
-    setSubtotal(subTotalLineItems);
-  }, [lineItems]);
-
-  useEffect(() => {
-    if (shipping?.selected_shipping?.amount) {
-      setShippingTotal(shipping.selected_shipping.amount);
-    }
-  }, [selectedShipping]);
-
-  useEffect(() => {
-    if (discounts[0]?.value) {
-      setDiscountTotal(discounts[0].value);
-    } else {
-      setDiscountTotal(0);
-    }
-  }, [discounts]);
-
-  useEffect(() => {
-    if (taxes && taxes.length) {
-      let totalExcludedTaxes = 0;
-      let totalIncludedTaxes = 0;
-      taxes[0]?.is_included ? setTaxesIncluded(true) : setTaxesIncluded(false);
-
-      taxes.forEach((tax) => {
-        if (tax.is_included) {
-          totalIncludedTaxes += tax.value;
-        } else {
-          totalExcludedTaxes += tax.value;
-        }
-      });
-      setIncludedTaxes(totalIncludedTaxes);
-      setExcludedTaxes(totalExcludedTaxes);
-      const totalTaxes = taxes.reduce((acc, curr) => acc + curr.value, 0);
-      setTaxesTotal(totalTaxes);
-    }
-  }, [taxes]);
-
-  useEffect(() => {
-    const totalAmount = subTotal + shippingTotal + excludedTaxes - discountTotal;
-    setTotal(totalAmount);
-    if (payments.length === 0) {
-      setRemainingBalance(totalAmount);
-    }
-  }, [subTotal, shippingTotal, discountTotal, taxesTotal, excludedTaxes]);
-
-  useEffect(() => {
-    if (payments.length > 0) {
-      const totalPayments = payments.length === 1 ? payments[0]?.value : payments.reduce((prevVal, currVal) => (prevVal + currVal.value), 0);
-      const balance = total - totalPayments;
-      setRemainingBalance(balance);
-    }
-  }, [payments, total]);
-
+  const subTotal = lineItems.reduce((acc, curr) => acc + curr.product_data.total_price, 0);
+  const shippingTotal = selectedShipping?.amount ?? 0;
+  const discountTotal = discounts[0]?.value ?? 0;
+  const excludedTaxes = taxes.reduce((acc, curr) => (!curr.is_included ? acc + curr.value : acc), 0);
+  const taxesIncluded = taxes[0]?.is_included;
+  const taxesTotal = taxes.reduce((acc, curr) => acc + curr.value, 0);
+  const total = subTotal + shippingTotal + excludedTaxes - discountTotal;
+  let remainingBalance = total;
+  if (payments.length > 0) {
+    const totalPayments = payments.length === 1 ? payments[0]?.value : payments.reduce((prevVal, currVal) => (prevVal + currVal.value), 0);
+    remainingBalance = total - totalPayments;
+  }
   const totalItems = lineItems.reduce((acc, item) => acc + item?.product_data?.quantity, 0);
+  const paymentsMade = payments?.length > 0;
+  const paymentStatus = payments[0]?.status !== '';
 
   return {
     subTotal,
@@ -91,8 +33,12 @@ const useBreakdown = () => {
     discountTotal,
     taxesTotal,
     total,
+    taxes,
+    payments,
     taxesIncluded,
     remainingBalance,
+    paymentsMade,
+    paymentStatus,
   };
 };
 

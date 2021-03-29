@@ -9,16 +9,14 @@ const useDiscount = () => {
   const {
     apiPath,
     csrf,
-    applicationState,
+    discountCode,
+    discountApplied,
     setApplicationState,
   } = useContext(CheckoutContext);
-  const [errors, setErrors] = useState();
-  const [isLoading, setLoading] = useState(false);
-  const [discount, setDiscount] = useState(applicationState.discounts[0]?.code ?? '');
-  const discountApplied = applicationState.discounts.length > 0;
-  const discountCode = applicationState.discounts[0]?.code;
+  const [discountErrors, setDiscountErrors] = useState();
+  const [loadingDiscount, setLoadingDiscount] = useState(false);
 
-  const validateDiscount = useCallback(async () => fetch(`${apiPath}/validate_discount_code?discount_code=${discount}`, {
+  const validateDiscount = useCallback((discount) => fetch(`${apiPath}/validate_discount_code?discount_code=${discount}`, {
     mode: 'cors',
     method: 'GET',
     credentials: 'include',
@@ -33,9 +31,9 @@ const useDiscount = () => {
         return response.errors;
       }
       return null;
-    }), [discount, csrf]);
+    }), [csrf]);
 
-  const submitDiscount = useCallback(async () => {
+  const updateDiscount = useCallback((discount) => {
     fetch(`${apiPath}/discounts`, {
       mode: 'cors',
       method: 'POST',
@@ -52,20 +50,20 @@ const useDiscount = () => {
       .then((response) => {
         setApplicationState(response.data.application_state);
       });
-  }, [discount, csrf]);
+  }, [csrf]);
 
-  const handleSubmit = useCallback(async () => {
-    setLoading(true);
+  const submitDiscount = useCallback(async (discount) => {
+    setLoadingDiscount(true);
 
-    const validationErrors = await validateDiscount();
-    setErrors(validationErrors);
+    const validationErrors = await validateDiscount(discount);
+    setDiscountErrors(validationErrors);
 
     if (!validationErrors) {
-      await submitDiscount();
+      await updateDiscount(discount);
     }
 
-    setLoading(false);
-  }, [discount, submitDiscount, validateDiscount]);
+    setLoadingDiscount(false);
+  }, [updateDiscount, validateDiscount]);
 
   const removeDiscount = useCallback(async () => {
     fetch(`${apiPath}/discounts`, {
@@ -77,24 +75,22 @@ const useDiscount = () => {
         'X-CSRF-TOKEN': csrf,
       },
       body: JSON.stringify({
-        code: discount,
+        code: discountCode,
       }),
     })
       .then((response) => response.json())
       .then((response) => {
         setApplicationState(response.data.application_state);
       });
-  }, [discount, csrf]);
+  }, [csrf, discountCode]);
 
   return {
-    discount,
-    setDiscount,
     discountApplied,
     discountCode,
     removeDiscount,
-    errors,
-    isLoading,
-    handleSubmit,
+    discountErrors,
+    loadingDiscount,
+    submitDiscount,
   };
 };
 

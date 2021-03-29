@@ -9,10 +9,11 @@ const usePayments = (gatewayId) => {
   const {
     apiPath,
     csrf,
+    payments,
     setApplicationState,
   } = useContext(CheckoutContext);
-  const [errors] = useState();
-  const [isLoading] = useState(false);
+  const [paymentErrors] = useState();
+  const [loadingPayment] = useState(false);
 
   const addPayment = useCallback((token) => {
     if (csrf) {
@@ -39,8 +40,9 @@ const usePayments = (gatewayId) => {
   }, [csrf]);
 
   return {
-    errors,
-    isLoading,
+    payments,
+    paymentErrors,
+    loadingPayment,
     addPayment,
   };
 };

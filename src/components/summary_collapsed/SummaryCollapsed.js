@@ -3,28 +3,20 @@ import PropTypes from 'prop-types';
 import {
   Price,
 } from '@boldcommerce/stacks-ui';
-import Product from '../product/Product';
 import Discount from '../discount/Discount';
 import Breakdown from '../breakdown/Breakdown';
-import useLineItems from '../../hooks/useLineItems';
 import useBreakdown from '../../hooks/useBreakdown';
 import CheckoutContext from '../Context';
 import AccordionCollapsed from '../accordian_collapsed/AccordianCollapsed';
+import withLineItemsLogic from '../line_items/withLineItemsLogic';
+import LineItems from '../line_items/LineItems';
 import './SummaryCollapsed.css';
 
+const EnhancedLineItems = withLineItemsLogic(LineItems);
+
 const Summary = ({ open, setOpen }) => {
-  const {
-    lineItems,
-    updateQuantity,
-    removeLineItem,
-  } = useLineItems();
-
   const { total, totalItems } = useBreakdown();
-  const { applicationState } = useContext(CheckoutContext);
-
-  const payments = applicationState?.payments?.length > 0;
-  const paymentStatus = applicationState?.payments[0]?.status !== '';
-  const orderProcessed = (payments && paymentStatus) ?? false;
+  const { orderProcessed } = useContext(CheckoutContext);
 
   const closeSummary = () => {
     setOpen(!open);
@@ -61,23 +53,7 @@ const Summary = ({ open, setOpen }) => {
         </div>
       </div>
       <AccordionCollapsed open={open} className="accordion__content">
-
-        {lineItems.map((item) => (
-          <div className="SummaryBlock CartItem" key={item.product_data.line_item_key}>
-            <Product
-              title={item.product_data.title}
-              img={item.product_data.image}
-              qty={item.product_data.quantity}
-              itemPrice={item.product_data.price}
-              totalPrice={item.product_data.total_price}
-              lineItemKey={item.product_data.line_item_key}
-              description={item.product_data.description}
-              updateQuantity={updateQuantity}
-              removeLineItem={removeLineItem}
-              readOnly={orderProcessed}
-            />
-          </div>
-        ))}
+        <EnhancedLineItems readOnly={orderProcessed} />
         { !orderProcessed && <Discount />}
         <Breakdown />
       </AccordionCollapsed>

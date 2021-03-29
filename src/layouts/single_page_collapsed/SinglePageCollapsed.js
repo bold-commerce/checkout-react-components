@@ -1,35 +1,47 @@
 import React, {
   useContext, useState,
 } from 'react';
-import PropTypes from 'prop-types';
 import CheckoutContext from '../../components/Context';
 import useProcessOrder from '../../hooks/useProcessOrder';
 import OrderProcessing from '../../components/order_processing/OrderProcessing';
 import OrderProcessed from '../../components/order_processed/OrderProcessed';
 import EmailField from '../../components/email/Email';
-import ShippingAddress from '../../components/shipping/Shipping';
-import Billing from '../../components/billing/Billing';
+import ShippingAddress from '../../components/shipping_address/ShippingAddress';
+import BillingAddress from '../../components/billing_address/BillingAddress';
 import ShippingMethod from '../../components/shipping_method/ShippingMethod';
 import PaymentMethod from '../../components/payment/Payment';
 import SummaryCollapsed from '../../components/summary_collapsed/SummaryCollapsed';
 import Branding from '../../components/branding/Branding';
+import withCustomerLogic from '../../components/email/withCustomerLogic';
+import withShippingMethodLogic from '../../components/shipping_method/withShippingMethodLogic';
+import withShippingAddressLogic from '../../components/shipping_address/withShippingAddressLogic';
+import withBillingAddressLogic from '../../components/billing_address/withBillingAddressLogic';
+import withPaymentLogic from '../../components/payment/withPaymentLogic';
+import withOrderProcessedLogic from '../../components/order_processed/withOrderProcessedLogic';
 import './SinglePageCollapsed.css';
 
-const SinglePageCollapsed = ({ paymentMethod }) => {
+const EnhancedEmail = withCustomerLogic(EmailField);
+const EnhancedShippingAddress = withShippingAddressLogic(ShippingAddress);
+const EnhancedBillingAddress = withBillingAddressLogic(BillingAddress);
+const EnhancedShippingMethod = withShippingMethodLogic(ShippingMethod);
+const EnhancedPaymentMethod = withPaymentLogic(PaymentMethod);
+const EnhancedOrderProcessed = withOrderProcessedLogic(OrderProcessed);
+
+const SinglePageCollapsed = () => {
   const { isProcessing } = useProcessOrder();
-  const { applicationState } = useContext(CheckoutContext);
-  const payments = applicationState?.payments?.length > 0;
-  const paymentStatus = applicationState?.payments[0]?.status !== '';
+  const { payments } = useContext(CheckoutContext);
+  const hasPayments = payments?.length > 0;
+  const paymentStatus = payments[0]?.status !== '';
   const [open, setOpen] = useState(false);
 
   const CheckoutForm = (
     <>
       <Branding brandName="Shop Name" />
-      <EmailField />
-      <ShippingAddress />
-      <Billing />
-      <ShippingMethod />
-      <PaymentMethod alternateMethod={paymentMethod && paymentMethod} />
+      <EnhancedEmail />
+      <EnhancedShippingAddress />
+      <EnhancedBillingAddress />
+      <EnhancedShippingMethod />
+      <EnhancedPaymentMethod />
     </>
   );
 
@@ -43,7 +55,7 @@ const SinglePageCollapsed = ({ paymentMethod }) => {
           <>
             <div className={`Checkout__Main ${open ? 'Checkout__Main--Overlay' : ''} ${isProcessing ? 'Checkout__Main--Hidden' : ''}`}>
               {
-                payments && paymentStatus ? <OrderProcessed /> : CheckoutForm
+                hasPayments && paymentStatus ? <EnhancedOrderProcessed /> : CheckoutForm
               }
             </div>
             <div className={`
@@ -58,10 +70,6 @@ const SinglePageCollapsed = ({ paymentMethod }) => {
       }
     </div>
   );
-};
-
-SinglePageCollapsed.propTypes = {
-  paymentMethod: PropTypes.node,
 };
 
 export default SinglePageCollapsed;
