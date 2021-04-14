@@ -65,27 +65,27 @@ const withPaymentLogic = (Component) => {
       }
     }, [isValid]);
 
+    const pigiListener = useCallback((event) => {
+      if (event?.data?.responseType === 'PIGI_UPDATE_HEIGHT') {
+        event?.data?.payload && (iFrameRef.current.style.height = `${event.data.payload.height}px`);
+      }
+      if (event?.data?.responseType === 'PIGI_ADD_PAYMENT') {
+        if (event?.data?.payload?.success) {
+          processOrder(iFrameWindow);
+        } else {
+          setIsProcessing(false);
+          event?.data?.payload && (
+            iFrameRef.current.style.height = `${event.data.payload.height}px`
+          );
+        }
+      }
+    }, [processOrder, iFrameWindow, iFrameRef, csrf]);
+
     useEffect(() => {
-      let listener = null;
+      window.addEventListener('message', pigiListener);
 
-      window.addEventListener('message', listener = (event) => {
-        if (event?.data?.responseType === 'PIGI_UPDATE_HEIGHT') {
-          event?.data?.payload && (iFrameRef.current.style.height = `${event.data.payload.height}px`);
-        }
-        if (event?.data?.responseType === 'PIGI_ADD_PAYMENT') {
-          if (event?.data?.payload?.success) {
-            processOrder(iFrameWindow);
-          } else {
-            setIsProcessing(false);
-            event?.data?.payload && (
-              iFrameRef.current.style.height = `${event.data.payload.height}px`
-            );
-          }
-        }
-      });
-
-      return () => window.removeEventListener('message', listener);
-    }, []);
+      return () => window.removeEventListener('message', pigiListener);
+    }, [pigiListener]);
 
     const paymentIframe = (
       <iframe
