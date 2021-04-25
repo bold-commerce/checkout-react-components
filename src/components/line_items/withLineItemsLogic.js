@@ -4,13 +4,14 @@ import useLineItems from '../../hooks/useLineItems';
 const withLineItemsLogic = (Component) => {
   const WithLineItemsLogic = (props) => {
     const {
-      lineItems, loadingLineItems, updateLineItemQuantity, removeLineItem,
+      lineItems, addLineItem, loadingLineItems, updateLineItemQuantity, removeLineItem,
     } = useLineItems();
 
     const updatedProps = {
       ...props,
       lineItems,
       loadingLineItems,
+      addLineItem,
       updateLineItemQuantity,
       removeLineItem,
     };

@@ -14,6 +14,32 @@ const useLineItems = () => {
   } = useContext(CheckoutContext);
   const [loadingLineItems, setLoadingLineItems] = useState(false);
 
+  const addLineItem = useCallback((platformId, quantity, lineItemKey) => {
+    const data = {
+      platform_id: platformId,
+      quantity,
+      line_item_key: lineItemKey,
+    };
+
+    if (csrf) {
+      fetch(`${apiPath}/items`, {
+        mode: 'cors',
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf,
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          setApplicationState(response.data.application_state);
+          setLoadingLineItems(false);
+        });
+    }
+  }, [csrf]);
+
   const updateLineItemQuantity = useCallback((quantity, lineItemKey) => {
     const data = {
       quantity,
@@ -66,6 +92,7 @@ const useLineItems = () => {
   return {
     lineItems,
     loadingLineItems,
+    addLineItem,
     updateLineItemQuantity,
     removeLineItem,
   };

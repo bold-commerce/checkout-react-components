@@ -1,5 +1,5 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import CheckoutContext from './Context';
 import useCsrfToken from '../hooks/useCsrfToken';
@@ -54,6 +54,7 @@ const CheckoutProvider = (props) => {
   const orderProcessed = (totalPayments && paymentStatus) ?? false;
   const taxes = appState?.taxes;
   const payments = appState?.payments;
+  const paymentIframeRef = useRef();
 
   const values = {
     applicationState: appState,
@@ -82,6 +83,7 @@ const CheckoutProvider = (props) => {
     setBillingErrors,
     shippingMethodRequest,
     setShippingMethodRequest,
+    paymentIframeRef,
   };
 
   return <CheckoutContext.Provider value={values}>{children}</CheckoutContext.Provider>;

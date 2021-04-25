@@ -4,7 +4,6 @@ import {
 } from '@boldcommerce/stacks-ui';
 import './OrderProcessing.css';
 
-
 const OrderProcessing = () => (
   <div className="OrderProcessing">
     <div className="OrderProcessing__Content">

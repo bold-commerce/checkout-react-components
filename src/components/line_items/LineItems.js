@@ -14,7 +14,7 @@ const LineItems = ({
       <div className="SummaryBlock CartItem" key={item.product_data.line_item_key}>
         <Product
           title={item.product_data.title}
-          img={item.product_data.image}
+          img={item.product_data.image_url}
           qty={item.product_data.quantity}
           itemPrice={item.product_data.price}
           totalPrice={item.product_data.total_price}

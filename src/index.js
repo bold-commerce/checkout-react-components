@@ -28,15 +28,22 @@ import withCustomerLogic from './components/email/withCustomerLogic';
 import withLineItemsLogic from './components/line_items/withLineItemsLogic';
 import withOrderProcessedLogic from './components/order_processed/withOrderProcessedLogic';
 import withPaymentLogic from './components/payment/withPaymentLogic';
+import useLineItems from './hooks/useLineItems';
+import usePaymentIframe from './hooks/usePaymentIframe';
+import withCheckoutButtonLogic from './components/checkout_button/withCheckoutButtonLogic';
+import CheckoutButton from './components/checkout_button/CheckoutButton';
 
 export {
   CheckoutProvider,
   CheckoutContext,
   useCsrfToken,
   useCustomer,
+  useLineItems,
+  usePaymentIframe,
   useShippingAddress,
   useBillingAddress,
   withShippingAddressLogic,
+  withCheckoutButtonLogic,
   withCustomerLogic,
   withLineItemsLogic,
   withOrderProcessedLogic,
@@ -46,6 +53,7 @@ export {
   AddressSection,
   BillingAddress,
   Breakdown,
+  CheckoutButton,
   Discount,
   EmailField,
   PaymentMethod,

@@ -208,6 +208,22 @@ const Component = () => {
 };
 ```
 
+### CheckoutButton
+Displays a checkout button
+
+```javascript
+import { CheckoutButton } from '@boldcommerce/checkout-react-components';
+
+const Component = () => {
+  return (
+    <CheckoutButton
+      disabled={true}
+      completeOrder={function(){}}
+    />
+  );
+};
+```
+
 ## Hooks and Custom Components
 
 ### useCustomer
@@ -516,6 +532,9 @@ UseLineItems has the following methods:
 **lineItems**
 - list of all of the line items in the order
 
+**addLineItem**
+- adds line item to the order
+
 **updateLineItemQuantity**
 - updates the quantity ordered of a specific line item on the order
 
@@ -728,6 +747,29 @@ const Component = () => {
 
 ---
 
+### withCheckoutButtonLogic
+Decorates a component with the following props:
+- disabled
+- completeOrder
+
+```javascript
+import { withCheckoutButtonLogic } from '@boldcommerce/checkout-react-components';
+
+const CheckoutButton = ({ disabled, completeOrder }) => (
+  <Button onClick={completeOrder} disabled={disabled}>Complete Order</Button>
+);
+
+const EnhancedCheckoutButton = withCheckoutButtonLogic(CheckoutButton);
+
+const Component = () => {
+  return (
+    <EnhancedCheckoutButton />
+  );
+};
+```
+
+---
+
 ### withShippingAddressLogic
 This HOC handles all custom logic around if provinces and postal codes need to be shown and what provinces and postal codes should be called. It also decorates a component with the following props:
 - address
@@ -830,6 +872,7 @@ const Component = () => {
 Decorates a component with the following props:
 - lineItems,
 - loadingLineItems
+- addLineItem
 - updateLineItemQuantity
 - removeLineItem
 
@@ -846,7 +889,7 @@ const LineItems = ({
       <div className="SummaryBlock CartItem" key={item.product_data.line_item_key}>
         <Product
           title={item.product_data.title}
-          img={item.product_data.image}
+          img={item.product_data.image_url}
           qty={item.product_data.quantity}
           itemPrice={item.product_data.price}
           totalPrice={item.product_data.total_price}

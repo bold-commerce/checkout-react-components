@@ -41,6 +41,7 @@
 
 .FieldSet--ShippingMethod .RadioField {
   margin-bottom: 0;
+  padding-left: 0;
 }
 
 .FieldSet--ShippingMethod .ShippingMethod__Price .stx-price__amount {

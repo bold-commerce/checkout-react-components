@@ -2,9 +2,8 @@ import {
   useContext, useCallback,
 } from 'react';
 import CheckoutContext from '../components/Context';
-import usePayments from './usePayments';
 
-const useProcessOrder = (gatewayId) => {
+const useProcessOrder = () => {
   const {
     apiPath, csrf, setApplicationState, isProcessing, setIsProcessing,
   } = useContext(CheckoutContext);

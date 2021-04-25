@@ -19,6 +19,8 @@ import withBillingAddressLogic from '../../components/billing_address/withBillin
 import withPaymentLogic from '../../components/payment/withPaymentLogic';
 import withOrderProcessedLogic from '../../components/order_processed/withOrderProcessedLogic';
 import './SinglePageCollapsed.css';
+import withCheckoutButtonLogic from '../../components/checkout_button/withCheckoutButtonLogic';
+import CheckoutButton from '../../components/checkout_button/CheckoutButton';
 
 const EnhancedEmail = withCustomerLogic(EmailField);
 const EnhancedShippingAddress = withShippingAddressLogic(ShippingAddress);
@@ -26,6 +28,7 @@ const EnhancedBillingAddress = withBillingAddressLogic(BillingAddress);
 const EnhancedShippingMethod = withShippingMethodLogic(ShippingMethod);
 const EnhancedPaymentMethod = withPaymentLogic(PaymentMethod);
 const EnhancedOrderProcessed = withOrderProcessedLogic(OrderProcessed);
+const EnhancedCheckoutButton = withCheckoutButtonLogic(CheckoutButton);
 
 const SinglePageCollapsed = () => {
   const { isProcessing } = useProcessOrder();
@@ -42,6 +45,7 @@ const SinglePageCollapsed = () => {
       <EnhancedBillingAddress />
       <EnhancedShippingMethod />
       <EnhancedPaymentMethod />
+      <EnhancedCheckoutButton />
     </>
   );
 
