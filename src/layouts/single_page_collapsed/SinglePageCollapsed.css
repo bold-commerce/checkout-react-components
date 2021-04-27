@@ -75,6 +75,7 @@ body {
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
+  overflow-y: scroll;
 }
 
 .Checkout--Collapsed .accordion__content {
@@ -154,4 +155,8 @@ body {
   max-width: 680px;
   margin: 0 auto;
   width: 100%;
+}
+
+.Checkout__Main {
+  overflow-y: scroll;
 }

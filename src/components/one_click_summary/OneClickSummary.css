@@ -1,0 +1,10 @@
+.accordion__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.SummaryItem__Value > div {
+    display: inline;
+    display: -webkit-inline-box;
+}
