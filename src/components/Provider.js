@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 import CheckoutContext from './Context';
 import useCsrfToken from '../hooks/useCsrfToken';
 
-const apiBase = 'https://api.boldcommerce.com/checkout/storefront';
-
 const defaultAddressState = {
   first_name: '',
   last_name: '',
@@ -29,7 +27,7 @@ const defaultCustomerState = {
 
 const CheckoutProvider = (props) => {
   const {
-    applicationState, initialData, publicOrderId, token, storeIdentifier, children,
+    applicationState, initialData, publicOrderId, token, storeIdentifier, children, apiBase = 'https://api.boldcommerce.com/checkout/storefront'
   } = props;
 
   const apiPath = `${apiBase}/${storeIdentifier}/${publicOrderId}`;
