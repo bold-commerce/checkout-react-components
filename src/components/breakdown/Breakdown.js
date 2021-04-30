@@ -35,7 +35,7 @@ const Breakdown = () => {
       <div className="Payment__Remove">
         {payment.brand}
         :
-        {payment.bin}
+        {payment.lineText}
       </div>
       <Price amount={
         payment.value

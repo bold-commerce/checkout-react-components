@@ -5,7 +5,7 @@ import customerReducer from '../../reducers/customerReducer';
 const withCustomerLogic = (Component) => {
   const WithCustomerLogic = (props) => {
     const {
-      customer, customerErrors, submitCustomer,
+      customer, customerErrors, submitCustomer, isAuthenticated,
     } = useCustomer();
 
     const [customerInfo, dispatch] = useReducer(customerReducer, customer);
@@ -17,6 +17,7 @@ const withCustomerLogic = (Component) => {
     const updatedProps = {
       ...props,
       customer: customerInfo,
+      isAuthenticated,
       dispatch,
       errors: customerErrors,
       submit: handleSubmit,
