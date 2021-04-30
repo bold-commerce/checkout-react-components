@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import useBillingAddress from '../../hooks/useBillingAddress';
 import useCustomer from '../../hooks/useCustomer';
 import usePayments from '../../hooks/usePayments';
 import useShippingAddress from '../../hooks/useShippingAddress';
+import useShippingLines from '../../hooks/useShippingLines';
+import CheckoutContext from '../Context';
 
 const withOrderProcessedLogic = (Component) => {
   const WithOrderProcessedLogic = (props) => {
@@ -10,7 +12,8 @@ const withOrderProcessedLogic = (Component) => {
     const { customer } = useCustomer();
     const { shippingAddress } = useShippingAddress();
     const { billingAddress } = useBillingAddress();
-    const { selectedShipping } = useShippingAddress();
+    const { selectedShipping } = useShippingLines();
+    const { publicOrderId } = useContext(CheckoutContext);
     const paymentMethod = payments.length === 1 ? payments[0].brand : payments.reduce((prevVal, currVal, idx) => (idx === 0 ? currVal.brand : `${prevVal}, ${currVal.brand}`), '');
 
     const updatedProps = {
@@ -21,6 +24,7 @@ const withOrderProcessedLogic = (Component) => {
       billingAddress,
       selectedShipping,
       paymentMethod,
+      publicOrderId,
     };
 
     // eslint-disable-next-line react/jsx-props-no-spreading

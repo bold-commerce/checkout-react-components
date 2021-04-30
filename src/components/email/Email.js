@@ -7,6 +7,7 @@ import './Email.css';
 const EmailField = ({
   customer,
   dispatch,
+  isAuthenticated,
   errors,
   submit,
 }) => (
@@ -27,6 +28,7 @@ const EmailField = ({
           type: 'email_address',
           payload: e.target.value,
         })}
+        readOnly={isAuthenticated}
         onBlur={submit}
       />
     </div>
@@ -36,6 +38,7 @@ const EmailField = ({
 EmailField.propTypes = {
   customer: PropTypes.any,
   dispatch: PropTypes.func,
+  isAuthenticated: PropTypes.bool,
   errors: PropTypes.any,
   submit: PropTypes.func,
 };

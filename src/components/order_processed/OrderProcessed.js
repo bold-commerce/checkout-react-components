@@ -9,6 +9,7 @@ const OrderProcessed = ({
   billingAddress,
   selectedShipping,
   paymentMethod,
+  publicOrderId,
 }) => (
   <div className="OrderProcessed">
     <div className="OrderProcessed__OrderNumber">Order #</div>
@@ -99,6 +100,7 @@ OrderProcessed.propTypes = {
   billingAddress: PropTypes.any,
   selectedShipping: PropTypes.any,
   paymentMethod: PropTypes.any,
+  publicOrderId: PropTypes.string,
 };
 
 export default OrderProcessed;

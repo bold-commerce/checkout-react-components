@@ -5,7 +5,7 @@ import CheckoutContext from '../components/Context';
 
 const useCustomer = () => {
   const {
-    apiPath, csrf, setApplicationState, customer,
+    apiPath, csrf, setApplicationState, customer, isAuthenticated,
   } = useContext(CheckoutContext);
   const [customerErrors, setCustomerErrors] = useState();
   const [loadingCustomer, setLoadingCustomer] = useState(false);
@@ -29,9 +29,8 @@ const useCustomer = () => {
 
   const updateCustomer = useCallback((data) => {
     const method = customer.email_address ? 'PUT' : 'POST';
-    const path = customer.email_address ? '/customer' : '/customer/guest';
 
-    fetch(`${apiPath}${path}`, {
+    fetch(`${apiPath}/customer/guest`, {
       mode: 'cors',
       method,
       credentials: 'include',
@@ -63,7 +62,7 @@ const useCustomer = () => {
   }, [customer, updateCustomer, validateCustomer]);
 
   return {
-    customer, customerErrors, loadingCustomer, submitCustomer,
+    customer, customerErrors, loadingCustomer, submitCustomer, isAuthenticated,
   };
 };
 

@@ -53,6 +53,7 @@ const CheckoutProvider = (props) => {
   const taxes = appState?.taxes;
   const payments = appState?.payments;
   const paymentIframeRef = useRef();
+  const isAuthenticated = !!appState?.customer?.platform_id;
 
   const values = {
     applicationState: appState,
@@ -82,6 +83,8 @@ const CheckoutProvider = (props) => {
     shippingMethodRequest,
     setShippingMethodRequest,
     paymentIframeRef,
+    isAuthenticated,
+    publicOrderId,
   };
 
   return <CheckoutContext.Provider value={values}>{children}</CheckoutContext.Provider>;
