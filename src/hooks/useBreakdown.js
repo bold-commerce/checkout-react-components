@@ -1,14 +1,16 @@
 import { useContext } from 'react';
 import CheckoutContext from '../components/Context';
+import useTaxes from './useTaxes';
 
 const useBreakdown = () => {
   const {
-    taxes,
     payments,
     discounts,
     selectedShipping,
     lineItems,
   } = useContext(CheckoutContext);
+
+  const { taxes } = useTaxes();
 
   const subTotal = lineItems.reduce((acc, curr) => acc + curr.product_data.total_price, 0);
   const shippingTotal = selectedShipping?.amount ?? 0;

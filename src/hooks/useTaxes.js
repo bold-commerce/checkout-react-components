@@ -17,9 +17,7 @@ const useTaxes = () => {
   const shippingID = selectedShipping?.id;
 
   useEffect(() => {
-    if (!csrf) return;
-
-    if (csrf && shippingID) {
+    if (csrf && selectedShipping?.id) {
       fetch(`${apiPath}/taxes`, {
         mode: 'cors',
         method: 'POST',
