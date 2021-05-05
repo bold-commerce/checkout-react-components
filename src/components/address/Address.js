@@ -169,9 +169,9 @@ const Address = ({
           type="tel"
           name="phone"
           className="Field Field--Phone"
-          value={address.phone}
+          value={address.phone_number}
           onChange={(e) => dispatch({
-            type: 'phone',
+            type: 'phone_number',
             payload: e.target.value,
           })}
           onBlur={submit}
