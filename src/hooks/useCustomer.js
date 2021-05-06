@@ -39,7 +39,9 @@ const useCustomer = () => {
         'X-CSRF-TOKEN': csrf,
       },
       body: JSON.stringify({
-        ...data,
+        email_address: data.email_address,
+        first_name: data?.first_name,
+        last_name: data?.last_name,
       }),
     })
       .then((response) => response.json())
