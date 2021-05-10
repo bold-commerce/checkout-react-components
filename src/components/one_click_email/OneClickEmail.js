@@ -10,7 +10,9 @@ const OneClickEmailField = ({
   errors,
   submit,
   nextButtonText,
-  onIncrementStep
+  onIncrementStep,
+  loggedIn,
+  handleLogin
 }) => {
 
     // TODO: change back 
@@ -29,6 +31,8 @@ const OneClickEmailField = ({
         <section className="FieldSet FieldSet--CustomerInformation">
             <div className="FieldSet__Header">
             <div className="FieldSet__Heading">Email</div>
+            { !loggedIn && (<button className="CheckoutStep__ChangeBtn" onClick={handleLogin}>Log in</button>) }
+            
             </div>
             <div className="FieldSet__Content">
             <InputField

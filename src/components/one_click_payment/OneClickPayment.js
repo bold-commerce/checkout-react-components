@@ -62,9 +62,9 @@ const OneClickPaymentMethod = ({
         </section>
         {
             (isValid && !isLoading && !shippingErrors && !billingErrors
-                && nextButtonText && (
+                && (
                     <>
-                        <Button className="CheckoutStep__NextBtn" onClick={completeOrder}>{nextButtonText}</Button>
+                        {/* <Button className="CheckoutStep__NextBtn" onClick={completeOrder}>{nextButtonText}</Button> */}
                     </>
             ))
         }

@@ -7,8 +7,6 @@ import EmptyState from '../empty_state/EmptyState';
 import LoadingState from '../loading_state/LoadingState';
 import './OneClickShippingMethod.css';
 import CheckoutContext from '../Context';
-import useBillingAddress from '../../hooks/useBillingAddress';
-import useShippingLines from '../../hooks/useShippingLines';
 
 const OneClickShippingMethod = ({
   shippingLines,
@@ -21,16 +19,13 @@ const OneClickShippingMethod = ({
   onIncrementStep,
   nextButtonText
 }) => {
-    const { isLoading } = useContext(CheckoutContext);
-    // TODO: remove these hooks
-    const { submitBillingAddress } = useBillingAddress();
-    const { getShippingLines } = useShippingLines();
+  const { isLoading } = useContext(CheckoutContext);
     
-    const tryStepIncrement = () => {
-        if (!emptyShippingLines && !shippingErrors && !billingErrors && selectedShippingLineIndex >= 0 ) {
-            onIncrementStep();
-        }
-    }
+  const tryStepIncrement = () => {
+      if (!emptyShippingLines && !shippingErrors && !billingErrors && selectedShippingLineIndex >= 0 ) {
+          onIncrementStep();
+      }
+  }
 
   if (emptyShippingLines || !!shippingErrors || !!billingErrors) {
     return (
@@ -72,8 +67,6 @@ const OneClickShippingMethod = ({
             </>
             )}
         </section>
-        <Button onClick={() => submitBillingAddress({"first_name":"Jonathan","last_name":"Redfern","address_line_1":"616 Queenston St","address_line_2":"","city":"Winnipeg","country":"Canada","province":"Manitoba","country_code":"CA","province_code":"MB","postal_code":"R3N0X5","business_name":"Bold Innovation Group","phone_number":"2048675309","id":23077})}>Click me</Button>
-        <Button onClick={() => getShippingLines()}>Click me too</Button>
         { nextButtonText ? (
             <Button className="CheckoutStep__NextBtn" onClick={() => tryStepIncrement()} disabled={ selectedShippingLineIndex == NaN  || fetchingShippingLines || isLoading } loading={fetchingShippingLines || isLoading } >{nextButtonText}</Button>
           )

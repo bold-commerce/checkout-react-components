@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import {
   Price,
 } from '@boldcommerce/stacks-ui';
-import Discount from '../discount/Discount';
+import useDiscount from '../../hooks/useDiscount';
+import DollarCircleOutline from './DollarCircleOutline';
 import useBreakdown from '../../hooks/useBreakdown';
 import usePayments from '../../hooks/usePayments';
 import './OneClickSummary.css';
@@ -12,6 +13,7 @@ import './OneClickSummary.css';
 const OneClickSummary = ({ open, setOpen, isMobile, setIsMobile, summaryAccordion }) => {
   const { total, totalItems } = useBreakdown();
   const { payments } = usePayments();
+  const { discountApplied } = useDiscount();
   const paymentStatus = payments[0]?.status !== '';
   const orderProcessed = (payments && payments.length && paymentStatus) ?? false;
 
@@ -26,30 +28,33 @@ const OneClickSummary = ({ open, setOpen, isMobile, setIsMobile, summaryAccordio
     };
   }, []);
 
+
+  useEffect(() =>{
+    if (!isMobile) {
+      setOpen(false);
+    }
+  },[isMobile]);
+
   return (
     <>
       {summaryAccordion}
       {isMobile
       && (
           <div className="SummaryBlock Summary__Total" onClick={() => setOpen(!open)}>
-              <div>
+              <div className="SummaryBlockLeft">
                   <div className="Summay__Total--Title">Summary</div>
                   <span className="SummaryItem__Label">{totalItems} item(s)</span>
               </div>
-              <div className="SummaryItem__Value">
-                <Price amount={total} />
-                { open ? (<div className="oneclick-chevron-down">&#8964;</div>) : (<div className="oneclick-chevron-up">&#8963;</div>) }
+              <div className="SummaryItem__Value SummaryBlockRight">
+                <div className="SummaryBlockRight__PriceWrapper">
+                  <Price amount={total} />
+                  { discountApplied && (<div className="SummaryBlockRight__DiscountWrapper"><DollarCircleOutline/> <span className="SummaryItem__Label">&nbsp;Discounts applied</span></div>) }
+                </div>
+                <div className={open ? "ChevronWrapper--Down" : "ChevronWrapper--Up"}>
+                  { open ? (<div className="ChevronDown"></div>) : (<div className="ChevronUp"></div>) }
+                </div>
               </div>
           </div>
-        // <div className="ViewSummaryWrapper" onClick={() => setOpen(!open)}>
-        //   <div className={`SummaryHeader ${open ? 'open' : ''}`}>View summary</div>
-        //   <div className="SummaryHeader--items">
-        //     <div>
-        //       {`(${totalItems} ${totalItems > 1 ? 'Items' : 'Item'})`}
-        //     </div>
-        //     <Price amount={total} />
-        //   </div>
-        // </div>
       )}
     </>
   );

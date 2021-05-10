@@ -88,14 +88,9 @@ body {
   position: -webkit-sticky;
   position: sticky;
   bottom: 0;
-  /* height: 75vh; */
   flex: none;
   display: flex;
   flex-direction: column;
-}
-
-.Checkout__Summary.Checkout__Summary--Collapsed {
-  height: auto;
 }
 
 .FieldSet {

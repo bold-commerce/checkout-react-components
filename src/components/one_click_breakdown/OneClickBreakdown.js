@@ -1,5 +1,5 @@
 import React from 'react';
-import { Price, Button } from '@boldcommerce/stacks-ui';
+import { Price } from '@boldcommerce/stacks-ui';
 import useBreakdown from '../../hooks/useBreakdown';
 import useDiscount from '../../hooks/useDiscount';
 import './OneClickBreakdown.css';
@@ -13,12 +13,10 @@ const Breakdown = ({ isMobile }) => {
     discountPercent,
     total,
     taxes,
-    payments,
     taxesIncluded,
     taxesTotal,
     paymentsMade,
     paymentStatus,
-    remainingBalance,
     totalItems
   } = useBreakdown();
 
@@ -27,25 +25,6 @@ const Breakdown = ({ isMobile }) => {
     discountCode,
     removeDiscount,
   } = useDiscount();
-
-  const paymentMethods = payments.map((payment, index) => (
-    <div
-      className="Payment__Applied"
-      key={
-        index
-      }
-    >
-      <div className="Payment__Remove">
-        {payment.brand}
-        :
-        {payment.bin}
-      </div>
-      <Price amount={
-        payment.value
-      }
-      />
-    </div>
-  ));
 
   const readOnly = (paymentsMade && paymentStatus) ?? false;
   
@@ -63,7 +42,7 @@ const Breakdown = ({ isMobile }) => {
             discountApplied && (
               <div className="Discount__Applied">
                 <div className="Discount__Remove">
-                  <div className="circle-times-close-button"onClick={() => {removeDiscount();}}>&#8855;</div>
+                  <div className="circle-times-close-button"onClick={() => {removeDiscount();}}>&#8855;&nbsp;</div>
                   <div>
                     {discountCode + '-' + discountPercent + '% Off'} 
                   </div>
@@ -112,38 +91,6 @@ const Breakdown = ({ isMobile }) => {
             </div>
         </div>
       </div>
-      {readOnly
-        && (
-          <div className="SummaryBlock Summary__Payments">
-            <div className="Summary__Payments--Labels">
-              <div className="SummaryItem__Label">Payments</div>
-              {!paymentsMade && paymentStatus
-              && (
-                <div className="SummaryItem__Value">
-                  <Price amount={
-                    0
-                  }
-                  />
-                </div>
-              )}
-            </div>
-            {
-              paymentMethods
-            }
-          </div>
-        )}
-      {readOnly
-        && (
-          <div className="SummaryBlock Summary__Balance">
-            <div className="SummaryItem__Label">Remaining Balance</div>
-            <div className="SummaryItem__Value">
-              <Price amount={
-                remainingBalance
-              }
-              />
-            </div>
-          </div>
-        )}
     </div>
   );
 };
