@@ -1,5 +1,5 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { InputField, Button } from '@boldcommerce/stacks-ui';
 import './OneClickEmail.css';
@@ -15,15 +15,11 @@ const OneClickEmailField = ({
   handleLogin
 }) => {
 
-    // TODO: change back 
     const tryStepIncrement = async () => {
         const valid = await submit();
         if (valid) {
             onIncrementStep();
-        } else {
-            onIncrementStep();
-        }
-        
+        }  
     }
 
     return (
