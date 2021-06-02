@@ -11,7 +11,7 @@ import withCheckoutButtonLogic from '../checkout_button/withCheckoutButtonLogic'
 import CheckoutButton from '../checkout_button/CheckoutButton';
 
 import PropTypes from 'prop-types';
-import React,{ useEffect, useState } from 'react';
+import React from 'react';
 
 const EnhancedEmail = withCustomerLogic(OneClickEmailField);
 const EnhancedShippingAddress = withShippingAddressLogic(ShippingAddress);

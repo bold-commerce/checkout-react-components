@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './OneClickStep.css';
 
 const OneClickStep = ({activeStep, step, stepTitle, expandedForms, minimizedForms}) => {
 

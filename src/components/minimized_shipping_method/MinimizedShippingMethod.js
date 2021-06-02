@@ -1,4 +1,5 @@
 import React from 'react';
+import { Price } from '@boldcommerce/stacks-ui';
 import useShippingLines from '../../hooks/useShippingLines';
 
 const MinimizedShippingMethod = ({step, onChangeStep, changeButtonText}) => {
@@ -10,7 +11,7 @@ const MinimizedShippingMethod = ({step, onChangeStep, changeButtonText}) => {
             <div className="CheckoutStep__Inner FieldSet">
                 <span>Shipping Method</span>
                 <div className="CheckoutStep__FieldSetInfoContainer">
-                    <span className="CheckoutStep__FieldSetInfo">{selectedShipping.description} -- {selectedShipping.amount}</span>
+                    <span className="CheckoutStep__FieldSetInfo">{selectedShipping.description} – <Price amount={selectedShipping.amount}/> </span>
                 </div>
             </div>
         </>
