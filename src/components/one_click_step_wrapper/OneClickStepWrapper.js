@@ -1,7 +1,8 @@
-import { BillingAddress, PaymentMethod, ShippingAddress, withBillingAddressLogic, withCustomerLogic, withPaymentLogic, withShippingAddressLogic, withShippingMethodLogic } from '../../../';
+import { BillingAddress, ShippingAddress, withBillingAddressLogic, withCustomerLogic, withPaymentLogic, withShippingAddressLogic, withShippingMethodLogic } from '../../../';
 import OneClickStep from '../one_click_step/OneClickStep';
 import OneClickEmailField from '../one_click_email/OneClickEmail';
 import MinimizedEmail from '../minimized_email/MinimizedEmail';
+import OneClickPaymentMethod from '../one_click_payment/OneClickPayment';
 import MinimizedShippingMethod from '../minimized_shipping_method/MinimizedShippingMethod';
 import MinimizedShippingAddress from '../minimized_shipping_address/MinimizedShippingAddress';
 import OneClickDiscount from '../one_click_discount/OneClickDiscount.js';
@@ -17,7 +18,7 @@ const EnhancedEmail = withCustomerLogic(OneClickEmailField);
 const EnhancedShippingAddress = withShippingAddressLogic(ShippingAddress);
 const EnhancedBillingAddress = withBillingAddressLogic(BillingAddress);
 const EnhancedShippingMethod = withShippingMethodLogic(OneClickShippingMethod);
-const EnhancedPaymentMethod = withPaymentLogic(PaymentMethod);
+const EnhancedPaymentMethod = withPaymentLogic(OneClickPaymentMethod);
 const EnhancedLoggedInShippingAddress = withShippingAddressLogic(LoggedInShippingAddress);
 const EnhancedCheckoutButton = withCheckoutButtonLogic(CheckoutButton);
 
