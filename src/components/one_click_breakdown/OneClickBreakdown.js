@@ -44,7 +44,7 @@ const Breakdown = ({ isMobile }) => {
                 <div className="Discount__Remove">
                   <div className="circle-times-close-button"onClick={() => {removeDiscount();}}>&#8855;&nbsp;</div>
                   <div>
-                    {discountCode + '-' + discountPercent + '% Off'} 
+                    {discountCode} 
                   </div>
                 </div>
                 <div className="Discount__Amount">
