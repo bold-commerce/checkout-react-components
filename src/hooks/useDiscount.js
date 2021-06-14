@@ -1,96 +1,65 @@
-import {
-  useState,
-  useContext,
-  useCallback,
-} from 'react';
-import CheckoutContext from '../components/Context';
+import { useCallback, useContext, useMemo } from 'react';
+import { CheckoutStore } from '../store';
+import * as api from '../api';
 
 const useDiscount = () => {
-  const {
-    apiPath,
-    csrf,
-    discountCode,
-    discountApplied,
-    setApplicationState,
-  } = useContext(CheckoutContext);
-  const [discountErrors, setDiscountErrors] = useState();
-  const [loadingDiscount, setLoadingDiscount] = useState(false);
+  const { state, dispatch } = useContext(CheckoutStore);
+  const { csrf, apiPath } = state;
+  const discounts = state.applicationState?.discounts;
+  const memoizedDiscounts = useMemo(() => discounts, [JSON.stringify(discounts)]);
+  const discountErrors = state.errors.discount;
+  const memoizedDiscountErrors = useMemo(() => discountErrors, [JSON.stringify(discountErrors)]);
 
-  const validateDiscount = useCallback((discount) => fetch(`${apiPath}/validate_discount_code?discount_code=${discount}`, {
-    mode: 'cors',
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': csrf,
-    },
-  })
-    .then((response) => response.json())
-    .then((response) => {
-      if (Array.isArray(response.errors)) {
-        return response.errors;
-      }
-      return null;
-    }), [csrf]);
+  const applyDiscount = useCallback(async (discount) => {
+    dispatch({
+      type: 'checkout/discount/adding',
+    });
 
-  const updateDiscount = useCallback((discount) => {
-    fetch(`${apiPath}/discounts`, {
-      mode: 'cors',
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': csrf,
-      },
-      body: JSON.stringify({
-        code: discount,
-      }),
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        setApplicationState(response.data.application_state);
+    const validationResponse = await api.validateDiscount(csrf, apiPath, discount);
+    if (Array.isArray(validationResponse.errors)) {
+      dispatch({
+        type: 'checkout/discount/setErrors',
+        payload: validationResponse.errors,
       });
-  }, [csrf]);
-
-  const submitDiscount = useCallback(async (discount) => {
-    setLoadingDiscount(true);
-
-    const validationErrors = await validateDiscount(discount);
-    setDiscountErrors(validationErrors);
-
-    if (!validationErrors) {
-      await updateDiscount(discount);
+      return Promise.reject(new Error('Invalid discount code'));
     }
+    const response = await api.addDiscount(csrf, apiPath, discount);
 
-    setLoadingDiscount(false);
-  }, [updateDiscount, validateDiscount]);
+    dispatch({
+      type: 'checkout/discount/added',
+    });
 
-  const removeDiscount = useCallback(async () => {
-    fetch(`${apiPath}/discounts`, {
-      mode: 'cors',
-      method: 'DELETE',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': csrf,
-      },
-      body: JSON.stringify({
-        code: discountCode,
-      }),
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        setApplicationState(response.data.application_state);
-      });
-  }, [csrf, discountCode]);
+    return dispatch({
+      type: 'checkout/update',
+      payload: response.data.application_state,
+    });
+  }, []);
+
+  const removeDiscount = useCallback(async (code) => {
+    dispatch({
+      type: 'checkout/discount/removing',
+    });
+
+    const response = await api.removeDiscount(csrf, apiPath, code);
+
+    dispatch({
+      type: 'checkout/discount/removed',
+    });
+
+    return dispatch({
+      type: 'checkout/update',
+      payload: response.data.application_state,
+    });
+  }, []);
 
   return {
-    discountApplied,
-    discountCode,
+    discounts: memoizedDiscounts,
+    discountApplied: discounts?.length > 0,
+    discountCode: discounts[0]?.code ?? '',
+    discountTotal: discounts[0]?.value ?? 0,
+    discountErrors: memoizedDiscountErrors,
+    applyDiscount,
     removeDiscount,
-    discountErrors,
-    loadingDiscount,
-    submitDiscount,
   };
 };
 

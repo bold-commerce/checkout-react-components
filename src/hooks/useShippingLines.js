@@ -1,76 +1,75 @@
-import {
-  useContext, useState, useCallback,
-} from 'react';
-import CheckoutContext from '../components/Context';
+import { useCallback, useContext, useMemo } from 'react';
+import { fetchShippingLines, setShippingLine } from '../api';
+import { CheckoutStore } from '../store';
 
 const useShippingLines = () => {
-  const {
-    apiPath, csrf, selectedShipping, shippingLines, setApplicationState, shippingErrors, billingErrors,
-  } = useContext(CheckoutContext);
+  const { state, dispatch } = useContext(CheckoutStore);
 
-  const [loadingShippingLines, setLoadingShippingLines] = useState(false);
-  const [emptyShippingLines, setEmptyShippingLines] = useState(true);
+  const { csrf, apiPath, applicationState } = state;
+  const shippingLines = applicationState.shipping.available_shipping_lines;
+  const shippingAddressErrors = state.errors.shippingAddress;
+  const selectedCountryCode = applicationState?.addresses?.shipping?.country_code;
+  const shippingAddressLoadingStatus = state.loadingStatus.shippingAddress;
+  const shippingLinesLoadingStatus = state.loadingStatus.shippingLines;
+  const shippingLinesFetching = shippingLinesLoadingStatus === 'fetching' || shippingAddressLoadingStatus === 'setting';
+  const showShippingLines = selectedCountryCode && !shippingAddressErrors && shippingAddressLoadingStatus !== 'incomplete';
+  const selectedShippingLineIndex = parseInt(applicationState.shipping?.selected_shipping?.id ?? 0, 10);
+  const memoizedShippingLines = useMemo(() => shippingLines, [JSON.stringify(shippingLines)]);
 
-  const getShippingLines = useCallback(() => {
-    if (csrf && !shippingErrors && !billingErrors) {
-      setLoadingShippingLines(true);
-      setEmptyShippingLines(false);
-      fetch(`${apiPath}/shipping_lines`, {
-        mode: 'cors',
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrf,
-        },
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          setLoadingShippingLines(false);
-          if (response.data && response.data.application_state) {
-            setApplicationState(response.data.application_state);
-            setEmptyShippingLines(false);
-          }
-        })
-        .catch(() => {
-          setEmptyShippingLines(true);
-        });
-    } else {
-      setEmptyShippingLines(true);
+  const setSelectedShippingLine = useCallback(async (index) => {
+    dispatch({
+      type: 'checkout/shippingLine/setting',
+    });
+
+    const response = await setShippingLine(csrf, apiPath, index);
+    if (response.data && response.data.application_state) {
+      dispatch({
+        type: 'checkout/shippingLine/set',
+      });
+      return dispatch({
+        type: 'checkout/update',
+        payload: response.data.application_state,
+      });
     }
-  }, [csrf, shippingErrors, billingErrors]);
 
-  const setShippingLine = useCallback((shippingLine) => {
-    if (csrf) {
-      fetch(`${apiPath}/shipping_lines`, {
-        mode: 'cors',
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrf,
-        },
-        body: JSON.stringify({
-          index: shippingLine.toString(),
-        }),
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          setLoadingShippingLines(false);
-          if (response.data && response.data.application_state) {
-            setApplicationState(response.data.application_state);
-          }
-        });
+    return dispatch({
+      type: 'checkout/shippingLine/set',
+    });
+  }, []);
+
+  const getShippingLines = useCallback(async () => {
+    // Don't get shipping lines if shipping address is not set
+    if (!selectedCountryCode) {
+      return Promise.resolve();
     }
-  }, [csrf]);
+
+    dispatch({
+      type: 'checkout/shippingLines/fetching',
+    });
+    const response = await fetchShippingLines(csrf, apiPath);
+    if (response.data && response.data.application_state) {
+      dispatch({
+        type: 'checkout/shippingLines/fetched',
+      });
+      return dispatch({
+        type: 'checkout/update',
+        payload: response.data.application_state,
+      });
+    }
+
+    return dispatch({
+      type: 'checkout/shippingLines/fetched',
+    });
+  }, [selectedCountryCode]);
 
   return {
-    selectedShipping,
-    shippingLines,
-    setShippingLine,
+    showShippingLines,
+    shippingLinesFetching,
+    shippingLinesLoadingStatus,
+    shippingLines: memoizedShippingLines,
+    selectedShippingLineIndex,
+    setSelectedShippingLine,
     getShippingLines,
-    loadingShippingLines,
-    emptyShippingLines,
   };
 };
 

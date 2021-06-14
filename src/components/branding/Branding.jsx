@@ -10,7 +10,6 @@ const Branding = ({ brandName }) => (
   </section>
 );
 
-
 Branding.propTypes = {
   brandName: PropTypes.string,
 };
