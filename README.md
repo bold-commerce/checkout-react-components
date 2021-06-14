@@ -1,5 +1,13 @@
 # Checkout React Components
-A React component library for creating checkout experiences utilizing Bold API's.
+A React component library for creating checkout experiences utilizing Bold API's. This library uses [Redux](https://redux.js.org/) to handle state changes and [Bold Commerce Stacks UI](https://www.npmjs.com/package/@boldcommerce/stacks-ui) for re-usable components.
+
+## Table of Contents
+- [Installation](#installation)
+- [Usage](#usage)
+- [Examples](#examples)
+- [Components](#components)
+- [Layouts](#layouts)
+- [Hooks](#hooks)
 
 ## Installation
 Run the following command
@@ -9,31 +17,39 @@ If you prefer to use yarn, run the following command
 `yarn add @boldcommerce/checkout-react-components`
 
 ## Usage
-Import provided components into project
-```javascript
-import { CheckoutProvider, SinglePageCollapsedLayout } from '@boldcommerce/checkout-react-components';
-```
+1. Import CSS into project
+   ```javascript
+    import '@boldcommerce/checkout-react-components/dist/styles.css'
+   ```
+2. Import components into project
+   ```javascript
+    import { CheckoutProvider, SinglePageCollapsedLayout } from '@boldcommerce/checkout-react-components';
+   ```
+3. Make a request to [orders/init](https://developer.boldcommerce.com/default/documentation/orders#/Orders/post-init) endpoint in your backend application
+
+4. Setup React to render your components and pass result of [orders/init](https://developer.boldcommerce.com/default/documentation/orders#/Orders/post-init) as props.
+   ```javascript
+   ReactDOM.render(
+     <CheckoutProvider
+       applicationState={applicationState}
+       initialData={initialData}
+       publicOrderId={publicOrderId}
+       token={token}
+       storeIdentifier={storeIdentifier}
+     >
+      <SinglePageCollapsedLayout />
+     </CheckoutProvider>,
+     document.querySelector('#app'),
+   );
+   ```
+
+## Examples
+- [Single Page Checkout](https://github.com/bold-commerce/checkout-react-components/tree/3.x/examples/single-page)
+- [Custom Components](https://github.com/bold-commerce/checkout-react-components/tree/3.x/examples/custom-components)
 
 ## Components
-### Provider Component
+### CheckoutProvider
 The provider communicates with the headless checkout api and holds the application state.
-
-Provider has the following props
-
-**token (required)**
-- This is the jwt (json web token) that was provided from your server when you made a request to the `/init` endpoint
-
-**publicOrderId (required)**
-- This is the order id of the current order. This is provided from the server when making a request to the `/init` endpoint.
-
-**applicationState (required)**
-- This is the current state of the order that is used to hydrate your react application. This is useful for resuming a checkout that is still in progress. The application state is provided by the `/init` endpoint.
-
-**storeIdentifier (required)**
-- This is the identifier for your shop on a given platform. You can retrieve this by making a request to https://api.boldcommerce.com/shops/v1/info endpoint.
-
-**initialData (required)**
-- This is all the supporting information for the checkout. (ex: languages, currency, etc.). This is also provided by the `/init` endpoint.
 
 ```javascript
 import { CheckoutProvider } from '@boldcommerce/checkout-react-components';
@@ -48,1000 +64,885 @@ const App = (token, publicOrderId, applicationState, storeIdentifier, initialDat
       initialData={initialData}
     >
       <h1>Hello World</h1>
-    </Checkout>
+    </CheckoutProvider>
   );
 };
 ```
+#### Component Props
+- **token (required)**
+  
+  This is the jwt (json web token) that was provided from your server when you made a request to the `orders/init` endpoint
 
-### SinglePageCollapsedLayout Component
+- **publicOrderId (required)**
+  
+  This is the order id of the current order. This is provided from the server when making a request to the `orders/init` endpoint.
+
+- **applicationState (required)**
+  
+  This is the current state of the order that is used to hydrate your react application. This is useful for resuming a checkout that is still in progress. The application state is provided by the `orders/init` endpoint.
+
+- **storeIdentifier (required)**
+  
+  This is the identifier for your shop on a given platform. You can retrieve this by making a request to https://api.boldcommerce.com/shops/v1/info endpoint.
+
+- **initialData (required)**
+  
+  This is all the supporting information for the checkout. (ex: languages, currency, etc.). This is also provided by the `orders/init` endpoint.
+
+### Customer
+Displays the customer entry fields and handles all customer logic.
+
+```javascript
+import { Customer } from '@boldcommerce/checkout-react-components';
+
+const App = (props) => (
+  <CheckoutProvider {...props}>
+    <Customer />
+  </CheckoutProvider>
+);
+```
+
+### ShippingAddress
+Displays the shipping address fields and handles all shipping address logic.
+
+```javascript
+import { ShippingAddress } from '@boldcommerce/checkout-react-components';
+
+const App = (props) => (
+  <CheckoutProvider {...props}>
+    <ShippingAddress />
+  </CheckoutProvider>
+);
+```
+
+### BillingAddress
+Displays the billing address fields and handles all billing address logic.
+
+```javascript
+import { BillingAddress } from '@boldcommerce/checkout-react-components';
+
+const App = (props) => (
+  <CheckoutProvider {...props}>
+    <BillingAddress />
+  </CheckoutProvider>
+);
+```
+
+### ShippingLines
+Displays a list of available shipping lines and handles shipping line logic.
+
+Shipping lines will only show once a customer has filled in and submitted their shipping address.
+
+```javascript
+import { ShippingLines } from '@boldcommerce/checkout-react-components';
+
+const App = (props) => (
+  <CheckoutProvider {...props}>
+    <ShippingLines />
+  </CheckoutProvider>
+);
+```
+
+### PaymentMethod
+Displays the payment method iframe and handles payment logic.
+
+Payment method will only show once an order has no errors and a shipping line is selected.
+
+```javascript
+import { PaymentMethod } from '@boldcommerce/checkout-react-components';
+
+const App = (props) => (
+  <CheckoutProvider {...props}>
+    <PaymentMethod />
+  </CheckoutProvider>
+);
+```
+
+### CheckoutButton
+Displays the checkout button and allows the user to complete the order.
+
+```javascript
+import { CheckoutButton } from '@boldcommerce/checkout-react-components';
+
+const App = (props) => (
+  <CheckoutProvider {...props}>
+    <CheckoutButton />
+  </CheckoutProvider>
+);
+```
+
+### OrderProcessing
+You can show this when an order is in the process of being completed.
+
+```javascript
+import { OrderProcessing } from '@boldcommerce/checkout-react-components';
+
+const App = (props) => (
+  <CheckoutProvider {...props}>
+    {
+      props.isProcessing && <OrderProcessing />
+    }
+  </CheckoutProvider>
+);
+```
+
+### OrderProcessed
+Displays the summary of the order once the order has been placed.
+
+```javascript
+import { OrderProcessed } from '@boldcommerce/checkout-react-components';
+
+const App = (props) => (
+  <CheckoutProvider {...props}>
+    {
+      props.processed && <OrderProcessed />
+    }
+  </CheckoutProvider>
+);
+```
+
+### SummaryCollapsed
+Displays an accordian style summary of the order.
+
+```javascript
+import { SummaryCollapsed } from '@boldcommerce/checkout-react-components';
+
+const App = (props) => (
+  <CheckoutProvider {...props}>
+    <SummaryCollapsed />
+  </CheckoutProvider>
+);
+```
+
+### Breakdown
+Displays a breakdown of payment, shipping, taxes, and discount totals.
+
+```javascript
+import { Breakdown } from '@boldcommerce/checkout-react-components';
+
+const App = (props) => (
+  <CheckoutProvider {...props}>
+    <Breakdown />
+  </CheckoutProvider>
+);
+```
+
+### Discount
+Displays the discount field that a user can use to apply a discount code to the order.
+
+```javascript
+import { Discount } from '@boldcommerce/checkout-react-components';
+
+const App = (props) => (
+  <CheckoutProvider {...props}>
+    <Discount />
+  </CheckoutProvider>
+);
+```
+
+### LineItems
+Displays a list of line items for the current order.
+
+```javascript
+import { LineItems } from '@boldcommerce/checkout-react-components';
+
+const App = (props) => (
+  <CheckoutProvider {...props}>
+    <LineItems />
+  </CheckoutProvider>
+);
+```
+
+### PaymentIFrame
+Displays the PIGI payment iframe.
+
+```javascript
+import { PaymentIframe } from '@boldcommerce/checkout-react-components';
+
+const App = (props) => {
+  <CheckoutProvider {...props}>
+    <PaymentIframe hide />
+  </CheckoutProvider>
+}
+```
+#### Component Props
+- **hide (optional)**  
+  If true, will hide the display of the payment iframe. This avoids re-rendering the iframe and clearing previously filled in credit card information. This defaults to false.
+
+### RedactedCreditCard
+Displayed a redacted version of the credit card. (Visa **** **** **** 1111)
+
+```javascript
+import { RedactedCreditCard } from '@boldcommerce/checkout-react-components';
+
+const App = () => (
+  <RedactedCreditCard brand="Visa" lineText="1111">
+);
+```
+#### Component Props
+- **brand (required)**  
+  Brand to be shown next to the redacted credit card number.
+
+- **lineText (required)**  
+  Last four digits to be shown for the redacted credit card number.
+
+
+## Layouts
+Use these layouts if you want an uncustomized Checkout that uses the Bold Checkout API.
+
+### SinglePageCollapsedLayout
 This is one of the various layouts that can be used. This will include all of the components needed and the fastest and easiest way to get started with a headless checkout.
 
 ```javascript
 import { CheckoutProvider, SinglePageCollapsedLayout } from '@boldcommerce/checkout-react-components';
 
-const App = () => {
-  return (
-    <CheckoutProvider>
-      <SinglePageCollapsedLayout />
-    </Checkout>
-  );
-}
+const App = (props) => (
+  <CheckoutProvider {...props}>
+    <SinglePageCollapsedLayout />
+  </CheckoutProvider>
+);
 ```
 
-## Components
-
-### Shipping
-Displays the shipping address form.
-
-```javascript
-import { ShippingAddress } from '@boldcommerce/checkout-react-components';
-
-const Component = () => {
-  return (
-    <ShippingAddress 
-      address={{}}
-      dispatch={function(){}}
-      errors={[]}
-      countries={[]}
-      provinces={[]}
-      showPostalCode={true}
-      showProvince={true}
-      provinceLabel="Province"
-      submit={function(){}}
-    />
-  );
-};
-```
-
-### BillingAddress
-Displays the billing address form.
-
-```javascript
-import { BillingAddress } from '@boldcommerce/checkout-react-components';
-
-const Component = () => {
-  return (
-    <BillingAddress 
-      address={{}}
-      sameAsShipping={true}
-      setSameAsShipping={function(){}}
-      dispatch={function(){}}
-      errors={[]}
-      countries={[]}
-      provinces={[]}
-      showPostalCode={true}
-      showProvince={true}
-      provinceLabel="Province"
-      submit={function(){}}
-    />
-  );
-};
-```
-
-### Breakdown
-Displays the order breakdown. Ex: Subtotal, Shipping, Taxes, Total, etc.
-
-```javascript
-import { Breakdown } from '@boldcommerce/checkout-react-components';
-```
-
-### Discount
-Displays the discount form.
-
-```javascript
-import { Discount } from '@boldcommerce/checkout-react-components';
-```
-
-### Email
-Displays customer email form.
-
-```javascript
-import { Email } from '@boldcommerce/checkout-react-components';
-
-const Component = () => {
-  return (
-    <Email
-      customer={{}}
-      dispatch={function(){}}
-      errors={[]}
-      submit={function(){}}
-    />
-  );
-};
-```
-
-### Order Processed
-Displays the order processed screen
-
-```javascript
-import { OrderProcessed } from '@boldcommerce/checkout-react-components';
-
-const Component = () => {
-  return (
-    <OrderProcessed
-      customer={{}}
-      shippingAddress={{}}
-      billingAddress={{}}
-      selectedShipping={{}}
-      paymentMethod={{}}
-    />
-  );
-};
-```
-
-### Order Processing
-Displays the screen that should display while an order is processing
-
-```javascript
-import { OrderProcessing } from '@boldcommerce/checkout-react-components';
-```
-
-### Payment
-Displays the payment form using PIGI (default payment gateway)
-
-```javascript
-import { PaymentMethod } from '@boldcommerce/checkout-react-components';
-```
-
-### Summary
-Displays the summary which includes the line items on an order.
-
-```javascript
-import { Summary } from '@boldcommerce/checkout-react-components';
-```
-
-### LineItems
-Displays a list of line items for an order
-
-```javascript
-import { LineItems } from '@boldcommerce/checkout-react-components';
-
-const Component = () => {
-  return (
-    <LineItems
-      lineItems={[]}
-      updateLineItemQuantity={function(){}}
-      removeLineItem={function(){}}
-      readOnly={true}
-    />
-  );
-};
-```
-
-### CheckoutButton
-Displays a checkout button
-
-```javascript
-import { CheckoutButton } from '@boldcommerce/checkout-react-components';
-
-const Component = () => {
-  return (
-    <CheckoutButton
-      disabled={true}
-      completeOrder={function(){}}
-    />
-  );
-};
-```
-
-## Hooks and Custom Components
-
-### useCustomer
-Allows your application to get and set current customer attached to the order. UseCustomer has the following methods:
-
-**customer**
-- customer information for the current customer attached to order. (ex: email)
-
-**customerErrors**
-- returns any validation errors that might have occured while trying to set the customer
-
-**submitCustomer**
-- updates the customer on the server.
-
-**loadingCustomer**
-- returns true while server state is being updated
-
-```javascript
-import { useCustomer } from '@boldcommerce/checkout-react-components';
-
-const CustomerComponent = () => {
-  const { customer, customerErrors, loadingCustomer, submitCustomer } = useCustomer();
-  const [email, setEmail] = useState(customer.email_address);
-
-  const handleSubmit = () => {
-    submitCustomer({
-      email_address: email
-    });
-  };
-
-  return (
-    <div>
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value))} />
-      <button onClick={handleSubmit}>Update Customer</button>
-    </div>
-  );
-};
-```
-
----
-
-### useShippingAddress
-Allows your application to update the shipping address that is attached to the order. UseShippingAddress has the following methods:
-
-**shippingAddress**
-- Shipping address for the current order (ex: first_name, last_name, address_line_1, etc..)
-
-**loadingShippingAddress**
-- Returns true if there is a request currently being made to the server
-
-**shippingAddressCountries**
-- Returns an array of all of the shippable countries for a given order. Each country will also have information for the following (show_province, show_postal_code, province_label, provinces)
-
-**submitShippingAddress**
-- updates the shipping address on the server
-
-```javascript
-import { useShippingAddress } from '@boldcommerce/checkout-react-components';
-
-const AddressComponent = () => {
-  const {
-    shippingAddress, shippingAddressErrors, shippingAddressCountries, submitShippingAddress,
-  } = useShippingAddress();
-
-  const [address, dispatch] = useReducer(addressReducer, shippingAddress);
-
-  const countries = shippingAddressCountries.map((country) => 
-    <option value={country.iso_code}>{country.name}</option>
-  );
-
-  const handleSubmit = () => {
-    submitShippingAddress(address);
-  };
-
-  return (
-    <div>
-      <input
-        type="text"
-        name="address_line_1"
-        value={ address.address_line_1 }
-        onChange={
-          (e) => dispatch({
-            type: 'address_line_1',
-            payload: e.target.value
-          })
-        }
-      />
-      <select
-        name="country"
-        value={address.country_code}
-        onChange={
-          (e) => dispatch({
-            type: 'country_code',
-            payload: e.target.value
-          })
-        }
-      >
-        {countries}
-      </select>
-      <button onClick={handleSubmit}>Update Address</button>
-    </div>
-  );
-}
-```
-
----
+## Hooks
 
 ### useBillingAddress
-Allows your application to update the billing address that is attached to the order. UseShippingAddress has the following methods:
-
-**billingAddress**
-- Shipping address for the current order (ex: first_name, last_name, address_line_1, etc..)
-
-**loadingBillingAddress**
-- Returns true if there is a request currently being made to the server
-
-**billingAddressCountries**
-- Returns an array of all of the shippable countries for a given order. Each country will also have information for the following (show_province, show_postal_code, province_label, provinces)
-
-**submitBillingAddress**
-- updates the billing address on the server
+Returns all information and methods related to the billing address.
 
 ```javascript
 import { useBillingAddress } from '@boldcommerce/checkout-react-components';
 
-const AddressComponent = () => {
+const Component = () => (
   const {
-    billingAddress, billingAddressErrors, billingAddressCountries, submitBillingAddress,
+    billingAddres,
+    billingAddressErrors,
+    countryInfo,
+    billingSameAsShipping,
+    submitBillingAddress,
+    setBillingSameAsShipping,
   } = useBillingAddress();
-
-  const [address, dispatch] = useReducer(addressReducer, billingAddress);
-
-  const countries = billingAddressCountries.map((country) => 
-    <option value={country.iso_code}>{country.name}</option>
-  );
-
-  const handleSubmit = () => {
-    submitBillingAddress(address);
-  };
 
   return (
     <div>
-      <input
-        type="text"
-        name="address_line_1"
-        value={ address.address_line_1 }
-        onChange={
-          (e) => dispatch({
-            type: 'address_line_1',
-            payload: e.target.value
-          })
-        }
-      />
-      <select
-        name="country"
-        value={address.country_code}
-        onChange={
-          (e) => dispatch({
-            type: 'country_code',
-            payload: e.target.value
-          })
-        }
-      >
-        {countries}
-      </select>
-      <button onClick={handleSubmit}>Update Address</button>
+      <button onClick={() => setBillingSameAsShipping(true)}>Billing same as shipping?</button>
+      <button onClick={() => submitBillingAddress({ ...address })}>Submit<button>
     </div>
   );
-}
+);
 ```
 
----
+#### Hook Values
+- billingAddress `(object)`
+  ```json
+  {
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "address_line_1": "123 Fake Street",
+    "address_line_2": "Unit 10",
+    "country": "Canada",
+    "country_code": "CA",
+    "province": "Manitoba",
+    "province_code": "MB",
+    "postal_code": "R5H 3V4",
+    "business_name": "Fake Business",
+    "phone_name": "2048885555"
+  }
+  ```
+- billingAddressErrors `(object)`
+  ```json
+  {
+    "postal_code": "The postal code provided is not valid."
+  }
+  ```
+- countryInfo `(array)`
+  ```json
+  [
+    {
+      "iso_code": "CA",
+      "name": "Canada",
+      "show_province": true,
+      "province_label": "province",
+      "show_postal_code": true,
+      "provinces": [
+        {
+          "iso_code": "AB",
+          "name": "Alberta",
+          "valid_for_shipping": true,
+          "valid_for_billing": false
+        }
+      ]
+    }
+  ]
+  ```
+- billingSameAsShipping `(boolean)`
+- submitBillingAddress `(function)`
+- setBillingSameAsShipping `(function)`
+
+### useBreakdown
+Returns all information related to order status, totals, discount, taxes, and payments.
+
+```javascript
+import { useBreakdown } from '@boldcommerce/checkout-react-components';
+import { Price } from '@boldcommerce/stacks-ui';
+
+const Component = () => (
+  const {
+    subTotal,
+    shippingTotal,
+    excludedTaxes,
+    discountTotal,
+    total,
+    remainingBalance,
+    taxesTotal,
+    totalItems,
+    orderStatus,
+    payments,
+    hasPayments,
+    taxes,
+    taxesIncluded,
+  } = useBreakdown();
+
+  return (
+    <div>
+      <Price amount={subTotal} />
+      <Price amount={shippingTotal} />
+      <Price amount={taxesTotal} />
+      <Price amount={total} />
+    </div>
+  );
+);
+```
+#### Hook Values
+- **subTotal** `(number)`
+- **shippingTotal** `(number)`
+- **excludedTaxes** `(number)`
+- **discountTotal** `(number)`
+
+### useCheckoutStore
+Returns the entire checkout state.
+
+```javascript
+import { useCheckoutStore } from '@boldcommerce/checkout-react-components';
+
+const Component = () => (
+  const { state } = useCheckoutStore();
+);
+```
+
+### useCountryInfo
+Returns a list of countries. If an address is passed to it that has a selected country, it will return a list of provinces for the selected country. This will also return if a postal code field should be shown and what the province and postal code should be called for a specific country.
+
+```javascript
+import { useCountryInfo } from '@boldcommerce/checkout-react-components';
+
+const Component = ({ countryInfo }) => (
+  const [address, setAddress] = useState({
+    address_line_1: '',
+    address_line_2: '',
+    country_code: 'CA',
+    country: 'Canada',
+    province_code: 'MB',
+    province: 'Manitoba',
+    city: 'Winnipeg',
+    postal_code: ''
+  })
+
+  const {
+    countries,
+    provinces,
+    showProvince,
+    showPostalCode,
+    provinceLabel,
+  } = useCountryInfo(countryInfo, address);
+);
+```
+
+#### Hook Arguments
+- **countryInfo**  
+  The country_info array in the initial_data object that was returned from the [orders/init](https://developer.boldcommerce.com/default/documentation/orders#/Orders/post-init) endpoint.
+  
+  You can retrieve country info by using useCheckoutSelector and returning `state.initialData.country_info`.
+
+- **address**  
+  Current address that the user has entered. You can store this in local state and pass this into the hook.
+
+#### Hook Values
+- **countries** `(array)`
+  ```json
+  [
+    {
+      "iso_code":"CA",
+      "name":"Canada",
+      "show_province":true,
+      "province_label":"province",
+      "show_postal_code":true,
+      "provinces": [
+        {
+          "iso_code":"AB",
+          "name":"Alberta",
+          "valid_for_shipping":true,
+          "valid_for_billing":false
+        }
+      ],
+      "valid_for_shipping":true,
+      "valid_for_billing":false
+    }
+  ]
+  ```
+- **provinces** `(array)`
+  ```json
+  [
+    {
+      "iso_code":"AB",
+      "name":"Alberta",
+      "valid_for_shipping":true,
+      "valid_for_billing":false
+    }
+  ]
+  ```
+- **showProvince** `(boolean)`
+- **showPostalCode** `(boolean)`
+- **provinceLabel** `(string)`
+
+### useCustomer
+Returns all information and methods related to the customer.
+
+```javascript
+import { useCustomer } from '@boldcommerce/checkout-react-components';
+
+const Component = () => (
+  const {
+    customer,
+    customerErrors,
+    isAuthenticated,
+    submitCustomer,
+  } = useCustomer();
+
+  const [email, setEmail] = useState(customer.email_address);
+
+  return (
+    <div>
+      <input type="text" value={email} onChange={(e) => setEmail(e.target.value)}>
+      <button onClick={() => submitCustomer({ email_address: email })}>Submit</button>
+    </div>
+  );
+);
+```
+#### Hook Values
+- **customer** `(object)`
+  ```json
+  {
+    "platform_id": null,
+    "public_id": "123456789",
+    "first_name": "",
+    "last_name": ""
+    ,"email_address": "email@example.com",
+    "saved_addresses": []
+  }
+  ```
+- **customerErrors** `(object)`
+  ```json
+  {
+    "email": "Email format is invalid."
+  }
+  ```
+- **isAuthenticated** `(boolean)`
+- **submitCustomer** `(function)`
+  ```javascript
+  submitCustomer({
+    email_address: 'email@example.com'
+  });
+  ```
 
 ### useDiscount
-Allows your application to assign a discount code to the order. UseDiscount has the following methods:
-
-**discountCode**
-- returns the discount code that was used on the order
-
-**discountApplied**
-- returns true if there is currently a discount applied to the order
-
-**removeDiscount**
-- removes the current discount from the order
-
-**discountErrors**
-- returns any validation errors that may have occured when trying to apply a discount to the order
-
-**submitDiscount**
-- updates the discount code on the server
-
-**loadingDiscount**
-- returns true if the discount is currently being updated on the server
+Returns all information and methods related to discounts.
 
 ```javascript
 import { useDiscount } from '@boldcommerce/checkout-react-components';
 
-const DiscountComponent = () => {
+const Component = () => (
   const {
-    discountCode,
+    discounts,
     discountApplied,
+    discountCode,
+    discountTotal,
     discountErrors,
-    submitDiscount,
+    applyDiscount,
+    removeDiscount,
   } = useDiscount();
 
   const [discount, setDiscount] = useState(discountCode);
 
   return (
     <div>
-      <input
-        type="text"
-        value={discount}
-        onChange={(e) => {
-          setDiscount(e.target.value)
-        }}
-      />
-      <button onClick={removeDiscount}>Remove Discount</button>
-      <button onClick={() => submitDiscount(discount)}>Apply</button>
+      <input type="text" value={discount} onChange={(e) => setDiscount(e.target.value)}>
+      <button onClick={() => applyDiscount(discount)}>Apply Discount</button>
     </div>
   );
-};
+);
 ```
+#### Hook Values
+- **discounts** `(array)`
+  ```json
+  [
+    {
+      "value": 2000,
+      "text": "ABC123",
+      "code": "ABC123"
+    }
+  ]
+  ```
+- **discountApplied** `(boolean)`
+- **discountCode** `(string)`
+- **discountTotal** `(number)`
+- **discountErrors** `(object)`
+  ```json
+  {
+    "discounts": "Discount code is not valid."
+  }
+  ```
+- **applyDiscount** `(function)`
+  ```javascript
+  applyDiscount("ABC123");
+  ```
+- **removeDiscount** `(function)`
+  ```javascript
+  removeDiscount("ABC123");
+  ```
 
----
-
-### useBreakdown
-Allows your application to show summary values. Ex: subtotal, total, taxes, total items, shipping total, etc.
-
-UseBreakdown has the following methods:
-
-**subTotal**
-- subtotal of order before shipping, discounts, and taxes.
-
-**shippingTotal**
-- total amount for shipping
-
-**taxesTotal**
-- total amount for taxes
-
-**taxesIncluded**
-- if taxes included with the price of products or separate.
-
-**discountTotal**
-- total discount amount on order
-
-**total**
-- total of order included shipping, discounts, and taxes.
-
-**remainingBalance**
-- if a gift card or payment has been made to the order, this is the remaining amount owed.
-
-**totalItems**
-- total number of items in the order
-
-**taxesTotal**
-- total amount of taxes
-
-**taxes**
-- returns an array of taxes on the order
-
-**payments**
-- returns an array of payments on the order
-
-**paymentsMade**
-- returns number of payments made on order
-
-**paymentStatus**
-- returns current status of order
+### useLineItems
+Returns all information and methods related to line items.
 
 ```javascript
-import { useBreakdown } from '@boldcommerce/checkout-react-components';
+import { useLineItems, LineItem } from '@boldcommerce/checkout-react-components';
 
-const BreakdownComponent = () => {
+const Component = () => (
   const {
-    subTotal,
-    shippingTotal,
-    discountTotal,
-    total,
-    taxes,
-    payments,
-    taxesIncluded,
-    taxesTotal,
-    paymentsMade,
-    paymentStatus,
-    remainingBalance,
-  } = useBreakdown();
+    lineItems,
+    removeLineItem,
+    updateLineItemQuantity,
+    addLineItem,
+  } = useLineItems();
+
+  const lineItemList = lineItems.map((item) => (
+    <li>
+      <LineItem
+        title={item.product_data.title}
+        image={item.product_data.image_url}
+        quantity={item.product_data.quantity}
+        price={item.product_data.price}
+        totalPrice={item.product_data.total_price}
+        lineItemKey={item.product_data.line_item_key}
+        onQuantityChange={(lineItemKey, value) => updateLineItemQuantity(lineItemKey, value)}
+        onRemove={(lineItemKey) => removeLineItem(lineItemKey)}
+        readOnly={readOnly}
+        key={item.product_data.line_item_key}
+      />
+    </li>
+  ));
+
+  return (
+    <ul>
+      { lineItemList }
+    </ul>
+  );
+);
+```
+#### Hook Values
+- **lineItems** `(array)`
+  ```json
+  [
+    {
+      "product_data": {
+        "id":"12",
+        "title":"Default Title",
+        "image_url":"https://example.com/image.jpg",
+        "properties":[],
+        "description":"",
+        "quantity":1,
+        "price":2000,
+        "total_price":2000,
+        "visible":1,
+        "line_item_key":"123456789",
+        "barcode":"",
+        "compare_at_price":2000,
+        "weight":1,
+        "weight_unit":"kg",
+        "product_id":"123",
+        "variant_id":"12",
+        "requires_shipping":true,
+        "sku":"ABC",
+        "taxable":false,
+        "tags":"",
+        "vendor":""
+      },
+      "taxes":[
+        {
+          "value":0,
+          "name":"GST",
+          "is_included":false
+        },
+        {
+          "value":0,
+          "name":"PST",
+          "is_included":false
+        }
+      ],
+      "fees":[],
+      "discounts":[]
+    }
+  ]
+  ```
+- **removeLineItem** `(function)`  
+  ```javascript
+  removeLineItem(line_item_key);
+  ```
+- **updateLineItemQuantity** `(function)`  
+  ```javascript
+  updateLineItemQuantity(line_item_key, quantity);
+  ```
+- **addLineItem** `(function)`
+  ```javascript
+  addLineItem(platformId, lineItemKey, quantity);
+  ```
+
+### useOrderSummary
+Returns all information required for an order summary.
+
+```javascript
+import { useOrderSummary } from '@boldcommerce/checkout-react-components';
+
+const Component = () => (
+  const {
+    customer,
+    shippingAddress,
+    billingAddress,
+    selectedShipping,
+    payments
+  } = useOrderSummary();
 
   return (
     <div>
-      <p>Subtotal: {subTotal}</p>
-      <p>Shipping: {shippingTotal}</p>
-      <p>Taxes: {taxesTotal}</p>
-      <p>Total: {total}<p>
+      <p>{shippingAddress?.first_name}</p>
+      <p>{shippingAddress?.last_name}</p>
+      <p>{shippingAddress.address_line_1}</p>
+      <p>{shippingAddress.address_line_2}</p>
+      <p>{shippingAddress.city}</p>
+      <p>{shippingAddress.province_code}</p>
+      <p>{shippingAddress.postal_code}</p>
     </div>
   );
-};
+);
 ```
+#### Hook Values
+- **customer** `(object)`
+- **shippingAddress** `(object)`
+- **billingAddress** `(object)`
+- **selectedShipping** `(object)`
+- **payments** `(object)`
 
----
-
-### useLineItems
-Allows you application to show a list of line items in the order and modify them.
-
-UseLineItems has the following methods:
-
-**lineItems**
-- list of all of the line items in the order
-
-**addLineItem**
-- adds line item to the order
-
-**updateLineItemQuantity**
-- updates the quantity ordered of a specific line item on the order
-
-**removeLineItem**
-- removes a specific line item from the order
-
-**loadingLineItems**
-- returns true if line items are being updated on the server
+### usePaymentIframe
+Returns all information and methods required to render and interact with the PIGI payment iframe.
 
 ```javascript
-import { useLineItems } from '@boldcommerce/checkout-react-components';
+import { usePaymentIframe } from '@boldcommerce/checkout-react-components';
 
+const Component = () => (
+  const {
+    paymentIframeLoadingStatus,
+    paymentIframeUrl,
+    paymentIframeHeight,
+    paymentIframeOnLoaded
+  } = usePaymentIframe();
 
-const LineItemComponent = () => {
-  const { lineItems, updateLineItemQuantity, removeLineItem, loadingLineItems } = useLineItems();
-
-  const lineItemList = lineItems.map((lineItem) => 
-    <li>
-      <p>{lineItem.product_data.title}</p>
-      <input
-        type="number"
-        value={lineItem.product_data.quantity}
-        onChange={(e) => {
-          updateLineItemQuantity(e.target.value, lineItem.product_data.line_item_key)
-        }}
-      />
-      <button
-        onClick={() => {
-          removeLineItem(lineItem.product_data.line_item_key)
-        }}
-      >
-        Remove item
-      </button>
-    </li>
-  );
-
-  return (
-    <ul>
-      {lineItemList}
-    <ul>
-  )
-};
-```
-
----
-
-### useProcessOrder
-Allows you to process payment for an order. If you are using a custom payment gateway, you will need to pass the gateway id as an argument into the hook.
-
-UseProcessOrder has the following methods:
-
-**processOrder**
-- Triggers order to be processed on the server
-- Has an optional argument for a token id for a custom gateway that is not using PIGI
-
-**isProcessing**
-- Returns true while an order is being processed.
-  
-```javascript
-import { useProcessOrder } from '@boldcommerce/checkout-react-components';
-
-const CustomGatewayComponent = (gatewayId) => {
-  const { processOrder } = useProcessOrder(gatewayId);
-
-  const handleSubmit = (token) => {
-    processOrder(token);
+  const style = {
+    height: `${paymentIframeHeight}px`
   };
 
-  <CustomPaymentGatway
-    onSubmit={handleSubmit}
-  />
-};
+  return (
+    <div>
+      const iframe = (
+        <iframe
+          style={style}
+          src={paymentIframeUrl}
+          onLoad={paymentIframeOnLoaded}
+        />
+      );
+    </div>
+  );
+);
 ```
+#### Hook Values
+- **paymentIframeLoadingStatus** `(boolean)`
+- **paymentIframeUrl** `(string)`  
+  ```
+  https://api.boldcommerce.com/checkout/storefront/{store_identifier}/{public_order_id}/payments/iframe?token={token}
+  ```
+- **paymentIframeHeight** `(number)`
+- **paymentIframeOnLoaded** `(function)`
+  ```javascript
+  paymentIframeOnLoaded();
+  ```
 
----
+### usePaymentMethod
+Returns information in regards to if the payment method should be shown or not.
+
+```javascript
+import { usePaymentIframe } from '@boldcommerce/checkout-react-components';
+
+const Component = () => (
+  const {
+    showPaymentMethod
+  } = usePaymentMethod();
+
+  if (showPaymentMethod) {
+    return <CustomPaymentComponent />;
+  } else {
+    return null;
+  }
+);
+```
+#### Hook Values
+- **showPaymentMethod** `(boolean)`
+
+### useShippingAddress
+Returns all information and methods related to the shipping address.
+
+```javascript
+import { useShippingAddress } from '@boldcommerce/checkout-react-components';
+
+const Component = () => (
+  const {
+    shippingAddres,
+    shippingAddressErrors,
+    countryInfo,
+    submitShippingAddress,
+  } = useShippingAddress();
+
+  return (
+    <div>
+      <button onClick={() => submitShippingAddress({ ...address })}>Submit<button>
+    </div>
+  );
+);
+```
+#### Hook Values
+- **shippingAddres** `(object)`
+  ```json
+  {
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "address_line_1": "123 Fake Street",
+    "address_line_2": "Unit 10",
+    "country": "Canada",
+    "country_code": "CA",
+    "province": "Manitoba",
+    "province_code": "MB",
+    "postal_code": "R5H 3V4",
+    "business_name": "Fake Business",
+    "phone_name": "2048885555"
+  }
+  ```
+- **shippingAddressErrors** `(object)`
+  ```json
+  {
+    "postal_code": "The postal code provided is not valid."
+  }
+  ```
+- **countryInfo** `(array)`
+  ```json
+  [
+    {
+      "iso_code": "CA",
+      "name": "Canada",
+      "show_province": true,
+      "province_label": "province",
+      "show_postal_code": true,
+      "provinces": [
+        {
+          "iso_code": "AB",
+          "name": "Alberta",
+          "valid_for_shipping": true,
+          "valid_for_billing": false
+        }
+      ]
+    }
+  ]
+  ```
+- **submitShippingAddress** `(function)`
+  ```javascript
+  submitShippingAddress({
+    "address_line_1": "123 Fake Street",
+    "address_line_2": "Unit 10",
+    "country": "Canada",
+    "country_code": "CA",
+    "province": "Manitoba",
+    "province_code": "MB",
+    "postal_code": "R5H 3V4",
+    "business_name": "Fake Business",
+    "phone_name": "2048885555"
+  })
+  ```
 
 ### useShippingLines
-Allow your application to get and set shipping methods for an order. UseShippingLines has the following methods:
-
-**shippingLines**
-- returns a list of applicable shipping methods for an order
-
-**selectedShipping**
-- returns the selected shipping method for an order
-
-**setShippingLine**
-- sets the current shipping method for an order
-
-**getShippingLines**
-- fetches shipping rates for an order
-
-**loadingShippingLines**
-- returns true if the server is currently setting a shipping method
-
-**emptyShippingLines**
-- return true if there are no applicable shipping methods
+Returns all information and methods related to shipping lines.
 
 ```javascript
 import { useShippingLines } from '@boldcommerce/checkout-react-components';
+import { RadioField, Price } from '@boldcommerce/stacks-ui';
 
-const ShippingMethodsComponent = () => {
-  const { shippingLines, setShippingLine, selectedShipping, getShippingLines, loadingShippingLines, emptyShippingLines } = useShippingLines();
+const Component = () => (
+  const {
+    showShippingLines,
+    shippingLinesFetching,
+    shippingLinesLoadingStatus,
+    shippingLines,
+    selectedShippingLineIndex,
+    setSelectedShippingLine,
+    getShippingLines,
+  } = useShippingLines();
 
-  useEffect(() => {
-    getShippingLines();
-  }, []);
-
-  const shippingLineList = shippingLines.map((shippingLine, index) =>
-    <li>
-      <input
-        type="radio" checked={selectedShipping.id === index}
-        onChange={() => {
-          setShippingLine(index);
-        }}
+  const shippingLineList = shippingLines.map((method, index) => (
+    <div className="RadioButton" key={index}>
+      <RadioField
+        label={method.description}
+        name="shipping-method"
+        checked={selectedShippingLineIndex === parseInt(method.id, 10)}
+        className="RadioField"
+        disabled={shippingLinesLoadingStatus === 'setting'}
+        onChange={() => setSelectedShippingLine(index)}
       />
-      <p>{shippingLine.description}</p>
-      <p>{shippingLine.amount}</p>
-    <li>
-  );
-
-  return (
-    <ul>
-      {shippingLineList}
-    <ul>
-  );
-};
-```
-
----
-
-### useTaxes
-Allows your application to display current taxes for an order. UseTaxes has the following methods:
-
-**tax**
-- returns a list of taxes on the order
-
-**taxApplied**
-- returns true if there are taxes currently on the order
-
-```javascript
-import { useTaxes } from '@boldcommerce/checkout-react-components';
-
-const TaxesComponent = () => {
-  const { tax } = useTaxes();
-
-  const taxes = tax.map((currentTax) => 
-    <li>
-      <p>{currentTax.value}</p>
-    </li>
-  );
-
-  return (
-    <ul>
-      {taxes}
-    </ul>
-  );
-};
-```
-
----
-## Helper HOC's
-
-### withCustomerLogic
-Decorates a component with the following props:
-- customer
-- dispatch
-- errors
-- submit
-
-```javascript
-import { withCustomerLogic } from '@boldcommerce/checkout-react-components';
-
-const EmailField = ({
-  customer,
-  dispatch,
-  errors,
-  submit,
-}) => (
-  <section className="FieldSet FieldSet--CustomerInformation">
-    <div className="FieldSet__Header">
-      <div className="FieldSet__Heading">Customer information</div>
+      <Price className="ShippingMethod__Price" amount={method.amount} />
     </div>
-    <div className="FieldSet__Content">
-      <InputField
-        className="InputField Field--Email"
-        placeholder="Email"
-        type="email"
-        name="email"
-        messageType={errors && 'alert'}
-        messageText={errors && errors[0].message}
-        value={customer.email_address}
-        onChange={(e) => dispatch({
-          type: 'email_address',
-          payload: e.target.value,
-        })}
-        onBlur={submit}
-      />
-    </div>
-  </section>
-);
+  ));
 
-const EnhancedEmailField = withCustomerLogic(EmailField);
-
-const Component = () => {
-  return (
-    <EnhancedEmailField />
-  );
-};
-```
-
----
-
-### withCheckoutButtonLogic
-Decorates a component with the following props:
-- disabled
-- completeOrder
-
-```javascript
-import { withCheckoutButtonLogic } from '@boldcommerce/checkout-react-components';
-
-const CheckoutButton = ({ disabled, completeOrder }) => (
-  <Button onClick={completeOrder} disabled={disabled}>Complete Order</Button>
-);
-
-const EnhancedCheckoutButton = withCheckoutButtonLogic(CheckoutButton);
-
-const Component = () => {
-  return (
-    <EnhancedCheckoutButton />
-  );
-};
-```
-
----
-
-### withShippingAddressLogic
-This HOC handles all custom logic around if provinces and postal codes need to be shown and what provinces and postal codes should be called. It also decorates a component with the following props:
-- address
-- dispatch
-- errors
-- countries
-- provinces
-- showPostalCode
-- showProvince
-- provinceLabel
-- submit
-
-```javascript
-import { withShippingAddressLogic } from '@boldcommerce/checkout-react-components';
-
-const ShippingAddress = ({
-  address,
-  dispatch,
-  errors,
-  countries,
-  provinces,
-  showPostalCode,
-  showProvince,
-  provinceLabel,
-  submit,
-}) => (
-  <div>
-    <input type="text" value={address.first_name} onChange={(e) => dispatch({
-      type: 'first_name',
-      payload: e.target.value
-    })} />
-    <button type="button" onClick={submit}>Submit</button>
-  <div>
-);
-
-const EnhancedShippingAddress = withShippingAddressLogic(ShippingAddress);
-
-const Component = () => {
-  return (
-    <EnhancedShippingAddress />
-  );
-};
-```
-
----
-
-### withBillingAddressLogic
-This HOC handles all custom logic around if provinces and postal codes need to be shown and what provinces and postal codes should be called. It also decorates a component with the following props:
-- address
-- sameAsShipping
-- setSameAsShipping
-- dispatch
-- errors
-- countries
-- provinces
-- showPostalCode
-- showProvince
-- provinceLabel
-- submit
-
-```javascript
-import { withBillingAddressLogic } from '@boldcommerce/checkout-react-components';
-
-const BillingAddress = ({
-  address,
-  sameAsShipping,
-  setSameAsShipping,
-  dispatch,
-  errors,
-  countries,
-  provinces,
-  showPostalCode,
-  showProvince,
-  provinceLabel,
-  submit,
-}) => (
-  <div>
-    <input type="radio" name="billing-address" value="same_as_shipping_address" onChange={() => setSameAsShipping(true)} />
-    <input type="radio" name="billing-address" value="different_billing_address" onChange={() => setSameAsShipping(false)} />
-    <input type="text" value={address.first_name} onChange={(e) => dispatch({
-      type: 'first_name',
-      payload: e.target.value
-    })} />
-    <button type="button" onClick={submit}>Submit</button>
-  <div>
-);
-
-const EnhancedBillingAddress = withBillingAddressLogic(BillingAddress);
-
-const Component = () => {
-  return (
-    <EnhancedBillingAddress />
-  );
-};
-```
-
----
-
-### withLineItemsLogic
-Decorates a component with the following props:
-- lineItems,
-- loadingLineItems
-- addLineItem
-- updateLineItemQuantity
-- removeLineItem
-
-```javascript
-import { withLineItemsLogic } from '@boldcommerce/checkout-react-components';
-
-const LineItems = ({
-  lineItems,
-  updateLineItemQuantity,
-  removeLineItem,
-}) => (
-  <>
-    {lineItems.map((item) => (
-      <div className="SummaryBlock CartItem" key={item.product_data.line_item_key}>
-        <Product
-          title={item.product_data.title}
-          img={item.product_data.image_url}
-          qty={item.product_data.quantity}
-          itemPrice={item.product_data.price}
-          totalPrice={item.product_data.total_price}
-          lineItemKey={item.product_data.line_item_key}
-          description={item.product_data.description}
-          updateQuantity={updateLineItemQuantity}
-          removeLineItem={removeLineItem}
-        />
-      </div>
-    ))}
-  </>
-);
-
-const EnhancedLineItems = withLineItemsLogic(LineItems);
-
-const Component = () => {
-  return (
-    <EnhancedLineItems />
-  );
-};
-```
-
----
-
-### withOrderProcessedLogic
-Decorates a component with the following props:
-- payments
-- customer
-- shippingAddress
-- billingAddress
-- selectedShipping
-- paymentMethod
-
-```javascript
-import { withOrderProcessedLogic } from '@boldcommerce/checkout-react-components';
-
-const OrderProcessed = ({
-  customer,
-  shippingAddress,
-  billingAddress,
-  selectedShipping,
-  paymentMethod,
-}) => (
-  <div>
-    Thank you { customer.first_name }
-    Email: { customer.email_address }
-  <div>
-);
-
-const EnhancedOrderProcessed = withOrderProcessedLogic(OrderProcessed);
-
-const Component = () => {
-  return (
-    <EnhancedOrderProcessed />
-  );
-};
-```
-
----
-
-### withPaymentLogic
-Decorates a component with the following props:
-- paymentIframe
-- shippingErrors
-- billingErrors
-- isValid
-- isLoading
-- completeOrder
-
-```javascript
-import { withPaymentLogic } from '@boldcommerce/checkout-react-components';
-
-const PaymentMethod = ({
-  paymentIframe,
-  shippingErrors,
-  billingErrors,
-  isLoading,
-  isValid,
-  completeOrder,
-}) => {
   return (
     <div>
-      {paymentIframe}
-      <Button onClick={completeOrder}>Complete Order</Button>
+      {shippingLineList}
     </div>
   );
-});
-
-const EnhancedPaymentLogic = withPaymentLogic(PaymentMethod);
-
-const Component = () => {
-  return (
-    <EnhancedPaymentLogic />
-  );
-};
+);
 ```
-
----
-
-### withShippingMethodLogic
-This HOC handles all custom logic around automatically fetching shipping rates. It also decorates a component with the following props:
-- selectedShipping
-- shippingLines
-- loadingShippingLines
-- emptyShippingLines
-- selectedShippingLineIndex
-- setSelectedShippingLineIndex
-- shippingErrors
-- billingErrors
-
-```javascript
-import { withShippingMethodLogic } from '@boldcommerce/checkout-react-components';
-
-const ShippingMethod = ({
-  shippingLines,
-  loadingShippingLines,
-  emptyShippingLines,
-  selectedShippingLineIndex,
-  setSelectedShippingLineIndex,
-  shippingErrors,
-  billingErrors,
-}) => {
-  return (
-    <section className="FieldSet FieldSet--ShippingMethod">
-      <div className="FieldSet__Header">
-        <div className="FieldSet__Heading">Shipping method</div>
-      </div>
-      <div className="FieldSet__Content">
-        {shippingLines && shippingLines.map((method, index) => (
-          <div className="RadioButton" key={index}>
-            <RadioField
-              label={method.description}
-              name="shipping-method"
-              checked={selectedShippingLineIndex === index}
-              className="RadioField"
-              onChange={() => {
-                setSelectedShippingLineIndex(index);
-              }}
-            />
-            <Price className="ShippingMethod__Price" amount={method.amount} />
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-};
-
-const EnhancedShippingMethod = withShippingMethodLogic(ShippingMethod);
-
-const Component = () => {
-  return (
-    <EnhancedShippingMethod />
-  );
-};
-```
+#### Hook Values
+- **showShippingLines** `(boolean)`
+- **shippingLinesFetching** `(boolean)`
+- **shippingLinesLoadingStatus** `(string)`  
+  Possible values are: fetching, fulfilled, and setting
+- **shippingLines** `(array)`
+  ```json
+  [
+    {
+      "id":"0",
+      "description":"Canada Post Expedited Parcel",
+      "amount":1472
+    }
+  ]
+  ```
+- **selectedShippingLineIndex** `(number)`
+- **setSelectedShippingLine** `(function)`
+  ```javascript
+  setSelectedShippingLine(1);
+  ```
+- **getShippingLines** `(function)`
+  ```javascript
+  getShippingLines();
+  ```

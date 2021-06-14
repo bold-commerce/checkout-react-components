@@ -1,25 +1,28 @@
 {
   "name": "@boldcommerce/checkout-react-components",
-  "version": "2.1.7",
-  "main": "lib/index.js",
-  "author": "Arvinder Bold <arvinder.singh@boldcommerce.com>",
+  "version": "3.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "author": {
+    "name": "Bold Commerce",
+    "url": "https://boldcommerce.com"
+  },
   "description": "A React component library for creating checkout experiences utilizing Bold API's.",
   "license": "MIT",
   "scripts": {
-    "start": "watch 'yarn build' ./src ",
-    "build": "rm -R ./lib && babel ./src --out-dir ./lib --copy-files"
+    "start": "watch 'yarn build' ./src",
+    "build": "node ./scripts/build.js"
   },
   "peerDependencies": {
     "@boldcommerce/stacks-ui": "^1.0.2",
-    "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-spring": "^8.0.27"
   },
   "dependencies": {
     "@boldcommerce/stacks-ui": "^1.0.2",
-    "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
@@ -31,6 +34,8 @@
     "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-react": "^7.9.4",
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "eslint": "^6.8.0",
@@ -38,6 +43,20 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
+    "postcss": "^8.3.0",
+    "rollup": "^2.49.0",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.0",
     "watch": "^1.0.2"
-  }
+  },
+  "browserslist": [
+    "last 3 chrome versions",
+    "last 3 chromeandroid versions",
+    "last 3 firefox versions",
+    "last 3 opera versions",
+    "last 2 edge versions",
+    "safari >= 10",
+    "ios >= 10"
+  ]
 }

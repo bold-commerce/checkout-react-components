@@ -1,0 +1,88 @@
+const setLoadingState = (state, type, status) => {
+  const loadingState = {
+    ...state,
+    [type]: status,
+  };
+
+  const isLoading = Object.values(loadingState).some((value) => value === 'fetching' || value === 'setting');
+
+  return {
+    ...loadingState,
+    isLoading,
+  };
+};
+
+const loadingStatusReducer = (state, action) => {
+  switch (action.type) {
+    // Customer Actions
+    case 'checkout/customer/setting':
+      return setLoadingState(state, 'customer', 'setting');
+    case 'checkout/customer/set':
+      return setLoadingState(state, 'customer', 'fulfilled');
+
+    // Shipping Address Actions
+    case 'checkout/shippingAddress/setIncomplete':
+      return setLoadingState(state, 'shippingAddress', 'incomplete');
+    case 'checkout/shippingAddress/setting':
+      return setLoadingState(state, 'shippingAddress', 'setting');
+    case 'checkout/shippingAddress/set':
+      return setLoadingState(state, 'shippingAddress', 'fulfilled');
+
+    // Billing Address Actions
+    case 'checkout/billingAddress/setIncomplete':
+      return setLoadingState(state, 'billingAddress', 'incomplete');
+    case 'checkout/billingAddress/setting':
+      return setLoadingState(state, 'billingAddress', 'setting');
+    case 'checkout/billingAddress/set':
+      return setLoadingState(state, 'billingAddress', 'fulfilled');
+
+    // Shipping Line Actions
+    case 'checkout/shippingLines/fetching':
+      return setLoadingState(state, 'shippingLines', 'fetching');
+    case 'checkout/shippingLines/fetched':
+      return setLoadingState(state, 'shippingLines', 'fulfilled');
+    case 'checkout/shippingLines/setting':
+      return setLoadingState(state, 'shippingLines', 'setting');
+    case 'checkout/shippingLines/set':
+      return setLoadingState(state, 'shippingLines', 'fulfilled');
+
+    // Payment Iframe Actions
+    case 'checkout/paymentIframe/fetching':
+      return setLoadingState(state, 'paymentIframe', 'fetching');
+    case 'checkout/paymentIframe/fetched':
+      return setLoadingState(state, 'paymentIframe', 'fulfilled');
+    case 'checkout/paymentIframe/authorizing':
+      return setLoadingState(state, 'paymentIframe', 'setting');
+    case 'checkout/paymentIframe/setPaymentIframeErrors':
+      return setLoadingState(state, 'paymentIframe', 'fulfilled');
+
+    // Line Item Actions
+    case 'checkout/lineItem/removing':
+      return setLoadingState(state, 'lineItems', 'setting');
+    case 'checkout/lineItem/removed':
+      return setLoadingState(state, 'lineItems', 'fulfilled');
+    case 'checkout/lineItem/setting':
+      return setLoadingState(state, 'lineItems', 'setting');
+    case 'checkout/lineItem/set':
+      return setLoadingState(state, 'lineItems', 'fulfilled');
+    case 'checkout/lineItem/adding':
+      return setLoadingState(state, 'lineItems', 'setting');
+    case 'checkout/lineItem/added':
+      return setLoadingState(state, 'lineItems', 'fulfilled');
+
+    // Discount Actions
+    case 'checkout/discount/adding':
+      return setLoadingState(state, 'discount', 'setting');
+    case 'checkout/discount/added':
+      return setLoadingState(state, 'discount', 'fulfilled');
+    case 'checkout/discount/removing':
+      return setLoadingState(state, 'discount', 'setting');
+    case 'checkout/discount/removed':
+      return setLoadingState(state, 'discount', 'fulfilled');
+
+    default:
+      return state;
+  }
+};
+
+export default loadingStatusReducer;

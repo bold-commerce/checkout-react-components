@@ -1,100 +1,97 @@
-import {
-  useState,
-  useContext,
-  useCallback,
-} from 'react';
-import CheckoutContext from '../components/Context';
+import { useCallback, useContext, useMemo } from 'react';
+import * as api from '../api';
+import { CheckoutStore } from '../store';
+import { getShippingLines } from './shared';
 
 const useLineItems = () => {
-  const {
-    apiPath,
-    csrf,
-    lineItems,
-    setApplicationState,
-  } = useContext(CheckoutContext);
-  const [loadingLineItems, setLoadingLineItems] = useState(false);
+  const { state, dispatch } = useContext(CheckoutStore);
+  const { csrf, apiPath } = state;
+  const countryCode = state.applicationState.addresses?.shipping?.country_code;
+  const lineItems = state.applicationState.line_items;
+  const memoizedLineItems = useMemo(() => lineItems, [JSON.stringify(lineItems)]);
 
-  const addLineItem = useCallback((platformId, quantity, lineItemKey) => {
+  const removeLineItem = useCallback(async (lineItemKey) => {
+    dispatch({
+      type: 'checkout/lineItem/removing',
+    });
+
+    const response = await api.removeLineItem(csrf, apiPath, lineItemKey);
+
+    dispatch({
+      type: 'checkout/lineItem/removed',
+    });
+
+    dispatch({
+      type: 'checkout/update',
+      payload: response.data.application_state,
+    });
+
+    if (countryCode) {
+      return getShippingLines(csrf, apiPath, dispatch);
+    }
+    return Promise.resolve();
+  }, [countryCode]);
+
+  const updateLineItemQuantity = useCallback(async (lineItemKey, quantity) => {
+    const data = {
+      quantity,
+      line_item_key: lineItemKey,
+    };
+
+    dispatch({
+      type: 'checkout/lineItem/setting',
+    });
+
+    const response = await api.updateLineItem(csrf, apiPath, data);
+
+    dispatch({
+      type: 'checkout/lineItem/set',
+    });
+
+    dispatch({
+      type: 'checkout/update',
+      payload: response.data.application_state,
+    });
+
+    if (countryCode) {
+      return getShippingLines(csrf, apiPath, dispatch);
+    }
+    return Promise.resolve();
+  }, [countryCode]);
+
+  const addLineItem = useCallback(async (platformId, lineItemKey, quantity) => {
     const data = {
       platform_id: platformId,
       quantity,
       line_item_key: lineItemKey,
     };
 
-    if (csrf) {
-      fetch(`${apiPath}/items`, {
-        mode: 'cors',
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrf,
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          setApplicationState(response.data.application_state);
-          setLoadingLineItems(false);
-        });
-    }
-  }, [csrf]);
+    dispatch({
+      type: 'checkout/lineItem/adding',
+    });
 
-  const updateLineItemQuantity = useCallback((quantity, lineItemKey) => {
-    const data = {
-      quantity,
-      line_item_key: lineItemKey,
-    };
+    const response = await api.addLineItem(csrf, apiPath, data);
 
-    if (csrf) {
-      fetch(`${apiPath}/items`, {
-        mode: 'cors',
-        method: 'PUT',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrf,
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          setApplicationState(response.data.application_state);
-          setLoadingLineItems(false);
-        });
-    }
-  }, [csrf]);
+    dispatch({
+      type: 'checkout/lineItem/added',
+    });
 
-  const removeLineItem = useCallback((lineItemKey) => {
-    const data = {
-      quantity: 0,
-      line_item_key: lineItemKey,
-    };
-    if (csrf) {
-      fetch(`${apiPath}/items`, {
-        mode: 'cors',
-        method: 'DELETE',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrf,
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          setApplicationState(response.data.application_state);
-          setLoadingLineItems(false);
-        });
+    dispatch({
+      type: 'checkout/update',
+      payload: response.data.application_state,
+    });
+
+    if (countryCode) {
+      return getShippingLines(csrf, apiPath, dispatch);
     }
-  }, [csrf]);
+    return Promise.resolve();
+  }, [countryCode]);
 
   return {
-    lineItems,
-    loadingLineItems,
-    addLineItem,
-    updateLineItemQuantity,
+    lineItems: memoizedLineItems,
     removeLineItem,
+    updateLineItemQuantity,
+    addLineItem,
   };
 };
 
