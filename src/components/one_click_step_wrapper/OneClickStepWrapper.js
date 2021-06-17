@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const EnhancedEmail = withCustomerLogic(OneClickEmailField);
-const EnhancedShippingAddress = withShippingAddressLogic(ShippingAddress);
+const EnhancedShippingAddress = withShippingAddressLogic(ShippingAddress,true);
 const EnhancedBillingAddress = withBillingAddressLogic(BillingAddress);
 const EnhancedShippingMethod = withShippingMethodLogic(OneClickShippingMethod);
 const EnhancedPaymentMethod = withPaymentLogic(OneClickPaymentMethod);

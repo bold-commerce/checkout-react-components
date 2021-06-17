@@ -56,14 +56,16 @@ const Breakdown = ({ isMobile }) => {
         { taxesTotal ? (
             <>
                 <span className="Summary__Taxes--Title">Taxes</span>
-                <div className="Summary__Taxes">
-                    <div className="SummaryItem__Value">
-                        {
-                        taxes.length === 0 ? '$0.00'
-                            : <Price amount={taxesTotal} />
-                        }
-                    </div>
-                </div>
+                { taxes.map( tax => (
+                  <div className="Summary__Taxes" key={tax.name}>
+                      <div className="SummaryItem__Label">{tax.name}</div>
+                      <div className="SummaryItem__Value">
+                          {
+                            <Price amount={tax.value} />
+                          }
+                      </div>
+                  </div>
+                ))}
             </>
         ): null}
         

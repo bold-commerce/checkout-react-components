@@ -2,12 +2,14 @@
     height: 101px;
     border: unset;
     border-bottom: 1px solid #D2D2D2D2;
+    background: none;
 }
 
 .RadioButton.RadioButton__NewAddressContainer {
     height: 50px;
     border: unset;
-    border-bottom: none;
+    border-bottom: none; 
+    background: none;
 }
 
 .FieldSet--ShippingMethod > .FieldSet__Header {

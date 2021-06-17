@@ -37,3 +37,7 @@
   font-size: 12px;
   line-height: 16px;
 }
+
+.stx-input__input-element {
+  height: 36px;
+}
