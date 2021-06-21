@@ -9,7 +9,11 @@ export const validateDiscount = async (csrf, apiPath, code) => {
     },
   });
 
-  return response.json();
+  try {
+    return response.json();
+  } catch (e) {
+    throw new Error('Something went wrong');
+  }
 };
 
 export const addDiscount = async (csrf, apiPath, code) => {
@@ -25,7 +29,12 @@ export const addDiscount = async (csrf, apiPath, code) => {
       code,
     }),
   });
-  return response.json();
+
+  try {
+    return response.json();
+  } catch (e) {
+    throw new Error('Something went wrong');
+  }
 };
 
 export const removeDiscount = async (csrf, apiPath, code) => {
@@ -41,5 +50,10 @@ export const removeDiscount = async (csrf, apiPath, code) => {
       code,
     }),
   });
-  return response.json();
+
+  try {
+    return response.json();
+  } catch (e) {
+    throw new Error('Something went wrong');
+  }
 };

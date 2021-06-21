@@ -45,6 +45,7 @@ If you prefer to use yarn, run the following command
 
 ## Examples
 - [Single Page Checkout](https://github.com/bold-commerce/checkout-react-components/tree/3.x/examples/single-page)
+- [Three Page Checkout](https://github.com/bold-commerce/checkout-react-components/tree/3.x/examples/three-page)
 - [Custom Components](https://github.com/bold-commerce/checkout-react-components/tree/3.x/examples/custom-components)
 
 ## Components
@@ -97,10 +98,16 @@ import { Customer } from '@boldcommerce/checkout-react-components';
 
 const App = (props) => (
   <CheckoutProvider {...props}>
-    <Customer />
+    <Customer onChange={handleChange}/>
   </CheckoutProvider>
 );
 ```
+
+#### Component Props
+- **onChange** `(function)`  
+  If no onChange prop is passed, the customer component will automatically handle submitting changes via the api.
+  
+  If an onChange prop is passed, you will have to manually handle submitting the customer via the api. The onChange callback will return the current local state of the customer on every input change as well.
 
 ### ShippingAddress
 Displays the shipping address fields and handles all shipping address logic.
@@ -110,10 +117,15 @@ import { ShippingAddress } from '@boldcommerce/checkout-react-components';
 
 const App = (props) => (
   <CheckoutProvider {...props}>
-    <ShippingAddress />
+    <ShippingAddress onChange={handleChange}/>
   </CheckoutProvider>
 );
 ```
+#### Component Props
+- **onChange** `(function)`  
+  If no onChange prop is passed, the shipping address component will automatically handle submitting changes via the api.
+  
+  If an onChange prop is passed, you will have to manually handle submitting the shipping address via the api. The onChange callback will return the current local state of the shipping address on every input change as well.
 
 ### BillingAddress
 Displays the billing address fields and handles all billing address logic.
@@ -123,10 +135,15 @@ import { BillingAddress } from '@boldcommerce/checkout-react-components';
 
 const App = (props) => (
   <CheckoutProvider {...props}>
-    <BillingAddress />
+    <BillingAddress onChange={handleChange}/>
   </CheckoutProvider>
 );
 ```
+#### Component Props
+- **onChange** `(function)`  
+  If no onChange prop is passed, the billing address component will automatically handle submitting changes via the api.
+  
+  If an onChange prop is passed, you will have to manually handle submitting the billing address via the api. The onChange callback will return the current local state of the billing address on every input change as well.
 
 ### ShippingLines
 Displays a list of available shipping lines and handles shipping line logic.

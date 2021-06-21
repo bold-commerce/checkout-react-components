@@ -1,5 +1,5 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import useCountryInfo from '../../hooks/useCountryInfo';
 import Address from '../address/Address';
@@ -7,7 +7,7 @@ import useShippingAddress from '../../hooks/useShippingAddress';
 import './ShippingAddress.css';
 
 const ShippingAddress = ({
-  shippingAddress, countryInfo, shippingAddressErrors, submitShippingAddress,
+  shippingAddress, countryInfo, shippingAddressErrors, submitShippingAddress, onChange,
 }) => {
   const [address, setAddress] = useState(shippingAddress);
   const {
@@ -18,6 +18,12 @@ const ShippingAddress = ({
     provinceLabel,
   } = useCountryInfo(countryInfo, address);
 
+  useEffect(() => {
+    if (onChange) {
+      onChange(address);
+    }
+  }, [address]);
+
   return (
     <section className="FieldSet FieldSet--ShippingAddress">
       <div className="FieldSet__Header">
@@ -26,10 +32,10 @@ const ShippingAddress = ({
       <div className="FieldSet__Content">
         <Address
           address={address}
-          onChange={(data) => setAddress({
-            ...address,
+          onChange={(data) => setAddress((prevAddress) => ({
+            ...prevAddress,
             ...data,
-          })}
+          }))}
           errors={shippingAddressErrors}
           countries={countries}
           provinces={provinces}
@@ -48,11 +54,12 @@ ShippingAddress.propTypes = {
   countryInfo: PropTypes.array,
   shippingAddressErrors: PropTypes.object,
   submitShippingAddress: PropTypes.func,
+  onChange: PropTypes.func,
 };
 
 const MemoizedShippingAddress = React.memo(ShippingAddress);
 
-const ShippingAddressContainer = () => {
+const ShippingAddressContainer = ({ onChange }) => {
   const {
     shippingAddress, countryInfo, shippingAddressErrors, submitShippingAddress,
   } = useShippingAddress();
@@ -62,9 +69,14 @@ const ShippingAddressContainer = () => {
       shippingAddress={shippingAddress}
       countryInfo={countryInfo}
       shippingAddressErrors={shippingAddressErrors}
-      submitShippingAddress={submitShippingAddress}
+      onChange={onChange}
+      submitShippingAddress={onChange || submitShippingAddress}
     />
   );
+};
+
+ShippingAddressContainer.propTypes = {
+  onChange: PropTypes.func,
 };
 
 export default ShippingAddressContainer;

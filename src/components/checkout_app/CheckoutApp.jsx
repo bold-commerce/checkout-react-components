@@ -1,12 +1,12 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { CheckoutStore } from '../../store';
 
 const CheckoutApp = ({ children }) => {
   const { state, dispatch } = useContext(CheckoutStore);
-  const { apiPath, token } = state;
+  const { apiPath, token, csrf } = state;
 
-  const initCheckout = async () => {
+  const initCheckout = useCallback(async () => {
     const response = await fetch(`${apiPath}/session/start?token=${token}`, {
       mode: 'cors',
       method: 'POST',
@@ -21,13 +21,15 @@ const CheckoutApp = ({ children }) => {
       type: 'checkout/init',
       payload: data.data.csrf_token,
     });
-  };
+  }, [apiPath, token]);
 
   useEffect(() => {
-    initCheckout();
-  }, [dispatch]);
+    if (!csrf) {
+      initCheckout();
+    }
+  }, [initCheckout, csrf]);
 
-  if (!state.csrf) return null;
+  if (!csrf) return null;
 
   return (
     <>

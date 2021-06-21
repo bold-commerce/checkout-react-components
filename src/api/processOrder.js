@@ -9,7 +9,11 @@ const processOrder = async (csrf, apiPath) => {
     },
   });
 
-  return response.json();
+  try {
+    return response.json();
+  } catch (e) {
+    throw new Error('Something went wrong');
+  }
 };
 
 export default processOrder;

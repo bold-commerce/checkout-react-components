@@ -1,14 +1,22 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { InputField } from '@boldcommerce/stacks-ui';
 import useCustomer from '../../hooks/useCustomer';
 import './Customer.css';
 
 const Customer = ({
-  customer, customerErrors, isAuthenticated, submitCustomer,
+  customer, customerErrors, isAuthenticated, submitCustomer, onChange,
 }) => {
   const [email, setEmail] = useState(customer?.email_address);
+
+  useEffect(() => {
+    if (onChange) {
+      onChange({
+        email_address: email,
+      });
+    }
+  }, [email]);
 
   return (
     <section className="FieldSet FieldSet--CustomerInformation">
@@ -40,11 +48,12 @@ Customer.propTypes = {
   customerErrors: PropTypes.object,
   isAuthenticated: PropTypes.bool,
   submitCustomer: PropTypes.func,
+  onChange: PropTypes.func,
 };
 
 const MemoizedCustomer = React.memo(Customer);
 
-const CustomerContainer = () => {
+const CustomerContainer = ({ onChange }) => {
   const {
     customer, customerErrors, isAuthenticated, submitCustomer,
   } = useCustomer();
@@ -54,9 +63,14 @@ const CustomerContainer = () => {
       customer={customer}
       customerErrors={customerErrors}
       isAuthenticated={isAuthenticated}
-      submitCustomer={submitCustomer}
+      onChange={onChange}
+      submitCustomer={onChange || submitCustomer}
     />
   );
+};
+
+CustomerContainer.propTypes = {
+  onChange: PropTypes.func,
 };
 
 export default CustomerContainer;

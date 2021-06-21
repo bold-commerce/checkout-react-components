@@ -40,7 +40,7 @@ const Product = ({
       <ProductQuantityInput
         readOnly={readOnly}
         defaultValue={qty}
-        onChange={(value) => { updateQuantity(lineItemKey, value); }}
+        onChange={(value) => updateQuantity(lineItemKey, value)}
       />
       <div className="CartItem__ProductPrice">
         <Price amount={totalPrice} />

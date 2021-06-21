@@ -11,7 +11,11 @@ export const validateCustomer = async (csrf, apiPath, customer) => {
     },
   });
 
-  return response.json();
+  try {
+    return response.json();
+  } catch (e) {
+    throw new Error('Something went wrong');
+  }
 };
 
 export const updateCustomer = async (csrf, apiPath, customer, method) => {
@@ -23,10 +27,12 @@ export const updateCustomer = async (csrf, apiPath, customer, method) => {
       'Content-Type': 'application/json',
       'X-CSRF-TOKEN': csrf,
     },
-    body: JSON.stringify({
-      ...customer,
-    }),
+    body: JSON.stringify(customer),
   });
 
-  return response.json();
+  try {
+    return response.json();
+  } catch (e) {
+    throw new Error('Something went wrong');
+  }
 };

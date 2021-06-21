@@ -2,6 +2,21 @@ import { useCallback, useContext, useMemo } from 'react';
 import { updateBillingAddress, validateBillingAddress } from '../api';
 import { CheckoutStore } from '../store';
 
+const emptyAddress = {
+  first_name: '',
+  last_name: '',
+  address_line_1: '',
+  address_line_2: '',
+  country: '',
+  city: '',
+  province: '',
+  country_code: '',
+  province_code: '',
+  postal_code: '',
+  business_name: '',
+  phone_number: '',
+};
+
 const useBillingAddress = () => {
   const { state, dispatch } = useContext(CheckoutStore);
   const { csrf, apiPath } = state;
@@ -17,11 +32,24 @@ const useBillingAddress = () => {
   const memoizedShippingAddress = useMemo(() => shippingAddress, [JSON.stringify(shippingAddress)]);
 
   const submitBillingAddress = useCallback(async (billingAddressData) => {
-    if (!billingAddressData || !billingAddressData.country_code) return Promise.resolve();
+    if (billingSameAsShipping) return Promise.resolve();
+    if (!billingAddressData || !billingAddressData.country_code) {
+      dispatch({
+        type: 'checkout/billingAddress/setErrors',
+        payload: [{
+          field: 'country',
+          message: 'Country is required',
+        }],
+      });
+      return Promise.reject();
+    }
 
-    const appShipping = JSON.stringify(memoizedShippingAddress);
+    const appShipping = JSON.stringify({
+      ...emptyAddress,
+      ...memoizedShippingAddress,
+    });
     const localShipping = JSON.stringify({
-      ...memoizedBillingAddress,
+      ...emptyAddress,
       ...billingAddressData,
     });
 
@@ -33,7 +61,26 @@ const useBillingAddress = () => {
     const countryData = memoizedCountryInfo.find((data) => data.iso_code === billingAddressData.country_code);
     const country = countryData.name;
 
-    if ((countryData.show_province && !billingAddressData.province_code) || (countryData.show_postal_code && !billingAddressData.postal_code)) return Promise.resolve();
+    if (countryData.show_province && !billingAddressData.province_code) {
+      dispatch({
+        type: 'checkout/billingAddress/setErrors',
+        payload: [{
+          field: 'province',
+          message: 'Province is required',
+        }],
+      });
+      return Promise.reject();
+    }
+    if (countryData.show_postal_code && !billingAddressData.postal_code) {
+      dispatch({
+        type: 'checkout/billingAddress/setErrors',
+        payload: [{
+          field: 'postal_code',
+          message: 'Postal code is required',
+        }],
+      });
+      return Promise.reject();
+    }
 
     const provinceData = countryData.provinces.find((data) => data.iso_code === billingAddressData.province_code);
     if (!provinceData) {
@@ -50,26 +97,48 @@ const useBillingAddress = () => {
       province,
     };
 
-    const validationData = await validateBillingAddress(csrf, apiPath, completeAddress);
-    if (validationData.errors) {
+    try {
+      const validationData = await validateBillingAddress(csrf, apiPath, completeAddress);
+      if (validationData.errors) {
+        dispatch({
+          type: 'checkout/billingAddress/setErrors',
+          payload: validationData.errors,
+        });
+        return Promise.reject(new Error('Invalid billing address'));
+      }
+    } catch (e) {
       dispatch({
         type: 'checkout/billingAddress/setErrors',
-        payload: validationData.errors,
+        payload: [{
+          field: 'order',
+          message: e.message,
+        }],
       });
-      return Promise.reject(new Error('Invalid billing address'));
+      return Promise.reject(e);
     }
 
-    const billingAddressResponse = await updateBillingAddress(csrf, apiPath, completeAddress);
-    dispatch({
-      type: 'checkout/update',
-      payload: billingAddressResponse.data.application_state,
-    });
+    try {
+      const billingAddressResponse = await updateBillingAddress(csrf, apiPath, completeAddress);
+      dispatch({
+        type: 'checkout/update',
+        payload: billingAddressResponse.data.application_state,
+      });
 
-    return dispatch({
-      type: 'checkout/billingAddress/set',
-      payload: billingAddressResponse.data.address,
-    });
-  }, [memoizedBillingAddress, memoizedCountryInfo]);
+      return dispatch({
+        type: 'checkout/billingAddress/set',
+        payload: billingAddressResponse.data.address,
+      });
+    } catch (e) {
+      dispatch({
+        type: 'checkout/billingAddress/setErrors',
+        payload: [{
+          field: 'order',
+          message: e.message,
+        }],
+      });
+      return Promise.reject(e);
+    }
+  }, [memoizedBillingAddress, memoizedCountryInfo, billingSameAsShipping]);
 
   const setBillingSameAsShipping = useCallback(async (value) => {
     dispatch({
@@ -79,16 +148,27 @@ const useBillingAddress = () => {
 
     if (value) {
       if (memoizedShippingAddress?.country_code) {
-        const billingAddressResponse = await updateBillingAddress(csrf, apiPath, memoizedShippingAddress);
-        if (billingAddressResponse?.data?.application_state) {
+        try {
+          const billingAddressResponse = await updateBillingAddress(csrf, apiPath, memoizedShippingAddress);
+          if (billingAddressResponse?.data?.application_state) {
+            dispatch({
+              type: 'checkout/update',
+              payload: billingAddressResponse.data.application_state,
+            });
+            return dispatch({
+              type: 'checkout/billingAddress/set',
+              payload: billingAddressResponse.data.address,
+            });
+          }
+        } catch (e) {
           dispatch({
-            type: 'checkout/update',
-            payload: billingAddressResponse.data.application_state,
+            type: 'checkout/billingAddress/setErrors',
+            payload: [{
+              field: 'order',
+              message: e.message,
+            }],
           });
-          return dispatch({
-            type: 'checkout/billingAddress/set',
-            payload: billingAddressResponse.data.address,
-          });
+          return Promise.reject(e);
         }
       }
     }
@@ -97,7 +177,7 @@ const useBillingAddress = () => {
   }, [memoizedShippingAddress]);
 
   return {
-    billingAddres: memoizedBillingAddress,
+    billingAddress: memoizedBillingAddress,
     billingAddressErrors: memoizedBillingAddressErrors,
     countryInfo: memoizedCountryInfo,
     billingSameAsShipping,

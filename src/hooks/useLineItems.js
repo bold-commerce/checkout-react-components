@@ -15,16 +15,28 @@ const useLineItems = () => {
       type: 'checkout/lineItem/removing',
     });
 
-    const response = await api.removeLineItem(csrf, apiPath, lineItemKey);
+    try {
+      const response = await api.removeLineItem(csrf, apiPath, lineItemKey);
 
-    dispatch({
-      type: 'checkout/lineItem/removed',
-    });
+      dispatch({
+        type: 'checkout/lineItem/removed',
+      });
 
-    dispatch({
-      type: 'checkout/update',
-      payload: response.data.application_state,
-    });
+      dispatch({
+        type: 'checkout/update',
+        payload: response.data.application_state,
+      });
+    } catch (e) {
+      dispatch({
+        type: 'checkout/lineItem/setErrors',
+        payload: [{
+          field: 'order',
+          message: e.message,
+        }],
+      });
+
+      return Promise.reject(e);
+    }
 
     if (countryCode) {
       return getShippingLines(csrf, apiPath, dispatch);
@@ -42,16 +54,28 @@ const useLineItems = () => {
       type: 'checkout/lineItem/setting',
     });
 
-    const response = await api.updateLineItem(csrf, apiPath, data);
+    try {
+      const response = await api.updateLineItem(csrf, apiPath, data);
 
-    dispatch({
-      type: 'checkout/lineItem/set',
-    });
+      dispatch({
+        type: 'checkout/lineItem/set',
+      });
 
-    dispatch({
-      type: 'checkout/update',
-      payload: response.data.application_state,
-    });
+      dispatch({
+        type: 'checkout/update',
+        payload: response.data.application_state,
+      });
+    } catch (e) {
+      dispatch({
+        type: 'checkout/lineItem/setErrors',
+        payload: [{
+          field: 'order',
+          message: e.message,
+        }],
+      });
+
+      return Promise.reject(e);
+    }
 
     if (countryCode) {
       return getShippingLines(csrf, apiPath, dispatch);
@@ -70,16 +94,28 @@ const useLineItems = () => {
       type: 'checkout/lineItem/adding',
     });
 
-    const response = await api.addLineItem(csrf, apiPath, data);
+    try {
+      const response = await api.addLineItem(csrf, apiPath, data);
 
-    dispatch({
-      type: 'checkout/lineItem/added',
-    });
+      dispatch({
+        type: 'checkout/lineItem/added',
+      });
 
-    dispatch({
-      type: 'checkout/update',
-      payload: response.data.application_state,
-    });
+      dispatch({
+        type: 'checkout/update',
+        payload: response.data.application_state,
+      });
+    } catch (e) {
+      dispatch({
+        type: 'checkout/lineItem/setErrors',
+        payload: [{
+          field: 'order',
+          message: e.message,
+        }],
+      });
+
+      return Promise.reject(e);
+    }
 
     if (countryCode) {
       return getShippingLines(csrf, apiPath, dispatch);
