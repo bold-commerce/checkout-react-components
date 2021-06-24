@@ -21,7 +21,7 @@ export const initialState = {
     customer: 'fulfilled',
     shippingAddress: 'fulfilled',
     shippingLines: 'fulfilled',
-    paymentIframe: 'fetching',
+    paymentIframe: 'fulfilled',
     lineItems: 'fulfilled',
     discount: 'fulfilled',
     isLoading: false,

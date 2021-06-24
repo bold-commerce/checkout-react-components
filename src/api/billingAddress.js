@@ -9,7 +9,11 @@ export const validateBillingAddress = async (csrf, apiPath, address) => {
     },
   });
 
-  return response.json();
+  try {
+    return response.json();
+  } catch (e) {
+    throw new Error('Something went wrong');
+  }
 };
 
 export const updateBillingAddress = async (csrf, apiPath, address) => {
@@ -24,5 +28,9 @@ export const updateBillingAddress = async (csrf, apiPath, address) => {
     body: JSON.stringify(address),
   });
 
-  return response.json();
+  try {
+    return response.json();
+  } catch (e) {
+    throw new Error('Something went wrong');
+  }
 };

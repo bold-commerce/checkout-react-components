@@ -15,24 +15,49 @@ const useDiscount = () => {
       type: 'checkout/discount/adding',
     });
 
-    const validationResponse = await api.validateDiscount(csrf, apiPath, discount);
-    if (Array.isArray(validationResponse.errors)) {
+    try {
+      const validationResponse = await api.validateDiscount(csrf, apiPath, discount);
+      if (Array.isArray(validationResponse.errors)) {
+        dispatch({
+          type: 'checkout/discount/setErrors',
+          payload: validationResponse.errors,
+        });
+        return Promise.reject(new Error('Invalid discount code'));
+      }
+    } catch (e) {
       dispatch({
         type: 'checkout/discount/setErrors',
-        payload: validationResponse.errors,
+        payload: [{
+          field: 'order',
+          message: e.message,
+        }],
       });
-      return Promise.reject(new Error('Invalid discount code'));
+
+      return Promise.reject(e);
     }
-    const response = await api.addDiscount(csrf, apiPath, discount);
 
-    dispatch({
-      type: 'checkout/discount/added',
-    });
+    try {
+      const response = await api.addDiscount(csrf, apiPath, discount);
 
-    return dispatch({
-      type: 'checkout/update',
-      payload: response.data.application_state,
-    });
+      dispatch({
+        type: 'checkout/discount/added',
+      });
+
+      return dispatch({
+        type: 'checkout/update',
+        payload: response.data.application_state,
+      });
+    } catch (e) {
+      dispatch({
+        type: 'checkout/discount/setErrors',
+        payload: [{
+          field: 'order',
+          message: e.message,
+        }],
+      });
+
+      return Promise.reject(e);
+    }
   }, []);
 
   const removeDiscount = useCallback(async (code) => {
@@ -40,16 +65,28 @@ const useDiscount = () => {
       type: 'checkout/discount/removing',
     });
 
-    const response = await api.removeDiscount(csrf, apiPath, code);
+    try {
+      const response = await api.removeDiscount(csrf, apiPath, code);
 
-    dispatch({
-      type: 'checkout/discount/removed',
-    });
+      dispatch({
+        type: 'checkout/discount/removed',
+      });
 
-    return dispatch({
-      type: 'checkout/update',
-      payload: response.data.application_state,
-    });
+      return dispatch({
+        type: 'checkout/update',
+        payload: response.data.application_state,
+      });
+    } catch (e) {
+      dispatch({
+        type: 'checkout/discount/setErrors',
+        payload: [{
+          field: 'order',
+          message: e.message,
+        }],
+      });
+
+      return Promise.reject(e);
+    }
   }, []);
 
   return {

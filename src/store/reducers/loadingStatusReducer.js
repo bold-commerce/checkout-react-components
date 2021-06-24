@@ -19,6 +19,8 @@ const loadingStatusReducer = (state, action) => {
       return setLoadingState(state, 'customer', 'setting');
     case 'checkout/customer/set':
       return setLoadingState(state, 'customer', 'fulfilled');
+    case 'checkout/customer/setErrors':
+      return setLoadingState(state, 'customer', 'fulfilled');
 
     // Shipping Address Actions
     case 'checkout/shippingAddress/setIncomplete':
@@ -27,6 +29,8 @@ const loadingStatusReducer = (state, action) => {
       return setLoadingState(state, 'shippingAddress', 'setting');
     case 'checkout/shippingAddress/set':
       return setLoadingState(state, 'shippingAddress', 'fulfilled');
+    case 'checkout/shippingAddress/setErrors':
+      return setLoadingState(state, 'shippingAddress', 'fulfilled');
 
     // Billing Address Actions
     case 'checkout/billingAddress/setIncomplete':
@@ -34,6 +38,8 @@ const loadingStatusReducer = (state, action) => {
     case 'checkout/billingAddress/setting':
       return setLoadingState(state, 'billingAddress', 'setting');
     case 'checkout/billingAddress/set':
+      return setLoadingState(state, 'billingAddress', 'fulfilled');
+    case 'checkout/billingAddress/setErrors':
       return setLoadingState(state, 'billingAddress', 'fulfilled');
 
     // Shipping Line Actions

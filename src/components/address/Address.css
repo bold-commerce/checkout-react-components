@@ -4,6 +4,10 @@
   flex-direction: column;
 }
 
+.FieldSet--Address .stx-field {
+  margin-bottom: 0;
+}
+
 .FieldSet--Address .stx-select__select-element {
   line-height: initial;
 }

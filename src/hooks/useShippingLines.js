@@ -18,22 +18,34 @@ const useShippingLines = () => {
 
   const setSelectedShippingLine = useCallback(async (index) => {
     dispatch({
-      type: 'checkout/shippingLine/setting',
+      type: 'checkout/shippingLines/setting',
     });
 
-    const response = await setShippingLine(csrf, apiPath, index);
-    if (response.data && response.data.application_state) {
+    try {
+      const response = await setShippingLine(csrf, apiPath, index);
+      if (response.data && response.data.application_state) {
+        dispatch({
+          type: 'checkout/shippingLines/set',
+        });
+        return dispatch({
+          type: 'checkout/update',
+          payload: response.data.application_state,
+        });
+      }
+    } catch (e) {
       dispatch({
-        type: 'checkout/shippingLine/set',
+        type: 'checkout/shippingLines/setErrors',
+        payload: [{
+          field: 'order',
+          message: e.message,
+        }],
       });
-      return dispatch({
-        type: 'checkout/update',
-        payload: response.data.application_state,
-      });
+
+      return Promise.reject(e);
     }
 
     return dispatch({
-      type: 'checkout/shippingLine/set',
+      type: 'checkout/shippingLines/set',
     });
   }, []);
 
@@ -46,15 +58,27 @@ const useShippingLines = () => {
     dispatch({
       type: 'checkout/shippingLines/fetching',
     });
-    const response = await fetchShippingLines(csrf, apiPath);
-    if (response.data && response.data.application_state) {
+    try {
+      const response = await fetchShippingLines(csrf, apiPath);
+      if (response.data && response.data.application_state) {
+        dispatch({
+          type: 'checkout/shippingLines/fetched',
+        });
+        return dispatch({
+          type: 'checkout/update',
+          payload: response.data.application_state,
+        });
+      }
+    } catch (e) {
       dispatch({
-        type: 'checkout/shippingLines/fetched',
+        type: 'checkout/shippingLines/setErrors',
+        payload: [{
+          field: 'order',
+          message: e.message,
+        }],
       });
-      return dispatch({
-        type: 'checkout/update',
-        payload: response.data.application_state,
-      });
+
+      return Promise.reject(e);
     }
 
     return dispatch({

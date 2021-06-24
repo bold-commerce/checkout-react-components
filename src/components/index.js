@@ -16,7 +16,6 @@ export * from './order_processing';
 export * from './payment';
 export * from './product';
 export * from './product_quantity';
-export * from './product_quantity_selector';
 export * from './provider';
 export * from './shipping_address';
 export * from './shipping_lines';

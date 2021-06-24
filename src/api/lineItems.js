@@ -10,7 +10,11 @@ export const addLineItem = async (csrf, apiPath, data) => {
     body: JSON.stringify(data),
   });
 
-  return response.json();
+  try {
+    return response.json();
+  } catch (e) {
+    throw new Error('Something went wrong');
+  }
 };
 
 export const updateLineItem = async (csrf, apiPath, data) => {

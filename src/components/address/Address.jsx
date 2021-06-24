@@ -23,7 +23,7 @@ const Address = ({
     if (address && address.country_code) {
       submit();
     }
-  }, [address.country_code, address.province_code]);
+  }, [address ? address.country_code : '', address ? address.province_code : '']);
 
   // Submit address if user has stopped typing postal code
   useEffect(() => {
@@ -31,7 +31,7 @@ const Address = ({
       submit();
     }, 1000);
     return () => clearTimeout(postalCodeTimeout);
-  }, [address.postal_code]);
+  }, [address ? address.postal_code : '']);
 
   return (
     <div className="FieldSet--Address">
@@ -124,11 +124,9 @@ const Address = ({
           value={address?.country_code ?? ''}
           messageType={errors && errors?.country && 'alert' || ''}
           messageText={errors && errors?.country && 'Select a country' || ''}
-          onChange={(e) => {
-            onChange({
-              country_code: e.target.value,
-            });
-          }}
+          onChange={(e) => onChange({
+            country_code: e.target.value,
+          })}
         >
           {countryList}
         </SelectField>
@@ -143,11 +141,9 @@ const Address = ({
               value={address?.province_code ?? ''}
               messageType={errors && errors?.province && 'alert' || ''}
               messageText={errors && errors?.province && 'Select a province or state' || ''}
-              onChange={(e) => {
-                onChange({
-                  province_code: e.target.value,
-                });
-              }}
+              onChange={(e) => onChange({
+                province_code: e.target.value,
+              })}
             >
               {provinceList}
             </SelectField>

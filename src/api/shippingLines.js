@@ -12,7 +12,11 @@ export const setShippingLine = async (csrf, apiPath, index) => {
     }),
   });
 
-  return response.json();
+  try {
+    return response.json();
+  } catch (e) {
+    throw new Error('Something went wrong');
+  }
 };
 
 export const fetchShippingLines = async (csrf, apiPath) => {
@@ -26,5 +30,9 @@ export const fetchShippingLines = async (csrf, apiPath) => {
     },
   });
 
-  return response.json();
+  try {
+    return response.json();
+  } catch (e) {
+    throw new Error('Something went wrong');
+  }
 };
