@@ -85,6 +85,8 @@ const loadingStatusReducer = (state, action) => {
       return setLoadingState(state, 'discount', 'setting');
     case 'checkout/discount/removed':
       return setLoadingState(state, 'discount', 'fulfilled');
+    case 'checkout/discount/setErrors':
+      return setLoadingState(state, 'discount', 'fulfilled');
 
     default:
       return state;

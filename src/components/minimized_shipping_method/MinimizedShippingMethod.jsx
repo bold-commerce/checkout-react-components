@@ -1,9 +1,10 @@
 import React from 'react';
 import { Price } from '@boldcommerce/stacks-ui';
 import useShippingLines from '../../hooks/useShippingLines';
+import PropTypes from 'prop-types';
 
 const MinimizedShippingMethod = ({step, onChangeStep, changeButtonText}) => {
-    const { selectedShipping } = useShippingLines();
+    const { selectedShippingAmount, selectedShippingDescription } = useShippingLines();
 
     return (
         <>
@@ -11,11 +12,17 @@ const MinimizedShippingMethod = ({step, onChangeStep, changeButtonText}) => {
             <div className="CheckoutStep__Inner FieldSet">
                 <span>Shipping Method</span>
                 <div className="CheckoutStep__FieldSetInfoContainer">
-                    <span className="CheckoutStep__FieldSetInfo">{selectedShipping.description} – <Price amount={selectedShipping.amount}/> </span>
+                    <span className="CheckoutStep__FieldSetInfo">{selectedShippingDescription} – <Price amount={selectedShippingAmount}/> </span>
                 </div>
             </div>
         </>
     );
 }
+
+MinimizedShippingMethod.propTypes = {
+    step: PropTypes.number,
+    onChangeStep: PropTypes.func,
+    changeButtonText: PropTypes.string,
+};
   
 export default MinimizedShippingMethod;

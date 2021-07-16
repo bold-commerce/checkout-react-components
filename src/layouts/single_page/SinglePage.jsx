@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  OrderProcessing, OrderProcessed, Customer, ShippingAddress, BillingAddress, ShippingLines, PaymentMethod, Summary, CheckoutButton,
+  OrderProcessing, OrderProcessed, Customer, ShippingAddress, BillingAddress, ShippingLines, PaymentMethod, Summary, CheckoutButton, Product
 } from '../../components';
 import { useCheckoutStore } from '../../hooks';
 import './SinglePage.css';

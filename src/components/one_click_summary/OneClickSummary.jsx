@@ -4,18 +4,13 @@ import {
   Price,
 } from '@boldcommerce/stacks-ui';
 import useDiscount from '../../hooks/useDiscount';
-import DollarCircleOutline from './DollarCircleOutline';
+import DollarCircleOutline from '../dollar_circle_outline/DollarCircleOutline';
 import useBreakdown from '../../hooks/useBreakdown';
-import usePayments from '../../hooks/usePayments';
 import './OneClickSummary.css';
 
 
-const OneClickSummary = ({ open, setOpen, isMobile, setIsMobile, summaryAccordion }) => {
-  const { total, totalItems } = useBreakdown();
-  const { payments } = usePayments();
+const OneClickSummary = ({ open, setOpen, isMobile, setIsMobile, summaryAccordion, total, totalItems }) => {
   const { discountApplied } = useDiscount();
-  const paymentStatus = payments[0]?.status !== '';
-  const orderProcessed = (payments && payments.length && paymentStatus) ?? false;
 
   useEffect(() => {
     let resize;
@@ -63,6 +58,37 @@ const OneClickSummary = ({ open, setOpen, isMobile, setIsMobile, summaryAccordio
 OneClickSummary.propTypes = {
   open: PropTypes.bool,
   setOpen: PropTypes.func,
+  isMobile: PropTypes.bool,
+  setIsMobile: PropTypes.func,
+  summaryAccordion: PropTypes.object,
+  totalItems: PropTypes.number,
+  totalItems: PropTypes.number,
 };
 
-export default OneClickSummary;
+const MemoizedOneClickSummary = React.memo(OneClickSummary);
+
+const OneClickSummaryContainer = ({ open, setOpen, isMobile, setIsMobile, summaryAccordion }) => {
+  const { total, totalItems } = useBreakdown();
+
+  return (
+    <MemoizedOneClickSummary
+      open={open}
+      setOpen={setOpen}
+      isMobile={isMobile}
+      setIsMobile={setIsMobile}
+      total={total}
+      totalItems={totalItems}
+      summaryAccordion={summaryAccordion}
+    />
+  )
+};
+
+OneClickSummaryContainer.propTypes = {
+  open: PropTypes.bool,
+  setOpen: PropTypes.func,
+  isMobile: PropTypes.bool,
+  setIsMobile: PropTypes.func,
+  summaryAccordion: PropTypes.object,
+};
+
+export default OneClickSummaryContainer;

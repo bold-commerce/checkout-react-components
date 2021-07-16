@@ -62,7 +62,7 @@ const MemoizedSummary = React.memo(Summary);
 
 const SummaryContainer = ({ open, setOpen }) => {
   const { total, totalItems, orderStatus } = useBreakdown();
-
+  const lol = 'jonny';
   return (
     <MemoizedSummary
       open={open}

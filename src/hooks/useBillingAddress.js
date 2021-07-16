@@ -55,6 +55,11 @@ const useBillingAddress = () => {
 
     // Prevent user from submitting shipping address that is already in app state
     if (appShipping === localShipping) {
+      if (memoizedBillingAddressErrors && Object.keys(memoizedBillingAddressErrors).length > 0) {
+        return dispatch({
+          type: 'checkout/billingAddress/set'
+        });
+      }
       return Promise.resolve();
     }
 
@@ -138,7 +143,7 @@ const useBillingAddress = () => {
       });
       return Promise.reject(e);
     }
-  }, [memoizedBillingAddress, memoizedCountryInfo, billingSameAsShipping]);
+  }, [memoizedBillingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedBillingAddressErrors]);
 
   const setBillingSameAsShipping = useCallback(async (value) => {
     dispatch({

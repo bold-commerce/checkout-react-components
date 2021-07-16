@@ -42,6 +42,18 @@ const errorsReducer = (state, action) => {
         ...state,
         paymentIframe: action.payload.reduce((errors, error) => ({ ...errors, [error.field]: error.message }), {}),
       };
+    
+    // Order Actions
+    case 'checkout/order/setErrors':
+      return {
+        ...state,
+        order: action.payload.reduce((errors, error) => ({ ...errors, [error.field]: error.message }), {}),
+      };
+    case 'checkout/order/set':
+      return {
+        ...state,
+        order: null,
+      };
 
     // Discount Actions
     case 'checkout/discount/setErrors':

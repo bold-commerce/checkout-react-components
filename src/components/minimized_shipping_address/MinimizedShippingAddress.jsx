@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import useShippingAddress from '../../hooks/useShippingAddress';
 
 const MinimizedShippingAddress = ({step, onChangeStep, changeButtonText}) => {
@@ -21,5 +22,11 @@ const MinimizedShippingAddress = ({step, onChangeStep, changeButtonText}) => {
         </>
     );
 }
+
+MinimizedShippingAddress.propTypes = {
+    step: PropTypes.number,
+    onChangeStep: PropTypes.func,
+    changeButtonText: PropTypes.string,
+};
   
 export default MinimizedShippingAddress;

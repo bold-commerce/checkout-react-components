@@ -72,8 +72,32 @@ const usePaymentIframe = () => {
       type: 'checkout/order/processing',
     });
 
-    const response = await processOrder(csrf, apiPath);
+    try {
+      const response = await processOrder(csrf, apiPath);      
+      
+      if (response.errors) {
+        dispatch({
+          type: 'checkout/order/setErrors',
+          payload: response.errors,
+        });
+        dispatch({
+          type: 'checkout/paymentIframe/fetched',
+        });
 
+        return Promise.reject(new Error('Order failed'));
+      }
+    } catch (e) {
+      dispatch({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: e.message,
+        }],
+      });
+
+      return Promise.reject(e);
+    }
+    
     dispatch({
       type: 'checkout/order/processed',
     });

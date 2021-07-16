@@ -16,6 +16,7 @@ export const initialState = {
     billingAddress: null,
     discount: null,
     paymentIframe: null,
+    order: null,
   },
   loadingStatus: {
     customer: 'fulfilled',
