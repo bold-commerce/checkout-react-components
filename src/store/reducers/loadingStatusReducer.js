@@ -62,6 +62,10 @@ const loadingStatusReducer = (state, action) => {
     case 'checkout/paymentIframe/setPaymentIframeErrors':
       return setLoadingState(state, 'paymentIframe', 'fulfilled');
 
+    // Order Actions
+    case 'checkout/order/setErrors':
+      return setLoadingState(state, 'paymentIframe', 'fulfilled');
+
     // Line Item Actions
     case 'checkout/lineItem/removing':
       return setLoadingState(state, 'lineItems', 'setting');

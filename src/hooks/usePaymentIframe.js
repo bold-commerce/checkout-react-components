@@ -80,12 +80,19 @@ const usePaymentIframe = () => {
           type: 'checkout/order/setErrors',
           payload: response.errors,
         });
-        dispatch({
-          type: 'checkout/paymentIframe/fetched',
-        });
 
         return Promise.reject(new Error('Order failed'));
       }
+
+      dispatch({
+        type: 'checkout/order/processed',
+      });
+  
+      return dispatch({
+        type: 'checkout/update',
+        payload: response.data.application_state,
+      });
+
     } catch (e) {
       dispatch({
         type: 'checkout/order/setErrors',
@@ -98,14 +105,7 @@ const usePaymentIframe = () => {
       return Promise.reject(e);
     }
     
-    dispatch({
-      type: 'checkout/order/processed',
-    });
 
-    return dispatch({
-      type: 'checkout/update',
-      payload: response.data.application_state,
-    });
   };
 
   const pigiListener = (event) => {
