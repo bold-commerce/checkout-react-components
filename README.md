@@ -126,6 +126,11 @@ const App = (props) => (
   If no onChange prop is passed, the shipping address component will automatically handle submitting changes via the api.
   
   If an onChange prop is passed, you will have to manually handle submitting the shipping address via the api. The onChange callback will return the current local state of the shipping address on every input change as well.
+- **requiredAddressFields** `(array)`
+  An array containing the names of the address fields that you want to require the user to fill out. If no requiredAddressFields array is provided, then only country, province, and postal code will be required.
+  ```json
+  ["first_name", "last_name", "business_name", "address_line_1", "city", "phone_number"]
+  ``` 
 
 ### BillingAddress
 Displays the billing address fields and handles all billing address logic.
@@ -144,6 +149,11 @@ const App = (props) => (
   If no onChange prop is passed, the billing address component will automatically handle submitting changes via the api.
   
   If an onChange prop is passed, you will have to manually handle submitting the billing address via the api. The onChange callback will return the current local state of the billing address on every input change as well.
+- **requiredAddressFields** `(array)`
+  An array containing the names of the address fields that you want to require the user to fill out. If no requiredAddressFields array is provided, then only country, province, and postal code will be required.
+  ```json
+  ["first_name", "last_name", "business_name", "address_line_1", "city", "phone_number"]
+  ``` 
 
 ### ShippingLines
 Displays a list of available shipping lines and handles shipping line logic.
@@ -346,7 +356,12 @@ const Component = () => (
   );
 );
 ```
-
+#### Hook Arguments
+- **requiredAddressFields** `(array)`
+  An array containing the names of the address fields that you want to require the user to fill out. If no requiredAddressFields array is provided, then only country, province, and postal code will be required.
+  ```json
+  ["first_name", "last_name", "business_name", "address_line_1", "city", "phone_number"]
+  ``` 
 #### Hook Values
 - billingAddress `(object)`
   ```json
@@ -858,6 +873,12 @@ const Component = () => (
   );
 );
 ```
+#### Hook Arguments
+- **requiredAddressFields** `(array)`
+  An array containing the names of the address fields that you want to require the user to fill out. If no requiredAddressFields array is provided, then only country, province, and postal code will be required.
+  ```json
+  ["first_name", "last_name", "business_name", "address_line_1", "city", "phone_number"]
+  ``` 
 #### Hook Values
 - **shippingAddres** `(object)`
   ```json
