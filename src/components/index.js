@@ -26,7 +26,6 @@ export * from './minimized_shipping_method';
 export * from './one_click_discount';
 export * from './one_click_breakdown';
 export * from './one_click_address';
-export * from './one_click_shipping_address_wrapper';
 export * from './payment';
 export * from './product';
 export * from './product_quantity';

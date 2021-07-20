@@ -7,7 +7,7 @@ import useShippingAddress from '../../hooks/useShippingAddress';
 import './ShippingAddress.css';
 
 const ShippingAddress = ({
-  shippingAddress, countryInfo, shippingAddressErrors, submitShippingAddress, onChange,
+  shippingAddress, countryInfo, shippingAddressErrors, submitShippingAddress, onChange, requiredAddressFields,
 }) => {
   const [address, setAddress] = useState(shippingAddress);
   const {
@@ -43,6 +43,7 @@ const ShippingAddress = ({
           showProvince={showProvince}
           provinceLabel={provinceLabel}
           submit={() => submitShippingAddress(address)}
+          requiredAddressFields={requiredAddressFields}
         />
       </div>
     </section>
@@ -55,14 +56,15 @@ ShippingAddress.propTypes = {
   shippingAddressErrors: PropTypes.object,
   submitShippingAddress: PropTypes.func,
   onChange: PropTypes.func,
+  requiredAddressFields: PropTypes.array,
 };
 
 const MemoizedShippingAddress = React.memo(ShippingAddress);
 
-const ShippingAddressContainer = ({ onChange }) => {
+const ShippingAddressContainer = ({ onChange, requiredAddressFields }) => {
   const {
     shippingAddress, countryInfo, shippingAddressErrors, submitShippingAddress,
-  } = useShippingAddress();
+  } = useShippingAddress(requiredAddressFields);
 
   return (
     <MemoizedShippingAddress
@@ -71,12 +73,14 @@ const ShippingAddressContainer = ({ onChange }) => {
       shippingAddressErrors={shippingAddressErrors}
       onChange={onChange}
       submitShippingAddress={onChange || submitShippingAddress}
+      requiredAddressFields={requiredAddressFields}
     />
   );
 };
 
 ShippingAddressContainer.propTypes = {
   onChange: PropTypes.func,
+  requiredAddressFields: PropTypes.array,
 };
 
 export default ShippingAddressContainer;

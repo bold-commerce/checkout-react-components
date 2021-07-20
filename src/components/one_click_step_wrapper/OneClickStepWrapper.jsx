@@ -1,7 +1,7 @@
 import OneClickStep from '../one_click_step/OneClickStep';
 import BillingAddress from '../billing_address/BillingAddress';
 import LoggedInShippingAddress from '../logged_in_shipping_address/LoggedInShippingAddress';
-import OneClickShippingAddressWrapper from '../one_click_shipping_address_wrapper/OneClickShippingAddressWrapper';
+import ShippingAddress from '../shipping_address/ShippingAddress';
 import OneClickEmail from '../one_click_email/OneClickEmail';
 import Payment from '../payment/Payment';
 import OneClickShippingLinesWrapper from '../one_click_shipping_lines_wrapper/OneClickShippingLinesWrapper';
@@ -17,7 +17,7 @@ import React from 'react';
 
 const OneClickStepWrapper = ({ currStep, handleStepChange, handleIncrementStep, isLoggedIn, handleLogout, handleLogin }) => {
 
-  const expandedShippingAddressComponent = isLoggedIn ? <LoggedInShippingAddress /> : <OneClickShippingAddressWrapper />;
+  const expandedShippingAddressComponent = isLoggedIn ? <LoggedInShippingAddress /> : <ShippingAddress />;
     
   return (
     <>
