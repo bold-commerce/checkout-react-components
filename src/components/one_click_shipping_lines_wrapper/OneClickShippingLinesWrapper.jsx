@@ -17,8 +17,8 @@ const OneClickShippingLinesWrapper = ({ onIncrementStep, nextButtonText, isLogge
       getShippingLines(); 
     }
   },[]);
-
-  const tryStepIncrement = () => {
+  
+  const tryStepIncrement = async () => {
     if (showShippingLines) {
       onIncrementStep();
     }
