@@ -72,16 +72,40 @@ const usePaymentIframe = () => {
       type: 'checkout/order/processing',
     });
 
-    const response = await processOrder(csrf, apiPath);
+    try {
+      const response = await processOrder(csrf, apiPath);      
+      
+      if (response.errors) {
+        dispatch({
+          type: 'checkout/order/setErrors',
+          payload: response.errors,
+        });
 
-    dispatch({
-      type: 'checkout/order/processed',
-    });
+        return Promise.reject(new Error('Order failed'));
+      }
 
-    return dispatch({
-      type: 'checkout/update',
-      payload: response.data.application_state,
-    });
+      dispatch({
+        type: 'checkout/order/processed',
+      });
+  
+      return dispatch({
+        type: 'checkout/update',
+        payload: response.data.application_state,
+      });
+
+    } catch (e) {
+      dispatch({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: e.message,
+        }],
+      });
+
+      return Promise.reject(e);
+    }
+    
+
   };
 
   const pigiListener = (event) => {

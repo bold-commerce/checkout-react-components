@@ -12,6 +12,7 @@ const CheckoutProvider = ({
     ...initialState,
     applicationState,
     initialData,
+    isAuthenticated: applicationState?.customer?.platform_id && true,
     publicOrderId,
     token,
     storeIdentifier,

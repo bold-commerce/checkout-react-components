@@ -138,7 +138,7 @@
   font-size: 18px;
   line-height: 21px;
   color: #000000;
-  width: 65px;
+  min-width: 65px;
 }
 
 @media screen and (max-width: 599px) {
@@ -164,7 +164,7 @@
 }
 
 .ProductQuantity {
-  width: 27px;
+  width: 40px;
   height: 25px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   font-weight: 500;

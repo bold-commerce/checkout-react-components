@@ -20,6 +20,11 @@ const orderInfoReducer = (state, action) => {
         ...state,
         orderStatus: 'pending',
       };
+    case 'checkout/order/setErrors':
+      return {
+        ...state,
+        orderStatus: 'pending',
+      };
     case 'checkout/order/processed':
       return {
         ...state,

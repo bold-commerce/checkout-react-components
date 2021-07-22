@@ -51,10 +51,10 @@ const BillingAddress = ({
           : (
             <Address
               address={address}
-              onChange={(data) => setAddress({
-                ...address,
+              onChange={(data) => setAddress((prevAddress) => ({
+                ...prevAddress,
                 ...data,
-              })}
+              }))}
               errors={billingAddressErrors}
               countries={countries}
               provinces={provinces}

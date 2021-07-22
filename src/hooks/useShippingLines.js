@@ -14,6 +14,8 @@ const useShippingLines = () => {
   const shippingLinesFetching = shippingLinesLoadingStatus === 'fetching' || shippingAddressLoadingStatus === 'setting';
   const showShippingLines = selectedCountryCode && !shippingAddressErrors && shippingAddressLoadingStatus !== 'incomplete';
   const selectedShippingLineIndex = parseInt(applicationState.shipping?.selected_shipping?.id ?? 0, 10);
+  const selectedShippingAmount = applicationState.shipping?.selected_shipping?.amount;
+  const selectedShippingDescription = applicationState.shipping?.selected_shipping?.description;
   const memoizedShippingLines = useMemo(() => shippingLines, [JSON.stringify(shippingLines)]);
 
   const setSelectedShippingLine = useCallback(async (index) => {
@@ -90,6 +92,8 @@ const useShippingLines = () => {
     showShippingLines,
     shippingLinesFetching,
     shippingLinesLoadingStatus,
+    selectedShippingAmount,
+    selectedShippingDescription,
     shippingLines: memoizedShippingLines,
     selectedShippingLineIndex,
     setSelectedShippingLine,

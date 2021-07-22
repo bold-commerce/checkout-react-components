@@ -1,10 +1,9 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable react/forbid-prop-types */
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { InputField, SelectField } from '@boldcommerce/stacks-ui';
 import './Address.css';
-
 const Address = ({
   address,
   onChange,
@@ -19,19 +18,47 @@ const Address = ({
   const countryList = countries.map((countryItem) => <option value={countryItem.iso_code} key={countryItem.iso_code}>{countryItem.name}</option>);
   const provinceList = provinces.map((provinceItem) => <option value={provinceItem.iso_code} key={provinceItem.iso_code}>{provinceItem.name}</option>);
 
-  useEffect(() => {
+  const handleSubmit = useCallback(() => {
     if (address && address.country_code) {
-      submit();
+      if (showProvince && address.province_code || !showProvince) {
+        if (showPostalCode && address.postal_code || !showPostalCode) {
+          submit();
+        }
+      }
     }
-  }, [address ? address.country_code : '', address ? address.province_code : '']);
+  }, [
+    address.country_code, 
+    address.province_code, 
+    address.postal_code, 
+    showProvince, 
+    showPostalCode, 
+    address.first_name, 
+    address.last_name,
+    address.business_name,
+    address.address_line_1,
+    address.address_line_2,
+    address.city,
+    address.phone_number,
+  ]);
 
-  // Submit address if user has stopped typing postal code
+  // Submit address if user has stopped typing
   useEffect(() => {
     const postalCodeTimeout = setTimeout(() => {
-      submit();
-    }, 1000);
+      handleSubmit();
+    }, 2000);
     return () => clearTimeout(postalCodeTimeout);
-  }, [address ? address.postal_code : '']);
+  }, [
+    address.first_name,
+    address.last_name,
+    address.business_name,
+    address.address_line_1,
+    address.address_line_2,
+    address.city,
+    address.country_code,
+    address.province_code,
+    address.postal_code,
+    address.phone_number,
+  ]);
 
   return (
     <div className="FieldSet--Address">
@@ -47,7 +74,6 @@ const Address = ({
           onChange={(e) => onChange({
             first_name: e.target.value,
           })}
-          onBlur={submit}
         />
         <InputField
           placeholder="Last name"
@@ -60,7 +86,6 @@ const Address = ({
           onChange={(e) => onChange({
             last_name: e.target.value,
           })}
-          onBlur={submit}
         />
       </div>
       <div className="FieldGroup">
@@ -73,7 +98,6 @@ const Address = ({
           onChange={(e) => onChange({
             business_name: e.target.value,
           })}
-          onBlur={submit}
         />
       </div>
       <div className="FieldGroup">
@@ -88,7 +112,6 @@ const Address = ({
           onChange={(e) => onChange({
             address_line_1: e.target.value,
           })}
-          onBlur={submit}
         />
         <InputField
           placeholder="Apt, suite, etc."
@@ -99,7 +122,6 @@ const Address = ({
           onChange={(e) => onChange({
             address_line_2: e.target.value,
           })}
-          onBlur={submit}
         />
       </div>
       <div className="FieldGroup">
@@ -114,7 +136,6 @@ const Address = ({
           onChange={(e) => onChange({
             city: e.target.value,
           })}
-          onBlur={submit}
         />
       </div>
       <div className="FieldGroup">
@@ -162,7 +183,6 @@ const Address = ({
               onChange={(e) => onChange({
                 postal_code: e.target.value,
               })}
-              onBlur={submit}
             />
           )}
       </div>
@@ -176,13 +196,11 @@ const Address = ({
           onChange={(e) => onChange({
             phone_number: e.target.value,
           })}
-          onBlur={submit}
         />
       </div>
     </div>
   );
 };
-
 Address.propTypes = {
   address: PropTypes.any,
   onChange: PropTypes.func,
@@ -194,5 +212,4 @@ Address.propTypes = {
   provinceLabel: PropTypes.string,
   submit: PropTypes.func,
 };
-
 export default Address;
