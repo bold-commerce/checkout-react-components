@@ -1,6 +1,6 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable react/forbid-prop-types */
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { InputField, SelectField } from '@boldcommerce/stacks-ui';
 import '../address/Address.css';
@@ -18,23 +18,6 @@ const OneClickAddress = ({
 }) => {
   const countryList = countries.map((countryItem) => <option value={countryItem.iso_code} key={countryItem.iso_code}>{countryItem.name}</option>);
   const provinceList = provinces.map((provinceItem) => <option value={provinceItem.iso_code} key={provinceItem.iso_code}>{provinceItem.name}</option>);
-
-//   useEffect(() => {
-//     if (address && address.country_code) {
-//       submit();
-//     }
-//   }, [address ? address.country_code : '', address ? address.province_code : '']);
-
-  // Submit address if user has stopped typing postal code
-//   useEffect(() => {
-//     if 
-//     const postalCodeTimeout = setTimeout(() => {
-//       submit();
-//     }, 1000);
-//     return () => clearTimeout(postalCodeTimeout);
-//   }, [address ? address.postal_code : '']);
-
-
 
     return (
         <div className="FieldSet--Address">
