@@ -979,3 +979,76 @@ const Component = () => (
   ```javascript
   getShippingLines();
   ```
+
+### useOrderMetadata
+Returns all information and methods related to order metadata.
+
+```javascript
+import { useOrderMetadata } from '@boldcommerce/checkout-react-components';
+
+const Component = () => (
+  const {
+    orderMetadata,
+    orderMetadataLoadingStatus,
+    orderMetadataErrors,
+    clearOrderMetadata,
+    overwriteOrderMetadata,
+    appendOrderMetadata,
+  } = useOrderMetadata();
+
+  return (
+    <div>
+      <button onClick={() => appendOrderMetadata("tags",["order-1"])}>Submit<button>
+    </div>
+  );
+);
+```
+#### Hook Values
+- **orderMetaData** `(object)`
+  ```json
+  {
+    "cart_parameters": {
+      "cp-key1": "A cart param"
+    },
+    "note_attributes": {
+      "na-key1": "A note attribute"
+    },
+    "notes": "Special delivery instruction.",
+    "tags": [
+      "order-1"
+    ]
+  }
+  ```
+- **orderMetadataLoadingStatus** `(string)`
+- **orderMetadataErrors** `(object)`
+  ```json
+  {
+    "cart_parameters": "validation.required",
+    "note_attributes": "validation.required",
+    "notes": "validation.required",
+    "tags": "validation.required"
+  }
+  ```
+- **clearOrderMetadata** `(function)`
+  ```javascript
+  clearOrderMetadata();
+  ```
+- **overwriteOrderMetadata** `(function)`
+  ```javascript
+  overwriteOrderMetadata({
+    "cart_parameters": {
+      "cp-key1": "A cart param"
+    },
+    "note_attributes": {
+      "na-key1": "A note attribute"
+    },
+    "notes": "Special delivery instruction.",
+    "tags": [
+      "order-1"
+    ]
+  });
+  ```
+- **appendOrderMetadata** `(function)`
+  ```javascript
+  appendOrderMetadata("tags",["order-1-other"]);
+  ```

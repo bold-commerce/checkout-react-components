@@ -1,4 +1,4 @@
-import { useContext, useCallback, useMemo } from 'react';
+import { useContext, useCallback } from 'react';
 import { CheckoutStore } from '../store';
 import { deleteOrderMetadata, postOrderMetadata, patchOrderMetadata } from '../api';
 
@@ -66,7 +66,7 @@ const useOrderMetadata = () => {
         }
     },[csrf, apiPath]);
 
-    const appendOrderMetadata = useCallback(async (propertyName,propertyValue) => {
+    const appendOrderMetadata = useCallback(async (propertyName, propertyValue) => {
         try {
             const requestBody = {
                 [propertyName]: propertyValue
