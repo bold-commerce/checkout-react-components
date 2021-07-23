@@ -71,6 +71,18 @@ const errorsReducer = (state, action) => {
         ...state,
         discount: null,
       };
+    
+    // Order Metadata Actions
+    case 'checkout/orderMetadata/setErrors':
+      return {
+        ...state,
+        orderMetadata: action.payload.reduce((errors,error) => ({ ...errors, [error.field]: error.message }),{}),
+      };
+    case 'checkout/orderMetadata/set':
+      return {
+        ...state,
+        orderMetadata: null,
+      };
 
     default:
       return state;

@@ -22,7 +22,7 @@ const OneClickEmail = ({
       await submitCustomer({ email_address: email });
 
       if (!customerErrors) {
-          onIncrementStep();
+        onIncrementStep();
       }  
     }
 

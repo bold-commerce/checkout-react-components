@@ -92,6 +92,12 @@ const loadingStatusReducer = (state, action) => {
     case 'checkout/discount/setErrors':
       return setLoadingState(state, 'discount', 'fulfilled');
 
+    // Order Metadata Actions
+    case 'checkout/orderMetadata/setting':
+      return setLoadingState(state, 'orderMetadata', 'setting');
+    case 'checkout/orderMetadata/set':
+      return setLoadingState(state, 'orderMetadata', 'fulfilled');
+
     default:
       return state;
   }
