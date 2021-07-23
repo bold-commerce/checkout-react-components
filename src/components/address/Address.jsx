@@ -14,10 +14,11 @@ const Address = ({
   showProvince,
   provinceLabel,
   submit,
+  requiredAddressFields,
 }) => {
   const countryList = countries.map((countryItem) => <option value={countryItem.iso_code} key={countryItem.iso_code}>{countryItem.name}</option>);
   const provinceList = provinces.map((provinceItem) => <option value={provinceItem.iso_code} key={provinceItem.iso_code}>{provinceItem.name}</option>);
-
+  const hasRequiredFields = requiredAddressFields && requiredAddressFields.length;
   const handleSubmit = useCallback(() => {
     if (address && address.country_code) {
       if (showProvince && address.province_code || !showProvince) {
@@ -64,7 +65,7 @@ const Address = ({
     <div className="FieldSet--Address">
       <div className="FieldGroup">
         <InputField
-          placeholder="First name"
+          placeholder={ hasRequiredFields && requiredAddressFields.includes('first_name') ? "First name" : "First name (optional)" }
           type="text"
           name="first_name"
           className="Field Field--FirstName"
@@ -76,7 +77,7 @@ const Address = ({
           })}
         />
         <InputField
-          placeholder="Last name"
+          placeholder={ hasRequiredFields && requiredAddressFields.includes('last_name') ? "Last name" : "Last name (optional)" }
           type="text"
           name="last_name"
           className="Field Field--LastName"
@@ -90,11 +91,13 @@ const Address = ({
       </div>
       <div className="FieldGroup">
         <InputField
-          placeholder="Company (optional)"
+          placeholder={ hasRequiredFields && requiredAddressFields.includes('business_name') ? "Company" : "Company (optional)" }
           type="text"
-          name="company"
+          name="business_name"
           className="Field Field--Company"
           value={address?.business_name ?? ''}
+          messageType={errors && errors?.business_name && 'alert' || ''}
+          messageText={errors && errors?.business_name && 'Enter a company name' || ''}
           onChange={(e) => onChange({
             business_name: e.target.value,
           })}
@@ -102,9 +105,9 @@ const Address = ({
       </div>
       <div className="FieldGroup">
         <InputField
-          placeholder="Address"
+          placeholder={ hasRequiredFields && requiredAddressFields.includes('address_line_1') ? "Address" : "Address (optional)" }
           type="text"
-          name="address"
+          name="address_line_1"
           className="Field Field--Address"
           value={address?.address_line_1 ?? ''}
           messageType={errors && errors?.address && 'alert' || ''}
@@ -116,7 +119,7 @@ const Address = ({
         <InputField
           placeholder="Apt, suite, etc."
           type="text"
-          name="address2"
+          name="address_line_2"
           className="Field Field--Address2"
           value={address?.address_line_2 ?? ''}
           onChange={(e) => onChange({
@@ -126,7 +129,7 @@ const Address = ({
       </div>
       <div className="FieldGroup">
         <InputField
-          placeholder="City"
+          placeholder={ hasRequiredFields && requiredAddressFields.includes('city') ? "City" : "City (optional)" }
           type="text"
           name="city"
           value={address?.city ?? ''}
@@ -188,11 +191,13 @@ const Address = ({
       </div>
       <div className="FieldGroup">
         <InputField
-          placeholder="Phone (optional)"
+          placeholder={ hasRequiredFields && requiredAddressFields.includes('phone_number') ? "Phone" : "Phone (optional)" }
           type="tel"
-          name="phone"
+          name="phone_number"
           className="Field Field--Phone"
           value={address?.phone_number ?? ''}
+          messageType={errors && errors?.phone_number && 'alert' || ''}
+          messageText={errors && errors?.phone_number && 'Enter a phone number' || ''}
           onChange={(e) => onChange({
             phone_number: e.target.value,
           })}
@@ -211,5 +216,6 @@ Address.propTypes = {
   showProvince: PropTypes.bool,
   provinceLabel: PropTypes.string,
   submit: PropTypes.func,
+  requiredAddressFields: PropTypes.array,
 };
 export default Address;
