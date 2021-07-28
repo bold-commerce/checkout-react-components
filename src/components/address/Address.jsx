@@ -20,11 +20,7 @@ const Address = ({
 
   const handleSubmit = useCallback(() => {
     if (address && address.country_code) {
-      if (showProvince && address.province_code || !showProvince) {
-        if (showPostalCode && address.postal_code || !showPostalCode) {
-          submit();
-        }
-      }
+      submit();
     }
   }, [
     address.country_code, 
@@ -39,6 +35,7 @@ const Address = ({
     address.address_line_2,
     address.city,
     address.phone_number,
+    address.id,
   ]);
 
   // Submit address if user has stopped typing
@@ -58,6 +55,7 @@ const Address = ({
     address.province_code,
     address.postal_code,
     address.phone_number,
+    address.id,
   ]);
 
   return (

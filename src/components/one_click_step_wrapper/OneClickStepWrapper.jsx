@@ -1,6 +1,5 @@
-import OneClickStep from '../one_click_step/OneClickStep';
+import CheckoutStep from '../checkout_step/CheckoutStep';
 import BillingAddress from '../billing_address/BillingAddress';
-import LoggedInShippingAddress from '../logged_in_shipping_address/LoggedInShippingAddress';
 import ShippingAddress from '../shipping_address/ShippingAddress';
 import OneClickEmail from '../one_click_email/OneClickEmail';
 import Payment from '../payment/Payment';
@@ -16,20 +15,18 @@ import React from 'react';
 
 
 const OneClickStepWrapper = ({ currStep, handleStepChange, handleIncrementStep, isLoggedIn, handleLogout, handleLogin }) => {
-
-  const expandedShippingAddressComponent = isLoggedIn ? <LoggedInShippingAddress /> : <ShippingAddress />;
     
   return (
     <>
-      <OneClickStep activeStep={currStep} step={1} stepTitle={"Contact Information"}  
+      <CheckoutStep activeStep={currStep} step={1} stepTitle={"Contact Information"}  
         expandedForms={[<OneClickEmail onIncrementStep={handleIncrementStep} nextButtonText={'Continue to shipping'} isLoggedIn={isLoggedIn} handleLogin={handleLogin} />]} 
         minimizedForms={[<MinimizedEmail isLoggedIn={isLoggedIn} onChangeStep={ isLoggedIn ? handleLogout : handleStepChange} changeButtonText={isLoggedIn ? 'Log out' : 'Change'} step={1} />]}  
       />
-      <OneClickStep activeStep={currStep} step={2} stepTitle={"Shipping"}  
-        expandedForms={[expandedShippingAddressComponent, <OneClickShippingLinesWrapper onIncrementStep={handleIncrementStep} nextButtonText={'Continue to billing'} isLoggedIn={isLoggedIn} />]} 
+      <CheckoutStep activeStep={currStep} step={2} stepTitle={"Shipping"}  
+        expandedForms={[<ShippingAddress />, <OneClickShippingLinesWrapper onIncrementStep={handleIncrementStep} nextButtonText={'Continue to billing'} isLoggedIn={isLoggedIn} />]} 
         minimizedForms={[<MinimizedShippingAddress onChangeStep={handleStepChange} changeButtonText={'Change'} step={2} />, <MinimizedShippingMethod onChangeStep={handleStepChange} changeButtonText={'Change'} step={2} />]} 
       />
-      <OneClickStep activeStep={currStep} step={3} stepTitle={"Billing"} 
+      <CheckoutStep activeStep={currStep} step={3} stepTitle={"Billing"} 
         expandedForms={[<Payment />, <BillingAddress />, <OneClickDiscount />, <CheckoutButton className={"CheckoutStep__NextBtn"} />]} 
         minimizedForms={[]}
       />
