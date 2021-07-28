@@ -450,6 +450,43 @@ const Component = () => (
 - **excludedTaxes** `(number)`
 - **discountTotal** `(number)`
 
+### useLoadingStatus
+Returns all information related to loading status of app and different componenets.
+
+```javascript
+import { useLoadingStatus, ShippingLines } from '@boldcommerce/checkout-react-components';
+import { Price } from '@boldcommerce/stacks-ui';
+
+const Component = () => (
+  const {
+    isLoading, 
+    shippingAddressLoadingStatus, 
+    shippingLinesLoadingStatus, 
+    customerLoadingStatus, 
+    paymentIframeLoadingStatus, 
+    lineItemsLoadingStatus, 
+    discountLoadingStatus,
+  } = useLoadingStatus();
+
+  return (
+    <div>
+      { 
+        shippingLinesLoadingStatus === 'fetching' ? <LoadingState />
+        : <ShippingLines />
+      }
+    </div>
+  );
+);
+```
+#### Hook Values
+- **isLoading** `(boolean)`
+- **shippingAddressLoadingStatus** `(string)`
+- **shippingLinesLoadingStatus** `(string)`
+- **customerLoadingStatus** `(string)`
+- **paymentIframeLoadingStatus** `(string)`
+- **lineItemsLoadingStatus** `(string)`
+- **discountLoadingStatus** `(string)`
+
 ### useCheckoutStore
 Returns the entire checkout state.
 
