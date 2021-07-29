@@ -23,7 +23,7 @@ const AddressData = ({ addressInfo }) => {
 };
 
 const ShippingAddress = ({
-  shippingAddress, countryInfo, shippingAddressErrors, submitShippingAddress, onChange, shippingAddresses, disableShippingAddressComponent,
+  shippingAddress, countryInfo, shippingAddressErrors, submitShippingAddress, onChange, shippingAddresses, disable
 }) => {
   const [address,setAddress] = useState(shippingAddress);
   const {
@@ -63,7 +63,7 @@ const ShippingAddress = ({
                       onChange={() => {
                         updateSelectedShippingAddress(method)
                       }}
-                      disabled={disableShippingAddressComponent}
+                      disabled={disable}
                     />
                 </div>
               ))}
@@ -78,7 +78,7 @@ const ShippingAddress = ({
                         ...prevAddress,
                         id: undefined,
                       }))}
-                      disabled={disableShippingAddressComponent}
+                      disabled={disable}
                     />
                 </div>
               )}
@@ -114,7 +114,7 @@ ShippingAddress.propTypes = {
   submitShippingAddress: PropTypes.func,
   onChange: PropTypes.func,
   shippingAddresses: PropTypes.array,
-  disableShippingAddressComponent: PropTypes.bool,
+  disable: PropTypes.bool,
 };
 
 const MemoizedShippingAddress = React.memo(ShippingAddress);
@@ -133,7 +133,7 @@ const ShippingAddressContainer = ({ onChange }) => {
       onChange={onChange}
       submitShippingAddress={onChange || submitShippingAddress}
       shippingAddresses={savedAddresses}
-      disableShippingAddressComponent={isLoading}
+      disable={isLoading}
     />
   );
 };

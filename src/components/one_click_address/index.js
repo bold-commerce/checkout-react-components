@@ -1,1 +1,0 @@
-export { default as OneClickAddress } from './OneClickAddress';
