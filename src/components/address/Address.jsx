@@ -1,4 +1,3 @@
-/* eslint-disable no-mixed-operators */
 /* eslint-disable react/forbid-prop-types */
 import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';

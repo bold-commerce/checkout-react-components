@@ -43,7 +43,7 @@ const OneClickBreakdown = ({
             discountApplied && (
               <div className="Discount__Applied">
                 <div className="Discount__Remove">
-                  <div className="circle-times-close-button"onClick={() => {removeDiscount(discountCode);}}>&#8855;&nbsp;</div>
+                  <div className="circle-times-close-button"onClick={() => {removeDiscount(discountCode)}}>&#8855;&nbsp;</div>
                   <div>
                     {discountCode} 
                   </div>
