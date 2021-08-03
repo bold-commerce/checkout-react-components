@@ -16,7 +16,6 @@ export * from './order_processing';
 export * from './one_click_summary';
 export * from './one_click_shipping_lines_wrapper';
 export * from './one_click_email';
-export * from './one_click_step_wrapper';
 export * from './checkout_step';
 export * from './minimized_email';
 export * from './minimized_shipping_address';
