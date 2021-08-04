@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { InputField, Button } from '@boldcommerce/stacks-ui';
 import useCustomer from '../../hooks/useCustomer';
-import './OneClickEmail.css';
+import './QuickCheckoutEmail.css';
 
-const OneClickEmail = ({
+const QuickCheckoutEmail = ({
     customer, customerErrors, isAuthenticated, submitCustomer, onChange, isLoggedIn, nextButtonText, onIncrementStep, handleLogin
 }) => {
     const [email, setEmail] = useState(customer?.email_address);
@@ -55,7 +55,7 @@ const OneClickEmail = ({
     );
 };
 
-OneClickEmail.propTypes = {
+QuickCheckoutEmail.propTypes = {
   customer: PropTypes.object,
   customerErrors: PropTypes.object,
   isAuthenticated: PropTypes.bool,
@@ -67,15 +67,15 @@ OneClickEmail.propTypes = {
   handleLogin: PropTypes.func,
 };
 
-const MemoizedOneClickEmail = React.memo(OneClickEmail);
+const MemoizedQuickCheckoutEmail = React.memo(QuickCheckoutEmail);
 
-const OneClickEmailContainer = ({ onChange, onIncrementStep, nextButtonText, isLoggedIn, handleLogin }) => {
+const QuickCheckoutEmailContainer = ({ onChange, onIncrementStep, nextButtonText, isLoggedIn, handleLogin }) => {
   const {
     customer, customerErrors, isAuthenticated, submitCustomer
   } = useCustomer();
 
   return (
-    <MemoizedOneClickEmail
+    <MemoizedQuickCheckoutEmail
       customer={customer}
       customerErrors={customerErrors}
       isAuthenticated={isAuthenticated}
@@ -89,7 +89,7 @@ const OneClickEmailContainer = ({ onChange, onIncrementStep, nextButtonText, isL
   );
 };
 
-OneClickEmailContainer.propTypes = {
+QuickCheckoutEmailContainer.propTypes = {
   onChange: PropTypes.func,
   onIncrementStep: PropTypes.func,
   nextButtonText: PropTypes.string,
@@ -97,4 +97,4 @@ OneClickEmailContainer.propTypes = {
   handleLogin: PropTypes.func,
 };
 
-export default OneClickEmailContainer;
+export default QuickCheckoutEmailContainer;

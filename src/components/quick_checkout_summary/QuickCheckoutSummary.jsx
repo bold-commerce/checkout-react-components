@@ -6,10 +6,10 @@ import {
 import useDiscount from '../../hooks/useDiscount';
 import DollarCircleOutline from '../dollar_circle_outline/DollarCircleOutline';
 import useBreakdown from '../../hooks/useBreakdown';
-import './OneClickSummary.css';
+import './QuickCheckoutSummary.css';
 
 
-const OneClickSummary = ({ open, setOpen, isMobile, setIsMobile, summaryAccordion, total, totalItems }) => {
+const QuickCheckoutSummary = ({ open, setOpen, isMobile, setIsMobile, summaryAccordion, total, totalItems }) => {
   const { discountApplied } = useDiscount();
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const OneClickSummary = ({ open, setOpen, isMobile, setIsMobile, summaryAccordio
   );
 };
 
-OneClickSummary.propTypes = {
+QuickCheckoutSummary.propTypes = {
   open: PropTypes.bool,
   setOpen: PropTypes.func,
   isMobile: PropTypes.bool,
@@ -65,13 +65,13 @@ OneClickSummary.propTypes = {
   totalItems: PropTypes.number,
 };
 
-const MemoizedOneClickSummary = React.memo(OneClickSummary);
+const MemoizedQuickCheckoutSummary = React.memo(QuickCheckoutSummary);
 
-const OneClickSummaryContainer = ({ open, setOpen, isMobile, setIsMobile, summaryAccordion }) => {
+const QuickCheckoutSummaryContainer = ({ open, setOpen, isMobile, setIsMobile, summaryAccordion }) => {
   const { total, totalItems } = useBreakdown();
 
   return (
-    <MemoizedOneClickSummary
+    <MemoizedQuickCheckoutSummary
       open={open}
       setOpen={setOpen}
       isMobile={isMobile}
@@ -83,7 +83,7 @@ const OneClickSummaryContainer = ({ open, setOpen, isMobile, setIsMobile, summar
   )
 };
 
-OneClickSummaryContainer.propTypes = {
+QuickCheckoutSummaryContainer.propTypes = {
   open: PropTypes.bool,
   setOpen: PropTypes.func,
   isMobile: PropTypes.bool,
@@ -91,4 +91,4 @@ OneClickSummaryContainer.propTypes = {
   summaryAccordion: PropTypes.object,
 };
 
-export default OneClickSummaryContainer;
+export default QuickCheckoutSummaryContainer;

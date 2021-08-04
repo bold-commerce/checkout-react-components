@@ -4,9 +4,9 @@ import { Button } from '@boldcommerce/stacks-ui';
 import { ShippingLines } from '../shipping_lines';
 import { useShippingLines } from '../../hooks';
 import { useEffect } from 'react';
-import './OneClickShippingLinesWrapper.css';
+import './QuickCheckoutShippingLinesWrapper.css';
 
-const OneClickShippingLinesWrapper = ({ onIncrementStep, nextButtonText, isLoggedIn }) => {
+const QuickCheckoutShippingLinesWrapper = ({ onIncrementStep, nextButtonText, isLoggedIn }) => {
   
   const { showShippingLines, selectedShippingLineIndex, shippingLinesLoadingStatus, shippingLinesFetching, getShippingLines } = useShippingLines();
   const showLoadingShippingLine = shippingLinesFetching && shippingLinesLoadingStatus != 'setting';
@@ -37,9 +37,9 @@ const OneClickShippingLinesWrapper = ({ onIncrementStep, nextButtonText, isLogge
 
 };
 
-OneClickShippingLinesWrapper.propTypes = {
+QuickCheckoutShippingLinesWrapper.propTypes = {
   onIncrementStep: PropTypes.func,
   nextButtonText: PropTypes.string,
 };
 
-export default React.memo(OneClickShippingLinesWrapper);
+export default React.memo(QuickCheckoutShippingLinesWrapper);

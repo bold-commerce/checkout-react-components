@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Input, Button, Message } from '@boldcommerce/stacks-ui';
 import { useDiscount } from '../../hooks';
-import './OneClickDiscount.css';
+import './QuickCheckoutDiscount.css';
 
-const OneClickDiscount = ({
+const QuickCheckoutDiscount = ({
   discountApplied, discountCode, discountErrors, applyDiscount,
 }) => {
     const [discount, setDiscount] = useState(discountCode);
@@ -80,22 +80,22 @@ const OneClickDiscount = ({
     }
 };
 
-OneClickDiscount.propTypes = {
+QuickCheckoutDiscount.propTypes = {
   discountApplied: PropTypes.bool,
   discountCode: PropTypes.string,
   discountErrors: PropTypes.object,
   applyDiscount: PropTypes.func,
 };
 
-const MemoizedOneClickDiscount = React.memo(OneClickDiscount);
+const MemoizedQuickCheckoutDiscount = React.memo(QuickCheckoutDiscount);
 
-const OneClickDiscountContainer = () => {
+const QuickCheckoutDiscountContainer = () => {
   const {
     discountApplied, discountCode, discountErrors, applyDiscount,
   } = useDiscount();
 
   return (
-    <MemoizedOneClickDiscount
+    <MemoizedQuickCheckoutDiscount
       discountApplied={discountApplied}
       discountCode={discountCode}
       discountErrors={discountErrors}
@@ -104,4 +104,4 @@ const OneClickDiscountContainer = () => {
   );
 };
 
-export default OneClickDiscountContainer;
+export default QuickCheckoutDiscountContainer;

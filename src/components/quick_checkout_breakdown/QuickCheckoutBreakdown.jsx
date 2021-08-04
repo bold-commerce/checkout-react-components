@@ -3,10 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Price } from '@boldcommerce/stacks-ui';
 import { useDiscount, useBreakdown } from '../../hooks';
-import './OneClickBreakdown.css';
+import './QuickCheckoutBreakdown.css';
 import { RedactedCreditCard } from '../redacted_credit_card';
 
-const OneClickBreakdown = ({
+const QuickCheckoutBreakdown = ({
   subTotal, shippingTotal, discountTotal, total, remainingBalance, taxesTotal, payments, hasPayments, taxesIncluded, taxes, discountApplied, discountCode, removeDiscount, totalItems, isMobile, shippingDescription,
 }) => {
   const paymentMethods = payments.map((payment, index) => (
@@ -98,7 +98,7 @@ const OneClickBreakdown = ({
   );
 };
 
-OneClickBreakdown.propTypes = {
+QuickCheckoutBreakdown.propTypes = {
   subTotal: PropTypes.number,
   shippingTotal: PropTypes.number,
   discountTotal: PropTypes.number,
@@ -117,16 +117,16 @@ OneClickBreakdown.propTypes = {
   shippingDescription: PropTypes.string,
 };
 
-const MemoizedOneClickBreakdown = React.memo(OneClickBreakdown);
+const MemoizedQuickCheckoutBreakdown = React.memo(QuickCheckoutBreakdown);
 
-const OneClickBreakdownContainer = ({ isMobile }) => {
+const QuickCheckoutBreakdownContainer = ({ isMobile }) => {
   const {
     subTotal, shippingTotal, discountTotal, total, remainingBalance, taxesTotal, payments, hasPayments, taxesIncluded, taxes, totalItems, shippingDescription,
   } = useBreakdown();
   const { discountApplied, discountCode, removeDiscount } = useDiscount();
 
   return (
-    <MemoizedOneClickBreakdown
+    <MemoizedQuickCheckoutBreakdown
       subTotal={subTotal}
       shippingTotal={shippingTotal}
       discountTotal={discountTotal}
@@ -147,8 +147,8 @@ const OneClickBreakdownContainer = ({ isMobile }) => {
   );
 };
 
-OneClickBreakdownContainer.propTypes = {
+QuickCheckoutBreakdownContainer.propTypes = {
   isMobile: PropTypes.bool,
 };
 
-export default OneClickBreakdownContainer;
+export default QuickCheckoutBreakdownContainer;
