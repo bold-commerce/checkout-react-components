@@ -6,7 +6,6 @@ A React component library for creating checkout experiences utilizing Bold API's
 - [Usage](#usage)
 - [Examples](#examples)
 - [Components](#components)
-- [Layouts](#layouts)
 - [Hooks](#hooks)
 
 ## Installation
@@ -312,23 +311,6 @@ const App = () => (
 
 - **lineText (required)**  
   Last four digits to be shown for the redacted credit card number.
-
-
-## Layouts
-Use these layouts if you want an uncustomized Checkout that uses the Bold Checkout API.
-
-### SinglePageCollapsedLayout
-This is one of the various layouts that can be used. This will include all of the components needed and the fastest and easiest way to get started with a headless checkout.
-
-```javascript
-import { CheckoutProvider, SinglePageCollapsedLayout } from '@boldcommerce/checkout-react-components';
-
-const App = (props) => (
-  <CheckoutProvider {...props}>
-    <SinglePageCollapsedLayout />
-  </CheckoutProvider>
-);
-```
 
 ## Hooks
 
