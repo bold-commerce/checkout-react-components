@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import useCountryInfo from '../../hooks/useCountryInfo';
 import Address from '../address/Address';
 import { RadioField } from '@boldcommerce/stacks-ui';
-import { useShippingAddress, useLoadingStatus } from '../../hooks';
+import { useShippingAddress } from '../../hooks';
 import './ShippingAddress.css';
 
 
@@ -23,7 +23,7 @@ const AddressData = ({ addressInfo }) => {
 };
 
 const ShippingAddress = ({
-  shippingAddress, countryInfo, shippingAddressErrors, submitShippingAddress, onChange, shippingAddresses, disable
+  shippingAddress, countryInfo, shippingAddressErrors, submitShippingAddress, onChange, requiredAddressFields, shippingAddresses, disable
 }) => {
   const [address,setAddress] = useState(shippingAddress);
   const {
@@ -49,7 +49,24 @@ const ShippingAddress = ({
     <>
       <section className="FieldSet FieldSet--ShippingMethod">
       <div className="FieldSet__Header">
-          <div className="FieldSet__Heading">Shipping address</div>
+        <div className="FieldSet__Heading">Shipping address</div>
+      </div>
+      <div className="FieldSet__Content">
+        <Address
+          address={address}
+          onChange={(data) => setAddress((prevAddress) => ({
+            ...prevAddress,
+            ...data,
+          }))}
+          errors={shippingAddressErrors}
+          countries={countries}
+          provinces={provinces}
+          showPostalCode={showPostalCode}
+          showProvince={showProvince}
+          provinceLabel={provinceLabel}
+          submit={() => submitShippingAddress(address)}
+          requiredAddressFields={requiredAddressFields}
+        />
       </div>
           <>
             <div className="FieldSet__Content">
@@ -115,15 +132,15 @@ ShippingAddress.propTypes = {
   onChange: PropTypes.func,
   shippingAddresses: PropTypes.array,
   disable: PropTypes.bool,
+  requiredAddressFields: PropTypes.array,
 };
 
 const MemoizedShippingAddress = React.memo(ShippingAddress);
 
-const ShippingAddressContainer = ({ onChange }) => {
+const ShippingAddressContainer = ({ onChange, requiredAddressFields }) => {
   const {
     shippingAddress, countryInfo, shippingAddressErrors, submitShippingAddress, savedAddresses, 
-  } = useShippingAddress();
-  const { isLoading } = useLoadingStatus();
+  } = useShippingAddress(requiredAddressFields);
 
   return (
     <MemoizedShippingAddress
@@ -134,12 +151,14 @@ const ShippingAddressContainer = ({ onChange }) => {
       submitShippingAddress={onChange || submitShippingAddress}
       shippingAddresses={savedAddresses}
       disable={isLoading}
+      requiredAddressFields={requiredAddressFields}
     />
   );
 };
 
 ShippingAddressContainer.propTypes = {
   onChange: PropTypes.func,
+  requiredAddressFields: PropTypes.array,
 };
 
 export default ShippingAddressContainer;
