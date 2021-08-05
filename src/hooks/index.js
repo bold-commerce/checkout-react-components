@@ -11,3 +11,4 @@ export { default as useLineItems } from './useLineItems';
 export { default as useOrderSummary } from './useOrderSummary';
 export { default as useCheckoutStore } from './useCheckoutStore';
 export { default as useLoadingStatus } from './useLoadingStatus';
+export { default as useOrderMetadata } from './useOrderMetadata';
