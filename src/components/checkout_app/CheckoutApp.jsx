@@ -32,9 +32,9 @@ const CheckoutApp = ({ children }) => {
   if (!csrf) return null;
 
   return (
-    <>
+    <div className="Checkout">
       {children}
-    </>
+    </div>
   );
 };
 

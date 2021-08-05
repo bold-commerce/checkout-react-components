@@ -6,7 +6,6 @@ A React component library for creating checkout experiences utilizing Bold API's
 - [Usage](#usage)
 - [Examples](#examples)
 - [Components](#components)
-- [Layouts](#layouts)
 - [Hooks](#hooks)
 
 ## Installation
@@ -126,6 +125,11 @@ const App = (props) => (
   If no onChange prop is passed, the shipping address component will automatically handle submitting changes via the api.
   
   If an onChange prop is passed, you will have to manually handle submitting the shipping address via the api. The onChange callback will return the current local state of the shipping address on every input change as well.
+- **requiredAddressFields** `(array)`
+  An array containing the names of the address fields that you want to require the user to fill out. If no requiredAddressFields array is provided, then only country, province, and postal code will be required.
+  ```json
+  ["first_name", "last_name", "business_name", "address_line_1", "city", "phone_number"]
+  ``` 
 
 ### BillingAddress
 Displays the billing address fields and handles all billing address logic.
@@ -144,6 +148,11 @@ const App = (props) => (
   If no onChange prop is passed, the billing address component will automatically handle submitting changes via the api.
   
   If an onChange prop is passed, you will have to manually handle submitting the billing address via the api. The onChange callback will return the current local state of the billing address on every input change as well.
+- **requiredAddressFields** `(array)`
+  An array containing the names of the address fields that you want to require the user to fill out. If no requiredAddressFields array is provided, then only country, province, and postal code will be required.
+  ```json
+  ["first_name", "last_name", "business_name", "address_line_1", "city", "phone_number"]
+  ``` 
 
 ### ShippingLines
 Displays a list of available shipping lines and handles shipping line logic.
@@ -303,23 +312,6 @@ const App = () => (
 - **lineText (required)**  
   Last four digits to be shown for the redacted credit card number.
 
-
-## Layouts
-Use these layouts if you want an uncustomized Checkout that uses the Bold Checkout API.
-
-### SinglePageCollapsedLayout
-This is one of the various layouts that can be used. This will include all of the components needed and the fastest and easiest way to get started with a headless checkout.
-
-```javascript
-import { CheckoutProvider, SinglePageCollapsedLayout } from '@boldcommerce/checkout-react-components';
-
-const App = (props) => (
-  <CheckoutProvider {...props}>
-    <SinglePageCollapsedLayout />
-  </CheckoutProvider>
-);
-```
-
 ## Hooks
 
 ### useBillingAddress
@@ -346,7 +338,12 @@ const Component = () => (
   );
 );
 ```
-
+#### Hook Arguments
+- **requiredAddressFields** `(array)`
+  An array containing the names of the address fields that you want to require the user to fill out. If no requiredAddressFields array is provided, then only country, province, and postal code will be required.
+  ```json
+  ["first_name", "last_name", "business_name", "address_line_1", "city", "phone_number"]
+  ``` 
 #### Hook Values
 - billingAddress `(object)`
   ```json
@@ -449,6 +446,43 @@ const Component = () => (
 - **shippingTotal** `(number)`
 - **excludedTaxes** `(number)`
 - **discountTotal** `(number)`
+
+### useLoadingStatus
+Returns all information related to loading status of app and different componenets.
+
+```javascript
+import { useLoadingStatus, ShippingLines } from '@boldcommerce/checkout-react-components';
+import { Price } from '@boldcommerce/stacks-ui';
+
+const Component = () => (
+  const {
+    isLoading, 
+    shippingAddressLoadingStatus, 
+    shippingLinesLoadingStatus, 
+    customerLoadingStatus, 
+    paymentIframeLoadingStatus, 
+    lineItemsLoadingStatus, 
+    discountLoadingStatus,
+  } = useLoadingStatus();
+
+  return (
+    <div>
+      { 
+        shippingLinesLoadingStatus === 'fetching' ? <LoadingState />
+        : <ShippingLines />
+      }
+    </div>
+  );
+);
+```
+#### Hook Values
+- **isLoading** `(boolean)`
+- **shippingAddressLoadingStatus** `(string)`
+- **shippingLinesLoadingStatus** `(string)`
+- **customerLoadingStatus** `(string)`
+- **paymentIframeLoadingStatus** `(string)`
+- **lineItemsLoadingStatus** `(string)`
+- **discountLoadingStatus** `(string)`
 
 ### useCheckoutStore
 Returns the entire checkout state.
@@ -858,6 +892,12 @@ const Component = () => (
   );
 );
 ```
+#### Hook Arguments
+- **requiredAddressFields** `(array)`
+  An array containing the names of the address fields that you want to require the user to fill out. If no requiredAddressFields array is provided, then only country, province, and postal code will be required.
+  ```json
+  ["first_name", "last_name", "business_name", "address_line_1", "city", "phone_number"]
+  ``` 
 #### Hook Values
 - **shippingAddres** `(object)`
   ```json
@@ -978,4 +1018,77 @@ const Component = () => (
 - **getShippingLines** `(function)`
   ```javascript
   getShippingLines();
+  ```
+
+### useOrderMetadata
+Returns all information and methods related to order metadata.
+
+```javascript
+import { useOrderMetadata } from '@boldcommerce/checkout-react-components';
+
+const Component = () => (
+  const {
+    orderMetadata,
+    orderMetadataLoadingStatus,
+    orderMetadataErrors,
+    clearOrderMetadata,
+    overwriteOrderMetadata,
+    appendOrderMetadata,
+  } = useOrderMetadata();
+
+  return (
+    <div>
+      <button onClick={() => appendOrderMetadata("tags",["order-1"])}>Submit<button>
+    </div>
+  );
+);
+```
+#### Hook Values
+- **orderMetaData** `(object)`
+  ```json
+  {
+    "cart_parameters": {
+      "cp-key1": "A cart param"
+    },
+    "note_attributes": {
+      "na-key1": "A note attribute"
+    },
+    "notes": "Special delivery instruction.",
+    "tags": [
+      "order-1"
+    ]
+  }
+  ```
+- **orderMetadataLoadingStatus** `(string)`
+- **orderMetadataErrors** `(object)`
+  ```json
+  {
+    "cart_parameters": "validation.required",
+    "note_attributes": "validation.required",
+    "notes": "validation.required",
+    "tags": "validation.required"
+  }
+  ```
+- **clearOrderMetadata** `(function)`
+  ```javascript
+  clearOrderMetadata();
+  ```
+- **overwriteOrderMetadata** `(function)`
+  ```javascript
+  overwriteOrderMetadata({
+    "cart_parameters": {
+      "cp-key1": "A cart param"
+    },
+    "note_attributes": {
+      "na-key1": "A note attribute"
+    },
+    "notes": "Special delivery instruction.",
+    "tags": [
+      "order-1"
+    ]
+  });
+  ```
+- **appendOrderMetadata** `(function)`
+  ```javascript
+  appendOrderMetadata("tags",["order-1-other"]);
   ```

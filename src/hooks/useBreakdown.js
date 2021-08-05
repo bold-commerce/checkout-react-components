@@ -4,6 +4,7 @@ import { CheckoutStore } from '../store';
 const useBreakdown = () => {
   const { state } = useContext(CheckoutStore);
   const payments = state.applicationState?.payments;
+  const shippingDescription = state.applicationState?.shipping?.selected_shipping?.description;
   const memoizedPayments = useMemo(() => payments, [JSON.stringify(payments)]);
   const hasPayments = useMemo(() => payments.length > 0, [JSON.stringify(payments)]);
   const taxes = state.applicationState?.taxes;
@@ -26,6 +27,7 @@ const useBreakdown = () => {
   return {
     subTotal,
     shippingTotal,
+    shippingDescription,
     excludedTaxes,
     discountTotal,
     total,

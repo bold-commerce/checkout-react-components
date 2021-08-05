@@ -3,7 +3,7 @@ import {
   updateBillingAddress, updateShippingAddress, validateShippingAddress,
 } from '../api';
 import { CheckoutStore } from '../store';
-import { generateTaxes, getShippingLines } from './shared';
+import { generateTaxes, getShippingLines, requiredAddressFieldValidation } from './shared';
 
 const emptyAddress = {
   first_name: '',
@@ -20,19 +20,32 @@ const emptyAddress = {
   phone_number: '',
 };
 
-const useShippingAddress = () => {
+const useShippingAddress = (requiredAddressFields) => {
   const { state, dispatch } = useContext(CheckoutStore);
   const { csrf, apiPath } = state;
   const shippingAddress = state.applicationState.addresses.shipping;
+  const savedAddresses = state.applicationState.customer.saved_addresses;
   const shippingAddressErrors = state.errors.shippingAddress;
   const countryInfo = state.initialData.country_info;
   const { billingSameAsShipping } = state.orderInfo;
 
   const memoizedShippingAddress = useMemo(() => shippingAddress, [JSON.stringify(shippingAddress)]);
+  const memoizedRequiredAddressFields = useMemo(() => requiredAddressFields, [JSON.stringify(requiredAddressFields)]);
   const memoizedShippingAddressErrors = useMemo(() => shippingAddressErrors, [JSON.stringify(shippingAddressErrors)]);
   const memoizedCountryInfo = useMemo(() => countryInfo, []); // country info never changes, so no need to update it
+  const memoizedSavedAddresses = useMemo(() => savedAddresses, [JSON.stringify(savedAddresses)]);
 
   const submitShippingAddress = useCallback(async (shippingAddressData) => {
+    if (requiredAddressFields) {
+      const requiredAddressFieldErrors = requiredAddressFieldValidation(shippingAddressData, memoizedRequiredAddressFields);
+      if ( requiredAddressFieldErrors ) {
+        dispatch({
+          type: 'checkout/shippingAddress/setErrors',
+          payload: requiredAddressFieldErrors,
+        });
+        return Promise.reject();
+      }
+    }
     if (!shippingAddressData || !shippingAddressData.country_code) {
       dispatch({
         type: 'checkout/shippingAddress/setErrors',
@@ -151,8 +164,6 @@ const useShippingAddress = () => {
       return Promise.reject(e);
     }
 
-    await generateTaxes(csrf, apiPath, dispatch);
-
     if (shippingAddressData.country_code) {
       await getShippingLines(csrf, apiPath, dispatch);
     }
@@ -164,20 +175,26 @@ const useShippingAddress = () => {
         type: 'checkout/billingAddress/set',
         payload: billingAddressResponse.data.address,
       });
+
+      await generateTaxes(csrf, apiPath, dispatch);
+      
       return dispatch({
         type: 'checkout/update',
         payload: billingAddressResponse.data.application_state,
       });
-    }
+    } 
+
+    await generateTaxes(csrf, apiPath, dispatch);
 
     return dispatch({
       type: 'checkout/update',
       payload: shippingAddressResponse.data.application_state,
     });
-  }, [memoizedShippingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedShippingAddressErrors]);
+  }, [memoizedShippingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedShippingAddressErrors, memoizedRequiredAddressFields]);
 
   return {
     shippingAddress: memoizedShippingAddress,
+    savedAddresses: memoizedSavedAddresses,
     countryInfo: memoizedCountryInfo,
     shippingAddressErrors: memoizedShippingAddressErrors,
     submitShippingAddress,

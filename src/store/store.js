@@ -14,8 +14,10 @@ export const initialState = {
     customer: null,
     shippingAddress: null,
     billingAddress: null,
+    orderMetadata: null,
     discount: null,
     paymentIframe: null,
+    order: null,
   },
   loadingStatus: {
     customer: 'fulfilled',
@@ -24,6 +26,7 @@ export const initialState = {
     paymentIframe: 'fulfilled',
     lineItems: 'fulfilled',
     discount: 'fulfilled',
+    orderMetadata: 'fulfilled',
     isLoading: false,
   },
   orderInfo: {

@@ -1,6 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { updateBillingAddress, validateBillingAddress } from '../api';
 import { CheckoutStore } from '../store';
+import { requiredAddressFieldValidation } from './shared';
 
 const emptyAddress = {
   first_name: '',
@@ -17,7 +18,7 @@ const emptyAddress = {
   phone_number: '',
 };
 
-const useBillingAddress = () => {
+const useBillingAddress = (requiredAddressFields) => {
   const { state, dispatch } = useContext(CheckoutStore);
   const { csrf, apiPath } = state;
   const billingAddress = state.applicationState.addresses.billing;
@@ -28,11 +29,24 @@ const useBillingAddress = () => {
 
   const memoizedBillingAddress = useMemo(() => billingAddress, [JSON.stringify(billingAddress)]);
   const memoizedBillingAddressErrors = useMemo(() => billingAddressErrors, [JSON.stringify(billingAddressErrors)]);
+  const memoizedRequiredAddressFields = useMemo(() => requiredAddressFields, [JSON.stringify(requiredAddressFields)]);
   const memoizedCountryInfo = useMemo(() => countryInfo, []); // country info never changes, so no need to update itc
   const memoizedShippingAddress = useMemo(() => shippingAddress, [JSON.stringify(shippingAddress)]);
 
   const submitBillingAddress = useCallback(async (billingAddressData) => {
     if (billingSameAsShipping) return Promise.resolve();
+
+    if (requiredAddressFields) {
+      const requiredAddressFieldErrors = requiredAddressFieldValidation(billingAddressData, memoizedRequiredAddressFields);
+      if ( requiredAddressFieldErrors ) {
+        dispatch({
+          type: 'checkout/billingAddress/setErrors',
+          payload: requiredAddressFieldErrors,
+        });
+        return Promise.reject();
+      }
+    }
+
     if (!billingAddressData || !billingAddressData.country_code) {
       dispatch({
         type: 'checkout/billingAddress/setErrors',
@@ -55,6 +69,11 @@ const useBillingAddress = () => {
 
     // Prevent user from submitting shipping address that is already in app state
     if (appShipping === localShipping) {
+      if (memoizedBillingAddressErrors && Object.keys(memoizedBillingAddressErrors).length > 0) {
+        return dispatch({
+          type: 'checkout/billingAddress/set'
+        });
+      }
       return Promise.resolve();
     }
 
@@ -138,7 +157,7 @@ const useBillingAddress = () => {
       });
       return Promise.reject(e);
     }
-  }, [memoizedBillingAddress, memoizedCountryInfo, billingSameAsShipping]);
+  }, [memoizedBillingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedBillingAddressErrors, memoizedRequiredAddressFields]);
 
   const setBillingSameAsShipping = useCallback(async (value) => {
     dispatch({

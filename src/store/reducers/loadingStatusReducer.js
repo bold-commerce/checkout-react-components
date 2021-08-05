@@ -62,6 +62,10 @@ const loadingStatusReducer = (state, action) => {
     case 'checkout/paymentIframe/setPaymentIframeErrors':
       return setLoadingState(state, 'paymentIframe', 'fulfilled');
 
+    // Order Actions
+    case 'checkout/order/setErrors':
+      return setLoadingState(state, 'paymentIframe', 'fulfilled');
+
     // Line Item Actions
     case 'checkout/lineItem/removing':
       return setLoadingState(state, 'lineItems', 'setting');
@@ -85,6 +89,14 @@ const loadingStatusReducer = (state, action) => {
       return setLoadingState(state, 'discount', 'setting');
     case 'checkout/discount/removed':
       return setLoadingState(state, 'discount', 'fulfilled');
+    case 'checkout/discount/setErrors':
+      return setLoadingState(state, 'discount', 'fulfilled');
+
+    // Order Metadata Actions
+    case 'checkout/orderMetadata/setting':
+      return setLoadingState(state, 'orderMetadata', 'setting');
+    case 'checkout/orderMetadata/set':
+      return setLoadingState(state, 'orderMetadata', 'fulfilled');
 
     default:
       return state;

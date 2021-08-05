@@ -1,47 +1,20 @@
-* {
+.Checkout, .Checkout * {
   margin: 0;
   padding: 0;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: inherit;
-}
-
-*::placeholder {
-  color: rgba(0, 0, 0, 0.3);
-}
-
-html {
   box-sizing: border-box;
-}
-
-body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   font-smooth: always;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  margin: 0;
-}
-.Checkout {
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto;
-  position: relative;
-  max-width: 1500px;
 }
 
-@media only screen and (min-width: 1200px) {
-  .Checkout {
-    flex-direction: row;
-  }
+.Checkout *::before,
+.Checkout *::after {
+  box-sizing: inherit;
 }
 
-.Checkout__Summary,
-.Checkout__Main {
-  flex: 1;
-  padding: 35px;
+.Checkout *::placeholder {
+  color: rgba(0, 0, 0, 0.3);
 }
 
 .FieldSet {
@@ -69,6 +42,7 @@ body {
   margin: 0 5px;
 }
 
+
 .SelectField {
   margin: 0 5px;
   display: block;
@@ -76,7 +50,8 @@ body {
 }
 
 .Checkout__Summary {
-  background: #fafafb;
+  background: #FAFAFB;
+  z-index: 9;
 }
 
 .SummaryBlock {
@@ -95,12 +70,3 @@ body {
   position: absolute;
   bottom: 0;
 }
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  font-smooth: always;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  margin: 0;
-}
-

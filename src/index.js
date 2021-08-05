@@ -1,8 +1,7 @@
+import './css/styles.css';
+
 // Components
 export * from './components';
-
-// Layouts
-export * from './layouts';
 
 // Hooks
 export * from './hooks';
