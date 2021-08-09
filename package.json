@@ -1,6 +1,6 @@
 {
   "name": "@boldcommerce/checkout-react-components",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "author": {
@@ -25,8 +25,6 @@
     "@boldcommerce/stacks-ui": "^1.0.2",
     "classnames": "^2.2.6",
     "prop-types": "^15.7.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
     "react-spring": "^8.0.27"
   },
   "devDependencies": {
