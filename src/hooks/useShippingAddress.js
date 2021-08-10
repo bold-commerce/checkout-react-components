@@ -38,7 +38,7 @@ const useShippingAddress = (requiredAddressFields) => {
   const submitShippingAddress = useCallback(async (shippingAddressData) => {
     if (requiredAddressFields) {
       const requiredAddressFieldErrors = requiredAddressFieldValidation(shippingAddressData, memoizedRequiredAddressFields);
-      if ( requiredAddressFieldErrors ) {
+      if (requiredAddressFieldErrors) {
         dispatch({
           type: 'checkout/shippingAddress/setErrors',
           payload: requiredAddressFieldErrors,
@@ -176,20 +176,20 @@ const useShippingAddress = (requiredAddressFields) => {
         payload: billingAddressResponse.data.address,
       });
 
-      await generateTaxes(csrf, apiPath, dispatch);
-      
-      return dispatch({
+      dispatch({
         type: 'checkout/update',
         payload: billingAddressResponse.data.application_state,
       });
-    } 
 
-    await generateTaxes(csrf, apiPath, dispatch);
+      return generateTaxes(csrf, apiPath, dispatch);
+    }
 
-    return dispatch({
+    dispatch({
       type: 'checkout/update',
       payload: shippingAddressResponse.data.application_state,
     });
+
+    return generateTaxes(csrf, apiPath, dispatch);
   }, [memoizedShippingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedShippingAddressErrors, memoizedRequiredAddressFields]);
 
   return {
