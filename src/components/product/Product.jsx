@@ -7,7 +7,7 @@ import ProductQuantityInput from '../product_quantity/ProductQuantityInput';
 import './Product.css';
 
 const Product = ({
-  title, img, qty, lineItemKey, description, updateQuantity, totalPrice, removeLineItem, readOnly = false,
+  title, image, quantity, lineItemKey, description, onQuantityChange, totalPrice, onRemove, readOnly = false,
 }) => (
   <>
     <div className="CartItem__ImageDescriptionWrapper">
@@ -15,7 +15,7 @@ const Product = ({
         <Image
           title={title}
           alt={title}
-          src={img}
+          src={image}
         />
       </div>
       <div className="CartItem__ProductDetails">
@@ -28,7 +28,7 @@ const Product = ({
                       && (
                         <Button
                           secondary
-                          onClick={() => removeLineItem(lineItemKey)}
+                          onClick={() => onRemove(lineItemKey)}
                         >
                           Remove
                         </Button>
@@ -39,8 +39,8 @@ const Product = ({
     <div className="CartItem__QuantityPriceWrapper">
       <ProductQuantityInput
         readOnly={readOnly}
-        defaultValue={qty}
-        onChange={(value) => updateQuantity(lineItemKey, value)}
+        defaultValue={quantity}
+        onChange={(value) => onQuantityChange(lineItemKey, value)}
       />
       <div className="CartItem__ProductPrice">
         <Price amount={totalPrice} />
@@ -51,13 +51,13 @@ const Product = ({
 
 Product.propTypes = {
   title: PropTypes.string.isRequired,
-  img: PropTypes.string,
-  qty: PropTypes.number.isRequired,
+  image: PropTypes.string,
+  quantity: PropTypes.number.isRequired,
   lineItemKey: PropTypes.string.isRequired,
   description: PropTypes.string,
-  updateQuantity: PropTypes.func.isRequired,
+  onQuantityChange: PropTypes.func.isRequired,
   totalPrice: PropTypes.number.isRequired,
-  removeLineItem: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
   readOnly: PropTypes.bool,
 };
 

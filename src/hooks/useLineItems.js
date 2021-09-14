@@ -4,7 +4,7 @@ import { CheckoutStore } from '../store';
 import { getShippingLines } from './shared';
 
 const useLineItems = () => {
-  const { state, dispatch } = useContext(CheckoutStore);
+  const { state, dispatch, onError } = useContext(CheckoutStore);
   const { csrf, apiPath } = state;
   const countryCode = state.applicationState.addresses?.shipping?.country_code;
   const lineItems = state.applicationState.line_items;
@@ -17,6 +17,20 @@ const useLineItems = () => {
 
     try {
       const response = await api.removeLineItem(csrf, apiPath, lineItemKey);
+      if (!response.success) {
+        if (response.error.errors) {
+          dispatch({
+            type: 'checkout/lineItem/setErrors',
+            payload: response.error.errors,
+          });
+          return Promise.reject(response.error);
+        }
+
+        if (onError) {
+          onError(response.error);
+        }
+        return Promise.reject(response.error);
+      }
 
       dispatch({
         type: 'checkout/lineItem/removed',
@@ -27,13 +41,9 @@ const useLineItems = () => {
         payload: response.data.application_state,
       });
     } catch (e) {
-      dispatch({
-        type: 'checkout/lineItem/setErrors',
-        payload: [{
-          field: 'order',
-          message: e.message,
-        }],
-      });
+      if (onError) {
+        onError(e);
+      }
 
       return Promise.reject(e);
     }
@@ -42,7 +52,7 @@ const useLineItems = () => {
       return getShippingLines(csrf, apiPath, dispatch);
     }
     return Promise.resolve();
-  }, [countryCode]);
+  }, [countryCode, onError]);
 
   const updateLineItemQuantity = useCallback(async (lineItemKey, quantity) => {
     const data = {
@@ -56,9 +66,27 @@ const useLineItems = () => {
 
     try {
       const response = await api.updateLineItem(csrf, apiPath, data);
+      if (!response.success) {
+        if (response.error.errors) {
+          dispatch({
+            type: 'checkout/lineItem/setErrors',
+            payload: response.error.errors,
+          });
+          return Promise.reject(response.error);
+        }
+
+        if (onError) {
+          onError(response.error);
+        }
+        return Promise.reject(response.error);
+      }
 
       dispatch({
         type: 'checkout/lineItem/set',
+      });
+
+      console.log({
+        response,
       });
 
       dispatch({
@@ -66,13 +94,9 @@ const useLineItems = () => {
         payload: response.data.application_state,
       });
     } catch (e) {
-      dispatch({
-        type: 'checkout/lineItem/setErrors',
-        payload: [{
-          field: 'order',
-          message: e.message,
-        }],
-      });
+      if (onError) {
+        onError(e);
+      }
 
       return Promise.reject(e);
     }
@@ -81,7 +105,7 @@ const useLineItems = () => {
       return getShippingLines(csrf, apiPath, dispatch);
     }
     return Promise.resolve();
-  }, [countryCode]);
+  }, [countryCode, onError]);
 
   const addLineItem = useCallback(async (platformId, lineItemKey, quantity) => {
     const data = {
@@ -96,6 +120,20 @@ const useLineItems = () => {
 
     try {
       const response = await api.addLineItem(csrf, apiPath, data);
+      if (!response.success) {
+        if (response.error.errors) {
+          dispatch({
+            type: 'checkout/lineItem/setErrors',
+            payload: response.error.errors,
+          });
+          return Promise.reject(response.error);
+        }
+
+        if (onError) {
+          onError(response.error);
+        }
+        return Promise.reject(response.error);
+      }
 
       dispatch({
         type: 'checkout/lineItem/added',
@@ -106,13 +144,9 @@ const useLineItems = () => {
         payload: response.data.application_state,
       });
     } catch (e) {
-      dispatch({
-        type: 'checkout/lineItem/setErrors',
-        payload: [{
-          field: 'order',
-          message: e.message,
-        }],
-      });
+      if (onError) {
+        onError(e);
+      }
 
       return Promise.reject(e);
     }
@@ -121,7 +155,7 @@ const useLineItems = () => {
       return getShippingLines(csrf, apiPath, dispatch);
     }
     return Promise.resolve();
-  }, [countryCode]);
+  }, [countryCode, onError]);
 
   return {
     lineItems: memoizedLineItems,

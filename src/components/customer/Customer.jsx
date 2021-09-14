@@ -5,8 +5,8 @@ import { InputField } from '@boldcommerce/stacks-ui';
 import useCustomer from '../../hooks/useCustomer';
 import './Customer.css';
 
-const Customer = ({
-  customer, customerErrors, isAuthenticated, submitCustomer, onChange,
+export const Customer = ({
+  customer, customerErrors, isAuthenticated, submitCustomer, onChange, onLogin,
 }) => {
   const [email, setEmail] = useState(customer?.email_address);
 
@@ -22,6 +22,15 @@ const Customer = ({
     <section className="FieldSet FieldSet--CustomerInformation">
       <div className="FieldSet__Header">
         <div className="FieldSet__Heading">Customer information</div>
+        {
+          onLogin && (
+            <p className="FieldSet__SubHeading">
+              Already have an account with us?
+              {' '}
+              <button type="button" onClick={onLogin}>Log in</button>
+            </p>
+          )
+        }
       </div>
       <div className="FieldSet__Content">
         <InputField
@@ -49,11 +58,15 @@ Customer.propTypes = {
   isAuthenticated: PropTypes.bool,
   submitCustomer: PropTypes.func,
   onChange: PropTypes.func,
+  onLogin: PropTypes.func,
 };
 
 const MemoizedCustomer = React.memo(Customer);
 
-const CustomerContainer = ({ onChange }) => {
+/**
+ * If onChange is provided, stop automatic submitting of customer to api and instead pass customer object up to parent through onChange callback
+ */
+const CustomerContainer = ({ onChange, onLogin }) => {
   const {
     customer, customerErrors, isAuthenticated, submitCustomer,
   } = useCustomer();
@@ -65,12 +78,14 @@ const CustomerContainer = ({ onChange }) => {
       isAuthenticated={isAuthenticated}
       onChange={onChange}
       submitCustomer={onChange || submitCustomer}
+      onLogin={onLogin}
     />
   );
 };
 
 CustomerContainer.propTypes = {
   onChange: PropTypes.func,
+  onLogin: PropTypes.func,
 };
 
 export default CustomerContainer;

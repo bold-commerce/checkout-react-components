@@ -31,7 +31,7 @@ const AddressData = ({ addressInfo }) => (
   </div>
 );
 
-const ShippingAddress = ({
+export const ShippingAddress = ({
   shippingAddress, countryInfo, shippingAddressErrors, submitShippingAddress, onChange, requiredAddressFields, shippingAddresses, disable,
 }) => {
   const [address, setAddress] = useState(shippingAddress);
@@ -62,7 +62,7 @@ const ShippingAddress = ({
         </div>
         <>
           <div className="FieldSet__Content">
-            {shippingAddresses.length > 0 && shippingAddresses.map((method, index) => (
+            {shippingAddresses && shippingAddresses.length > 0 && shippingAddresses.map((method, index) => (
               <div className="RadioButton RadioButton__AddressInfoContainer" key={index}>
                 <RadioField
                   label={<AddressData addressInfo={method} />}
@@ -76,7 +76,7 @@ const ShippingAddress = ({
                 />
               </div>
             ))}
-            { shippingAddresses.length > 0 && (
+            { shippingAddresses && shippingAddresses.length > 0 && (
               <div className="RadioButton RadioButton__NewAddressContainer">
                 <RadioField
                   label="Add a new address"
@@ -91,7 +91,7 @@ const ShippingAddress = ({
                 />
               </div>
             )}
-            { address?.id === undefined
+            { (address?.id === undefined || address?.id === null)
                   && (
                     <Address
                       address={address}

@@ -1,19 +1,15 @@
+import { fetchApi } from '../utils';
+
 const processOrder = async (csrf, apiPath) => {
-  const response = await fetch(`${apiPath}/process_order`, {
-    mode: 'cors',
+  const response = await fetchApi(`${apiPath}/process_order`, {
     method: 'POST',
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       'X-CSRF-TOKEN': csrf,
     },
   });
 
-  try {
-    return response.json();
-  } catch (e) {
-    throw new Error('Something went wrong');
-  }
+  return response;
 };
 
 export default processOrder;

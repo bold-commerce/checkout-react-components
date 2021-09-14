@@ -3,7 +3,7 @@ import { CheckoutStore } from '../store';
 import * as api from '../api';
 
 const useDiscount = () => {
-  const { state, dispatch } = useContext(CheckoutStore);
+  const { state, dispatch, onError } = useContext(CheckoutStore);
   const { csrf, apiPath } = state;
   const discounts = state.applicationState?.discounts;
   const memoizedDiscounts = useMemo(() => discounts, [JSON.stringify(discounts)]);
@@ -16,28 +16,21 @@ const useDiscount = () => {
     });
 
     try {
-      const validationResponse = await api.validateDiscount(csrf, apiPath, discount);
-      if (Array.isArray(validationResponse.errors)) {
-        dispatch({
-          type: 'checkout/discount/setErrors',
-          payload: validationResponse.errors,
-        });
-        return Promise.reject(new Error('Invalid discount code'));
-      }
-    } catch (e) {
-      dispatch({
-        type: 'checkout/discount/setErrors',
-        payload: [{
-          field: 'order',
-          message: e.message,
-        }],
-      });
-
-      return Promise.reject(e);
-    }
-
-    try {
       const response = await api.addDiscount(csrf, apiPath, discount);
+      if (!response.success) {
+        if (response.error.errors) {
+          dispatch({
+            type: 'checkout/discount/setErrors',
+            payload: response.error.errors,
+          });
+          return Promise.reject(response.error);
+        }
+
+        if (onError) {
+          onError(response.error);
+        }
+        return Promise.reject(response.error);
+      }
 
       dispatch({
         type: 'checkout/discount/added',
@@ -48,17 +41,13 @@ const useDiscount = () => {
         payload: response.data.application_state,
       });
     } catch (e) {
-      dispatch({
-        type: 'checkout/discount/setErrors',
-        payload: [{
-          field: 'order',
-          message: e.message,
-        }],
-      });
+      if (onError) {
+        onError(e);
+      }
 
       return Promise.reject(e);
     }
-  }, []);
+  }, [onError]);
 
   const removeDiscount = useCallback(async (code) => {
     dispatch({
@@ -67,6 +56,20 @@ const useDiscount = () => {
 
     try {
       const response = await api.removeDiscount(csrf, apiPath, code);
+      if (!response.success) {
+        if (response.error.errors) {
+          dispatch({
+            type: 'checkout/discount/setErrors',
+            payload: response.error.errors,
+          });
+          return Promise.reject(response.error);
+        }
+
+        if (onError) {
+          onError(response.error);
+        }
+        return Promise.reject(response.error);
+      }
 
       dispatch({
         type: 'checkout/discount/removed',
@@ -77,17 +80,12 @@ const useDiscount = () => {
         payload: response.data.application_state,
       });
     } catch (e) {
-      dispatch({
-        type: 'checkout/discount/setErrors',
-        payload: [{
-          field: 'order',
-          message: e.message,
-        }],
-      });
-
+      if (onError) {
+        onError(e);
+      }
       return Promise.reject(e);
     }
-  }, []);
+  }, [onError]);
 
   return {
     discounts: memoizedDiscounts,

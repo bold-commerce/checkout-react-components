@@ -1,6 +1,6 @@
 import { useCallback, useContext, useMemo } from 'react';
 import {
-  updateBillingAddress, updateShippingAddress, validateShippingAddress,
+  updateBillingAddress, updateShippingAddress,
 } from '../api';
 import { CheckoutStore } from '../store';
 import { generateTaxes, getShippingLines, requiredAddressFieldValidation } from './shared';
@@ -21,7 +21,7 @@ const emptyAddress = {
 };
 
 const useShippingAddress = (requiredAddressFields) => {
-  const { state, dispatch } = useContext(CheckoutStore);
+  const { state, dispatch, onError } = useContext(CheckoutStore);
   const { csrf, apiPath } = state;
   const shippingAddress = state.applicationState.addresses.shipping;
   const savedAddresses = state.applicationState.customer.saved_addresses;
@@ -117,28 +117,6 @@ const useShippingAddress = (requiredAddressFields) => {
       province,
     };
 
-    try {
-      const validationData = await validateShippingAddress(csrf, apiPath, completeAddress);
-      if (validationData.errors) {
-        dispatch({
-          type: 'checkout/shippingAddress/setErrors',
-          payload: validationData.errors,
-        });
-
-        return Promise.reject(new Error('Invalid shipping address'));
-      }
-    } catch (e) {
-      dispatch({
-        type: 'checkout/shippingAddres/setErrors',
-        payload: [{
-          field: 'order',
-          message: e.message,
-        }],
-      });
-
-      return Promise.reject(e);
-    }
-
     dispatch({
       type: 'checkout/shippingAddress/setting',
     });
@@ -147,19 +125,29 @@ const useShippingAddress = (requiredAddressFields) => {
 
     try {
       shippingAddressResponse = await updateShippingAddress(csrf, apiPath, completeAddress);
+      if (!shippingAddressResponse.success) {
+        if (shippingAddressResponse.error.errors) {
+          dispatch({
+            type: 'checkout/shippingAddress/setErrors',
+            payload: shippingAddressResponse.error.errors,
+          });
+          return Promise.reject(shippingAddressResponse.error);
+        }
+
+        if (onError) {
+          onError(shippingAddressResponse.error);
+        }
+        return Promise.reject(shippingAddressResponse.error);
+      }
 
       dispatch({
         type: 'checkout/shippingAddress/set',
         payload: shippingAddressResponse.data.address,
       });
     } catch (e) {
-      dispatch({
-        type: 'checkout/billingAddress/setErrors',
-        payload: [{
-          field: 'order',
-          message: e.message,
-        }],
-      });
+      if (onError) {
+        onError(e);
+      }
 
       return Promise.reject(e);
     }
@@ -171,6 +159,21 @@ const useShippingAddress = (requiredAddressFields) => {
     // Set billing address if same as shipping is selected
     if (billingSameAsShipping) {
       const billingAddressResponse = await updateBillingAddress(csrf, apiPath, completeAddress);
+      if (!billingAddressResponse.success) {
+        if (billingAddressResponse.error.errors) {
+          dispatch({
+            type: 'checkout/billingAddress/setErrors',
+            payload: billingAddressResponse.error.errors,
+          });
+          return Promise.reject(billingAddressResponse.error);
+        }
+
+        if (onError) {
+          onError(billingAddressResponse.error);
+        }
+        return Promise.reject(billingAddressResponse.error);
+      }
+
       dispatch({
         type: 'checkout/billingAddress/set',
         payload: billingAddressResponse.data.address,
@@ -190,7 +193,7 @@ const useShippingAddress = (requiredAddressFields) => {
     });
 
     return generateTaxes(csrf, apiPath, dispatch);
-  }, [memoizedShippingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedShippingAddressErrors, memoizedRequiredAddressFields]);
+  }, [memoizedShippingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedShippingAddressErrors, memoizedRequiredAddressFields, onError]);
 
   return {
     shippingAddress: memoizedShippingAddress,

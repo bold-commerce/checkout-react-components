@@ -1,26 +1,19 @@
+import fetchApi from '../utils/fetchApi';
+
 export const validateShippingAddress = async (csrf, apiPath, address) => {
-  const response = await fetch(`${apiPath}/validate_address?country_code=${address.country_code}&province=${address.province}&postal_code=${address.postal_code}`, {
-    mode: 'cors',
-    method: 'GET',
-    credentials: 'include',
+  const response = await fetchApi(`${apiPath}/validate_address?country_code=${address.country_code}&province=${address.province}&postal_code=${address.postal_code}`, {
     headers: {
       'Content-Type': 'application/json',
       'X-CSRF-TOKEN': csrf,
     },
   });
 
-  try {
-    return response.json();
-  } catch (e) {
-    throw new Error('Something went wrong');
-  }
+  return response;
 };
 
 export const updateShippingAddress = async (csrf, apiPath, address) => {
-  const response = await fetch(`${apiPath}/addresses/shipping`, {
-    mode: 'cors',
+  const response = await fetchApi(`${apiPath}/addresses/shipping`, {
     method: 'POST',
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       'X-CSRF-TOKEN': csrf,
@@ -28,9 +21,5 @@ export const updateShippingAddress = async (csrf, apiPath, address) => {
     body: JSON.stringify(address),
   });
 
-  try {
-    return response.json();
-  } catch (e) {
-    throw new Error('Something went wrong');
-  }
+  return response;
 };

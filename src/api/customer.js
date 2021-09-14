@@ -1,28 +1,21 @@
+import fetchApi from '../utils/fetchApi';
+
 export const validateCustomer = async (csrf, apiPath, customer) => {
   const email = encodeURIComponent(customer.email_address);
 
-  const response = await fetch(`${apiPath}/validate_email_address?email_address=${email}`, {
-    mode: 'cors',
-    method: 'GET',
-    credentials: 'include',
+  const response = await fetchApi(`${apiPath}/validate_email_address?email_address=${email}`, {
     headers: {
       'Content-Type': 'application/json',
       'X-CSRF-TOKEN': csrf,
     },
   });
 
-  try {
-    return response.json();
-  } catch (e) {
-    throw new Error('Something went wrong');
-  }
+  return response;
 };
 
 export const updateCustomer = async (csrf, apiPath, customer, method) => {
-  const response = await fetch(`${apiPath}/customer/guest`, {
-    mode: 'cors',
+  const response = await fetchApi(`${apiPath}/customer/guest`, {
     method,
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       'X-CSRF-TOKEN': csrf,
@@ -30,9 +23,5 @@ export const updateCustomer = async (csrf, apiPath, customer, method) => {
     body: JSON.stringify(customer),
   });
 
-  try {
-    return response.json();
-  } catch (e) {
-    throw new Error('Something went wrong');
-  }
+  return response;
 };

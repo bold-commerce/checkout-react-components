@@ -5,7 +5,7 @@ import { Input, Button } from '@boldcommerce/stacks-ui';
 import { useDiscount } from '../../hooks';
 import './Discount.css';
 
-const Discount = ({
+export const Discount = ({
   discountApplied, discountCode, discountErrors, applyDiscount,
 }) => {
   const [discount, setDiscount] = useState(discountCode);
@@ -32,7 +32,7 @@ const Discount = ({
       </div>
       {
         discountErrors && discountErrors.discounts && (
-          <div div className="DiscountForm__error">
+          <div className="DiscountForm__error">
             {
               discountErrors.discounts
             }

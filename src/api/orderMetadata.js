@@ -1,59 +1,43 @@
+import { fetchApi } from '../utils';
+
 export const deleteOrderMetadata = async (csrf, apiPath) => {
-    try {
-        const response = await fetch(`${apiPath}/meta_data`, {
-            mode: 'cors',
-            method: 'DELETE',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrf,
-            },
-        });
-        return response.json();
-    } catch (e) {
-        console.error(e);
-        return Promise.reject(e);
-    }
+  const response = await fetchApi(`${apiPath}/meta_data`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': csrf,
+    },
+  });
+
+  return response;
 };
 
 export const postOrderMetadata = async (csrf, apiPath, newOrderMetadata) => {
-    try {
-        const response = await fetch(`${apiPath}/meta_data`, {
-            mode: 'cors',
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrf,
-            },
-            body: JSON.stringify(
-                newOrderMetadata,
-            ),
-        });
-        return response.json();
-    } catch (e) {
-        console.error(e);
-        return Promise.reject(e);
-    }
+  const response = await fetchApi(`${apiPath}/meta_data`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': csrf,
+    },
+    body: JSON.stringify(
+      newOrderMetadata,
+    ),
+  });
+
+  return response;
 };
 
 export const patchOrderMetadata = async (csrf, apiPath, requestBody) => {
-    try {
-        const response = await fetch(`${apiPath}/meta_data`, {
-            mode: 'cors',
-            method: 'PATCH',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrf,
-            },
-            body: JSON.stringify(
-                requestBody,
-            ),
-        });
-        return response.json();
-    } catch (e) {
-        console.error(e);
-        return Promise.reject(e);
-    }
+  const response = await fetchApi(`${apiPath}/meta_data`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': csrf,
+    },
+    body: JSON.stringify(
+      requestBody,
+    ),
+  });
+
+  return response;
 };

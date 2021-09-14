@@ -1,8 +1,8 @@
+import { fetchApi } from '../utils';
+
 export const setShippingLine = async (csrf, apiPath, index) => {
-  const response = await fetch(`${apiPath}/shipping_lines`, {
-    mode: 'cors',
+  const response = await fetchApi(`${apiPath}/shipping_lines`, {
     method: 'POST',
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       'X-CSRF-TOKEN': csrf,
@@ -12,27 +12,16 @@ export const setShippingLine = async (csrf, apiPath, index) => {
     }),
   });
 
-  try {
-    return response.json();
-  } catch (e) {
-    throw new Error('Something went wrong');
-  }
+  return response;
 };
 
 export const fetchShippingLines = async (csrf, apiPath) => {
-  const response = await fetch(`${apiPath}/shipping_lines`, {
-    mode: 'cors',
-    method: 'GET',
-    credentials: 'include',
+  const response = await fetchApi(`${apiPath}/shipping_lines`, {
     headers: {
       'Content-Type': 'application/json',
       'X-CSRF-TOKEN': csrf,
     },
   });
 
-  try {
-    return response.json();
-  } catch (e) {
-    throw new Error('Something went wrong');
-  }
+  return response;
 };

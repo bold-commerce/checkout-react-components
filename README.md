@@ -43,9 +43,9 @@ If you prefer to use yarn, run the following command
    ```
 
 ## Examples
-- [Single Page Checkout](https://github.com/bold-commerce/checkout-react-components/tree/3.x/examples/single-page)
-- [Three Page Checkout](https://github.com/bold-commerce/checkout-react-components/tree/3.x/examples/three-page)
-- [Custom Components](https://github.com/bold-commerce/checkout-react-components/tree/3.x/examples/custom-components)
+- [Single Page](https://github.com/bold-commerce/checkout-react-templates/tree/main/single_page)
+- [Single Page Collapsed](https://github.com/bold-commerce/checkout-react-templates/tree/main/single_page_collapsed)
+- [Quick Checkout](https://github.com/bold-commerce/checkout-react-templates/tree/main/quick_checkout)
 
 ## Components
 ### CheckoutProvider
@@ -54,7 +54,7 @@ The provider communicates with the headless checkout api and holds the applicati
 ```javascript
 import { CheckoutProvider } from '@boldcommerce/checkout-react-components';
 
-const App = (token, publicOrderId, applicationState, storeIdentifier, initialData) => {
+const App = (token, publicOrderId, applicationState, storeIdentifier, initialData, handleError) => {
   return (
     <CheckoutProvider
       token={token}
@@ -62,6 +62,7 @@ const App = (token, publicOrderId, applicationState, storeIdentifier, initialDat
       applicationState={applicationState}
       storeIdentifier={storeIdentifier}
       initialData={initialData}
+      onError={handleError}
     >
       <h1>Hello World</h1>
     </CheckoutProvider>
@@ -88,6 +89,10 @@ const App = (token, publicOrderId, applicationState, storeIdentifier, initialDat
 - **initialData (required)**
   
   This is all the supporting information for the checkout. (ex: languages, currency, etc.). This is also provided by the `orders/init` endpoint.
+
+- **onError (optional)**
+  
+  Allows your app to manually handle server errors by supplying a callback function.
 
 ### Customer
 Displays the customer entry fields and handles all customer logic.
@@ -818,7 +823,11 @@ const Component = () => (
     paymentIframeLoadingStatus,
     paymentIframeUrl,
     paymentIframeHeight,
-    paymentIframeOnLoaded
+    paymentIframeOnLoaded,
+    updateLanguage,
+    clearErrorMessage,
+    dispayErrorMessage,
+    selectPaymentMethod,
   } = usePaymentIframe();
 
   const style = {
@@ -848,6 +857,23 @@ const Component = () => (
 - **paymentIframeOnLoaded** `(function)`
   ```javascript
   paymentIframeOnLoaded();
+  ```
+- **updateLanguage** `(function)`
+  ```javascript
+  updateLanguage('en');
+  ```
+- **clearErrorMessage** `(function)`
+  ```javascript
+  clearErrorMessage();
+  ```
+- **displayErrorMessage** `(function)`
+  ```javascript
+  displayErrorMessage('message', 'type_of_error');
+  ```
+- **selectPaymentMethod** `(function)`
+  ```javascript
+  selectPaymentMethod(1); // Selects by index
+  selectPaymentMethod('stripe'); // Selects by payment gateway name
   ```
 
 ### usePaymentMethod

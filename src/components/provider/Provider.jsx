@@ -5,7 +5,14 @@ import { CheckoutApp } from '../checkout_app';
 import { initialState, reducer, CheckoutStore } from '../../store';
 
 const CheckoutProvider = ({
-  applicationState, initialData, publicOrderId, token, storeIdentifier, children, apiBase = 'https://api.boldcommerce.com/checkout/storefront',
+  applicationState,
+  initialData,
+  publicOrderId,
+  token,
+  storeIdentifier,
+  children,
+  apiBase = 'https://api.boldcommerce.com/checkout/storefront',
+  onError,
 }) => {
   const apiPath = `${apiBase}/${storeIdentifier}/${publicOrderId}`;
   const currentState = {
@@ -23,7 +30,7 @@ const CheckoutProvider = ({
   const [state, dispatch] = useReducer(reducer, currentState);
 
   return (
-    <CheckoutStore.Provider value={{ state, dispatch }}>
+    <CheckoutStore.Provider value={{ state, dispatch, onError }}>
       <CheckoutApp>
         {children}
       </CheckoutApp>
@@ -39,6 +46,7 @@ CheckoutProvider.propTypes = {
   storeIdentifier: PropTypes.string.isRequired,
   apiBase: PropTypes.string,
   children: PropTypes.node,
+  onError: PropTypes.func,
 };
 
 export default CheckoutProvider;

@@ -2,7 +2,7 @@ import {
   useCallback, useContext, useMemo,
 } from 'react';
 import { CheckoutStore } from '../store';
-import { updateCustomer, validateCustomer } from '../api';
+import { updateCustomer } from '../api';
 
 const emptyCustomer = {
   first_name: null,
@@ -11,7 +11,7 @@ const emptyCustomer = {
 };
 
 const useCustomer = () => {
-  const { state, dispatch } = useContext(CheckoutStore);
+  const { state, dispatch, onError } = useContext(CheckoutStore);
   const { csrf, apiPath } = state;
   const { customer } = state.applicationState;
   const customerErrors = state.errors.customer;
@@ -50,53 +50,40 @@ const useCustomer = () => {
       return Promise.resolve();
     }
 
-    try {
-      const validationData = await validateCustomer(csrf, apiPath, customerData);
-      dispatch({
-        type: 'checkout/customer/setting',
-      });
-
-      if (validationData.errors) {
-        dispatch({
-          type: 'checkout/customer/setErrors',
-          payload: validationData.errors,
-        });
-        return Promise.reject(new Error('Invalid customer'));
-      }
-    } catch (e) {
-      dispatch({
-        type: 'checkout/customer/setErrors',
-        payload: [{
-          field: 'order',
-          message: e.message,
-        }],
-      });
-      return Promise.reject(e);
-    }
-
     const method = memoizedCustomer.email_address ? 'PUT' : 'POST';
     try {
-      const customerResponse = await updateCustomer(csrf, apiPath, customerData, method);
+      const response = await updateCustomer(csrf, apiPath, customerData, method);
+      if (!response.success) {
+        if (response.error.errors) {
+          dispatch({
+            type: 'checkout/customer/setErrors',
+            payload: response.error.errors,
+          });
+          return Promise.reject(response.error);
+        }
+
+        if (onError) {
+          onError(response.error);
+        }
+        return Promise.reject(response.error);
+      }
+
       dispatch({
         type: 'checkout/customer/set',
-        payload: customerResponse.data.customer,
+        payload: response.data.customer,
       });
 
       return dispatch({
         type: 'checkout/update',
-        payload: customerResponse.data.application_state,
+        payload: response.data.application_state,
       });
     } catch (e) {
-      dispatch({
-        type: 'checkout/customer/setErrors',
-        payload: [{
-          field: 'order',
-          message: e.message,
-        }],
-      });
+      if (onError) {
+        onError(e);
+      }
       return Promise.reject(e);
     }
-  }, [memoizedCustomer, csrf, apiPath]);
+  }, [memoizedCustomer, csrf, apiPath, onError]);
 
   return {
     customer: memoizedCustomer,

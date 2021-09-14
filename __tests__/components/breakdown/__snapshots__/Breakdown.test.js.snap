@@ -1,0 +1,612 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Breakdown renders Breakdown component 1`] = `
+<DocumentFragment>
+  <div
+    class="Summary__Breakdown"
+  >
+    <div
+      class="SummaryBlock"
+    >
+      <div
+        class="Summary__Subtotal"
+      >
+        <div
+          class="SummaryItem__Label"
+        >
+          Subtotal
+        </div>
+        <div
+          class="SummaryItem__Value"
+        >
+          <div
+            class="stx-price stx-price--alight-center"
+          >
+            <p
+              aria-label="Product price"
+              class="stx-price__amount"
+            >
+              CA$225.00
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="Summary__Discount"
+      >
+        <div
+          class="Summary__Discount--Labels"
+        >
+          <div
+            class="SummaryItem__Label"
+            data-test="0"
+          >
+            Discounts
+          </div>
+          <div
+            class="SummaryItem__Value"
+          >
+            $0.00
+          </div>
+        </div>
+      </div>
+      <div
+        class="Summary__Shipping"
+      >
+        <div
+          class="SummaryItem__Label"
+        >
+          Shipping
+        </div>
+        <div
+          class="SummaryItem__Value"
+        >
+          <div
+            class="stx-price stx-price--alight-center"
+          >
+            <p
+              aria-label="Product price"
+              class="stx-price__amount"
+            >
+              CA$10.00
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="Summary__Taxes"
+      >
+        <div
+          class="SummaryItem__Label"
+        >
+          Taxes
+        </div>
+        <div
+          class="SummaryItem__Value"
+        >
+          <div
+            class="stx-price stx-price--alight-center"
+          >
+            <p
+              aria-label="Product price"
+              class="stx-price__amount"
+            >
+              CA$27.00
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="SummaryBlock Summary__Total"
+    >
+      <div
+        class="SummaryItem__Label"
+      >
+        Total
+      </div>
+      <div
+        class="SummaryItem__Value"
+      >
+        <div
+          class="stx-price stx-price--alight-center"
+        >
+          <p
+            aria-label="Product price"
+            class="stx-price__amount"
+          >
+            CA$262.00
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="SummaryBlock Summary__Payments"
+    >
+      <div
+        class="Summary__Payments--Labels"
+      >
+        <div
+          class="SummaryItem__Label"
+        >
+          Payments
+        </div>
+      </div>
+      <div
+        class="Payment__Applied"
+      >
+        <div
+          class="Payment__Remove"
+        >
+          <span
+            class="RedactedCard"
+          >
+            <span
+              class="RedactedCard__Brand"
+            >
+              visa
+            </span>
+            <span
+              class="RedactedCard__Number"
+            >
+               •••• •••• •••• 1111
+            </span>
+          </span>
+        </div>
+        <div
+          class="stx-price stx-price--alight-center"
+        >
+          <p
+            aria-label="Product price"
+            class="stx-price__amount"
+          >
+            CA$262.00
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="SummaryBlock Summary__Balance"
+    >
+      <div
+        class="SummaryItem__Label"
+      >
+        Remaining Balance
+      </div>
+      <div
+        class="SummaryItem__Value"
+      >
+        <div
+          class="stx-price stx-price--alight-center"
+        >
+          <p
+            aria-label="Product price"
+            class="stx-price__amount"
+          >
+            CA$0.00
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Breakdown renders Breakdown component with discount applied 1`] = `
+<DocumentFragment>
+  <div
+    class="Summary__Breakdown"
+  >
+    <div
+      class="SummaryBlock"
+    >
+      <div
+        class="Summary__Subtotal"
+      >
+        <div
+          class="SummaryItem__Label"
+        >
+          Subtotal
+        </div>
+        <div
+          class="SummaryItem__Value"
+        >
+          <div
+            class="stx-price stx-price--alight-center"
+          >
+            <p
+              aria-label="Product price"
+              class="stx-price__amount"
+            >
+              CA$225.00
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="Summary__Discount"
+      >
+        <div
+          class="Summary__Discount--Labels"
+        >
+          <div
+            class="SummaryItem__Label"
+            data-test="100"
+          >
+            Discounts
+          </div>
+        </div>
+        <div
+          class="Discount__Applied"
+        >
+          <div
+            class="Discount__Remove"
+          >
+            <button
+              aria-busy="false"
+              aria-disabled="true"
+              class="stx-button stx-button--secondary stx-button--is-disabled"
+              disabled=""
+            >
+              <span
+                class="stx-button__text"
+              >
+                X
+              </span>
+              <span
+                class="stx-loading-spinner stx-button__spinner"
+              />
+            </button>
+            <div>
+              Discount code: TestDiscount
+            </div>
+          </div>
+          <div
+            class="Discount__Amount"
+          >
+            <div
+              class="stx-price stx-price--alight-center"
+            >
+              <p
+                aria-label="Product price"
+                class="stx-price__amount"
+              >
+                CA$1.00
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="Summary__Shipping"
+      >
+        <div
+          class="SummaryItem__Label"
+        >
+          Shipping
+        </div>
+        <div
+          class="SummaryItem__Value"
+        >
+          <div
+            class="stx-price stx-price--alight-center"
+          >
+            <p
+              aria-label="Product price"
+              class="stx-price__amount"
+            >
+              CA$10.00
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="Summary__Taxes"
+      >
+        <div
+          class="SummaryItem__Label"
+        >
+          Taxes
+        </div>
+        <div
+          class="SummaryItem__Value"
+        >
+          <div
+            class="stx-price stx-price--alight-center"
+          >
+            <p
+              aria-label="Product price"
+              class="stx-price__amount"
+            >
+              CA$27.00
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="SummaryBlock Summary__Total"
+    >
+      <div
+        class="SummaryItem__Label"
+      >
+        Total
+      </div>
+      <div
+        class="SummaryItem__Value"
+      >
+        <div
+          class="stx-price stx-price--alight-center"
+        >
+          <p
+            aria-label="Product price"
+            class="stx-price__amount"
+          >
+            CA$262.00
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="SummaryBlock Summary__Payments"
+    >
+      <div
+        class="Summary__Payments--Labels"
+      >
+        <div
+          class="SummaryItem__Label"
+        >
+          Payments
+        </div>
+      </div>
+      <div
+        class="Payment__Applied"
+      >
+        <div
+          class="Payment__Remove"
+        >
+          <span
+            class="RedactedCard"
+          >
+            <span
+              class="RedactedCard__Brand"
+            >
+              visa
+            </span>
+            <span
+              class="RedactedCard__Number"
+            >
+               •••• •••• •••• 1111
+            </span>
+          </span>
+        </div>
+        <div
+          class="stx-price stx-price--alight-center"
+        >
+          <p
+            aria-label="Product price"
+            class="stx-price__amount"
+          >
+            CA$262.00
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="SummaryBlock Summary__Balance"
+    >
+      <div
+        class="SummaryItem__Label"
+      >
+        Remaining Balance
+      </div>
+      <div
+        class="SummaryItem__Value"
+      >
+        <div
+          class="stx-price stx-price--alight-center"
+        >
+          <p
+            aria-label="Product price"
+            class="stx-price__amount"
+          >
+            CA$0.00
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Breakdown renders Breakdown component with taxes included 1`] = `
+<DocumentFragment>
+  <div
+    class="Summary__Breakdown"
+  >
+    <div
+      class="SummaryBlock"
+    >
+      <div
+        class="Summary__Subtotal"
+      >
+        <div
+          class="SummaryItem__Label"
+        >
+          Subtotal
+        </div>
+        <div
+          class="SummaryItem__Value"
+        >
+          <div
+            class="stx-price stx-price--alight-center"
+          >
+            <p
+              aria-label="Product price"
+              class="stx-price__amount"
+            >
+              CA$225.00
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="Summary__Discount"
+      >
+        <div
+          class="Summary__Discount--Labels"
+        >
+          <div
+            class="SummaryItem__Label"
+            data-test="0"
+          >
+            Discounts
+          </div>
+          <div
+            class="SummaryItem__Value"
+          >
+            $0.00
+          </div>
+        </div>
+      </div>
+      <div
+        class="Summary__Shipping"
+      >
+        <div
+          class="SummaryItem__Label"
+        >
+          Shipping
+        </div>
+        <div
+          class="SummaryItem__Value"
+        >
+          <div
+            class="stx-price stx-price--alight-center"
+          >
+            <p
+              aria-label="Product price"
+              class="stx-price__amount"
+            >
+              CA$10.00
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="Summary__Taxes"
+      >
+        <div
+          class="SummaryItem__Label"
+        >
+          Taxes (Included)
+        </div>
+        <div
+          class="SummaryItem__Value"
+        >
+          <div
+            class="stx-price stx-price--alight-center"
+          >
+            <p
+              aria-label="Product price"
+              class="stx-price__amount"
+            >
+              CA$27.00
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="SummaryBlock Summary__Total"
+    >
+      <div
+        class="SummaryItem__Label"
+      >
+        Total
+      </div>
+      <div
+        class="SummaryItem__Value"
+      >
+        <div
+          class="stx-price stx-price--alight-center"
+        >
+          <p
+            aria-label="Product price"
+            class="stx-price__amount"
+          >
+            CA$262.00
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="SummaryBlock Summary__Payments"
+    >
+      <div
+        class="Summary__Payments--Labels"
+      >
+        <div
+          class="SummaryItem__Label"
+        >
+          Payments
+        </div>
+      </div>
+      <div
+        class="Payment__Applied"
+      >
+        <div
+          class="Payment__Remove"
+        >
+          <span
+            class="RedactedCard"
+          >
+            <span
+              class="RedactedCard__Brand"
+            >
+              visa
+            </span>
+            <span
+              class="RedactedCard__Number"
+            >
+               •••• •••• •••• 1111
+            </span>
+          </span>
+        </div>
+        <div
+          class="stx-price stx-price--alight-center"
+        >
+          <p
+            aria-label="Product price"
+            class="stx-price__amount"
+          >
+            CA$262.00
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="SummaryBlock Summary__Balance"
+    >
+      <div
+        class="SummaryItem__Label"
+      >
+        Remaining Balance
+      </div>
+      <div
+        class="SummaryItem__Value"
+      >
+        <div
+          class="stx-price stx-price--alight-center"
+        >
+          <p
+            aria-label="Product price"
+            class="stx-price__amount"
+          >
+            CA$0.00
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

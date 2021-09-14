@@ -1,8 +1,8 @@
+import { fetchApi } from '../utils';
+
 export const addLineItem = async (csrf, apiPath, data) => {
-  const response = await fetch(`${apiPath}/items`, {
-    mode: 'cors',
+  const response = await fetchApi(`${apiPath}/items`, {
     method: 'POST',
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       'X-CSRF-TOKEN': csrf,
@@ -10,18 +10,12 @@ export const addLineItem = async (csrf, apiPath, data) => {
     body: JSON.stringify(data),
   });
 
-  try {
-    return response.json();
-  } catch (e) {
-    throw new Error('Something went wrong');
-  }
+  return response;
 };
 
 export const updateLineItem = async (csrf, apiPath, data) => {
-  const response = await fetch(`${apiPath}/items`, {
-    mode: 'cors',
+  const response = await fetchApi(`${apiPath}/items`, {
     method: 'PUT',
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       'X-CSRF-TOKEN': csrf,
@@ -29,25 +23,21 @@ export const updateLineItem = async (csrf, apiPath, data) => {
     body: JSON.stringify(data),
   });
 
-  return response.json();
+  return response;
 };
 
 export const removeLineItem = async (csrf, apiPath, lineItemKey) => {
-  const data = {
-    quantity: 0,
-    line_item_key: lineItemKey,
-  };
-
-  const response = await fetch(`${apiPath}/items`, {
-    mode: 'cors',
+  const response = await fetchApi(`${apiPath}/items`, {
     method: 'DELETE',
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       'X-CSRF-TOKEN': csrf,
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      quantity: 0,
+      line_item_key: lineItemKey,
+    }),
   });
 
-  return response.json();
+  return response;
 };

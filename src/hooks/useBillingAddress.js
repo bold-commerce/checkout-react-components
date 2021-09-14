@@ -1,5 +1,5 @@
 import { useCallback, useContext, useMemo } from 'react';
-import { updateBillingAddress, validateBillingAddress } from '../api';
+import { updateBillingAddress } from '../api';
 import { CheckoutStore } from '../store';
 import { requiredAddressFieldValidation } from './shared';
 
@@ -19,7 +19,7 @@ const emptyAddress = {
 };
 
 const useBillingAddress = (requiredAddressFields) => {
-  const { state, dispatch } = useContext(CheckoutStore);
+  const { state, dispatch, onError } = useContext(CheckoutStore);
   const { csrf, apiPath } = state;
   const billingAddress = state.applicationState.addresses.billing;
   const billingAddressErrors = state.errors.billingAddress;
@@ -38,7 +38,7 @@ const useBillingAddress = (requiredAddressFields) => {
 
     if (requiredAddressFields) {
       const requiredAddressFieldErrors = requiredAddressFieldValidation(billingAddressData, memoizedRequiredAddressFields);
-      if ( requiredAddressFieldErrors ) {
+      if (requiredAddressFieldErrors) {
         dispatch({
           type: 'checkout/billingAddress/setErrors',
           payload: requiredAddressFieldErrors,
@@ -71,7 +71,7 @@ const useBillingAddress = (requiredAddressFields) => {
     if (appShipping === localShipping) {
       if (memoizedBillingAddressErrors && Object.keys(memoizedBillingAddressErrors).length > 0) {
         return dispatch({
-          type: 'checkout/billingAddress/set'
+          type: 'checkout/billingAddress/set',
         });
       }
       return Promise.resolve();
@@ -117,47 +117,38 @@ const useBillingAddress = (requiredAddressFields) => {
     };
 
     try {
-      const validationData = await validateBillingAddress(csrf, apiPath, completeAddress);
-      if (validationData.errors) {
-        dispatch({
-          type: 'checkout/billingAddress/setErrors',
-          payload: validationData.errors,
-        });
-        return Promise.reject(new Error('Invalid billing address'));
-      }
-    } catch (e) {
-      dispatch({
-        type: 'checkout/billingAddress/setErrors',
-        payload: [{
-          field: 'order',
-          message: e.message,
-        }],
-      });
-      return Promise.reject(e);
-    }
+      const response = await updateBillingAddress(csrf, apiPath, completeAddress);
+      if (!response.success) {
+        if (response.error.errors) {
+          dispatch({
+            type: 'checkout/billingAddress/setErrors',
+            payload: response.error.errors,
+          });
+          return Promise.reject(response.error);
+        }
 
-    try {
-      const billingAddressResponse = await updateBillingAddress(csrf, apiPath, completeAddress);
+        if (onError) {
+          onError(response.error);
+        }
+        return Promise.reject(response.error);
+      }
+
       dispatch({
         type: 'checkout/update',
-        payload: billingAddressResponse.data.application_state,
+        payload: response.data.application_state,
       });
 
       return dispatch({
         type: 'checkout/billingAddress/set',
-        payload: billingAddressResponse.data.address,
+        payload: response.data.address,
       });
     } catch (e) {
-      dispatch({
-        type: 'checkout/billingAddress/setErrors',
-        payload: [{
-          field: 'order',
-          message: e.message,
-        }],
-      });
+      if (onError) {
+        onError(e);
+      }
       return Promise.reject(e);
     }
-  }, [memoizedBillingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedBillingAddressErrors, memoizedRequiredAddressFields]);
+  }, [memoizedBillingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedBillingAddressErrors, memoizedRequiredAddressFields, onError]);
 
   const setBillingSameAsShipping = useCallback(async (value) => {
     dispatch({
@@ -168,32 +159,41 @@ const useBillingAddress = (requiredAddressFields) => {
     if (value) {
       if (memoizedShippingAddress?.country_code) {
         try {
-          const billingAddressResponse = await updateBillingAddress(csrf, apiPath, memoizedShippingAddress);
-          if (billingAddressResponse?.data?.application_state) {
-            dispatch({
-              type: 'checkout/update',
-              payload: billingAddressResponse.data.application_state,
-            });
-            return dispatch({
-              type: 'checkout/billingAddress/set',
-              payload: billingAddressResponse.data.address,
-            });
+          const response = await updateBillingAddress(csrf, apiPath, memoizedShippingAddress);
+          if (!response.success) {
+            if (response.error.errors) {
+              dispatch({
+                type: 'checkout/billingAddress/setErrors',
+                payload: response.error.errors,
+              });
+              return Promise.reject(response.error);
+            }
+
+            if (onError) {
+              onError(response.error);
+            }
+            return Promise.reject(response.error);
           }
-        } catch (e) {
+
           dispatch({
-            type: 'checkout/billingAddress/setErrors',
-            payload: [{
-              field: 'order',
-              message: e.message,
-            }],
+            type: 'checkout/update',
+            payload: response.data.application_state,
           });
+          return dispatch({
+            type: 'checkout/billingAddress/set',
+            payload: response.data.address,
+          });
+        } catch (e) {
+          if (onError) {
+            onError(e);
+          }
           return Promise.reject(e);
         }
       }
     }
 
     return Promise.resolve();
-  }, [memoizedShippingAddress]);
+  }, [memoizedShippingAddress, onError]);
 
   return {
     billingAddress: memoizedBillingAddress,

@@ -1,19 +1,15 @@
+import { fetchApi } from '../utils';
+
 const fetchTaxes = async (csrf, apiPath) => {
-  const response = await fetch(`${apiPath}/taxes`, {
-    mode: 'cors',
+  const response = await fetchApi(`${apiPath}/taxes`, {
     method: 'POST',
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       'X-CSRF-TOKEN': csrf,
     },
   });
 
-  try {
-    return response.json();
-  } catch (e) {
-    throw new Error('Something went wrong');
-  }
+  return response;
 };
 
 export default fetchTaxes;

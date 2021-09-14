@@ -17,14 +17,14 @@ const LineItem = ({
   <div className="SummaryBlock CartItem" key={lineItemKey}>
     <Product
       title={title}
-      img={image}
-      qty={quantity}
+      image={image}
+      quantity={quantity}
       itemPrice={price}
       totalPrice={totalPrice}
       lineItemKey={lineItemKey}
       description={description}
-      updateQuantity={onQuantityChange}
-      removeLineItem={onRemove}
+      onQuantityChange={onQuantityChange}
+      onRemove={onRemove}
       readOnly={readOnly}
     />
   </div>

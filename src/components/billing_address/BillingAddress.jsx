@@ -7,7 +7,7 @@ import useCountryInfo from '../../hooks/useCountryInfo';
 import { useBillingAddress } from '../../hooks';
 import './BillingAddress.css';
 
-const BillingAddress = ({
+export const BillingAddress = ({
   billingAddress, countryInfo, billingAddressErrors, billingSameAsShipping, submitBillingAddress, setBillingSameAsShipping, onChange, requiredAddressFields,
 }) => {
   const [address, setAddress] = useState(billingAddress);

@@ -14,6 +14,7 @@ const PaymentIframe = ({
   const iframe = (
     <iframe
       title="payments"
+      data-bold-pigi-iframe
       src={paymentIframeUrl}
       style={style}
       onLoad={paymentIframeOnLoaded}

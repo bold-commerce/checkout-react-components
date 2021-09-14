@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import LineItem from './LineItem';
 import { useLineItems } from '../../hooks';
 
-const LineItems = ({
+export const LineItems = ({
   readOnly,
   lineItems,
   updateLineItemQuantity,

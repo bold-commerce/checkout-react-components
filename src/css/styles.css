@@ -30,6 +30,29 @@
   padding: 0 5px;
 }
 
+.FieldSet--CustomerInformation .FieldSet__Header {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.FieldSet--CustomerInformation .FieldSet__SubHeading {
+  line-height: 30px;
+  font-size: 14px;
+  color: #888;
+}
+
+.FieldSet--CustomerInformation .FieldSet__SubHeading button {
+  background: none;
+  border: none;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.FieldSet--CustomerInformation .FieldSet__SubHeading button:hover {
+  text-decoration: underline;
+}
+
 .FieldGroup {
   margin: 5px 0;
   display: flex;
@@ -68,3 +91,4 @@
   position: absolute;
   bottom: 0;
 }
+

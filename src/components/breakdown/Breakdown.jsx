@@ -6,7 +6,7 @@ import { useDiscount, useBreakdown } from '../../hooks';
 import './Breakdown.css';
 import { RedactedCreditCard } from '../redacted_credit_card';
 
-const Breakdown = ({
+export const Breakdown = ({
   subTotal, shippingTotal, discountTotal, total, remainingBalance, taxesTotal, payments, hasPayments, taxesIncluded, taxes, discountApplied, discountCode, removeDiscount,
 }) => {
   const paymentMethods = payments.map((payment, index) => (

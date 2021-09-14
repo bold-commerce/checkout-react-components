@@ -8,7 +8,7 @@ import LoadingState from '../loading_state/LoadingState';
 import { useShippingLines } from '../../hooks';
 import './ShippingLines.css';
 
-const ShippingLines = ({
+export const ShippingLines = ({
   showShippingLines, shippingLinesFetching, shippingLinesLoadingStatus, shippingLines, selectedShippingLineIndex, setSelectedShippingLine,
 }) => {
   if (!showShippingLines) {

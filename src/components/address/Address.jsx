@@ -3,7 +3,8 @@ import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { InputField, SelectField } from '@boldcommerce/stacks-ui';
 import './Address.css';
-const Address = ({
+
+export const Address = ({
   address,
   onChange,
   errors,
@@ -23,12 +24,12 @@ const Address = ({
       submit();
     }
   }, [
-    address.country_code, 
-    address.province_code, 
-    address.postal_code, 
-    showProvince, 
-    showPostalCode, 
-    address.first_name, 
+    address.country_code,
+    address.province_code,
+    address.postal_code,
+    showProvince,
+    showPostalCode,
+    address.first_name,
     address.last_name,
     address.business_name,
     address.address_line_1,
@@ -62,7 +63,7 @@ const Address = ({
     <div className="FieldSet--Address">
       <div className="FieldGroup">
         <InputField
-          placeholder={ hasRequiredFields && requiredAddressFields.includes('first_name') ? "First name" : "First name (optional)" }
+          placeholder={hasRequiredFields && requiredAddressFields.includes('first_name') ? 'First name' : 'First name (optional)'}
           type="text"
           name="first_name"
           className="Field Field--FirstName"
@@ -74,7 +75,7 @@ const Address = ({
           })}
         />
         <InputField
-          placeholder={ hasRequiredFields && requiredAddressFields.includes('last_name') ? "Last name" : "Last name (optional)" }
+          placeholder={hasRequiredFields && requiredAddressFields.includes('last_name') ? 'Last name' : 'Last name (optional)'}
           type="text"
           name="last_name"
           className="Field Field--LastName"
@@ -88,7 +89,7 @@ const Address = ({
       </div>
       <div className="FieldGroup">
         <InputField
-          placeholder={ hasRequiredFields && requiredAddressFields.includes('business_name') ? "Company" : "Company (optional)" }
+          placeholder={hasRequiredFields && requiredAddressFields.includes('business_name') ? 'Company' : 'Company (optional)'}
           type="text"
           name="business_name"
           className="Field Field--Company"
@@ -102,7 +103,7 @@ const Address = ({
       </div>
       <div className="FieldGroup">
         <InputField
-          placeholder={ hasRequiredFields && requiredAddressFields.includes('address_line_1') ? "Address" : "Address (optional)" }
+          placeholder={hasRequiredFields && requiredAddressFields.includes('address_line_1') ? 'Address' : 'Address (optional)'}
           type="text"
           name="address_line_1"
           className="Field Field--Address"
@@ -126,7 +127,7 @@ const Address = ({
       </div>
       <div className="FieldGroup">
         <InputField
-          placeholder={ hasRequiredFields && requiredAddressFields.includes('city') ? "City" : "City (optional)" }
+          placeholder={hasRequiredFields && requiredAddressFields.includes('city') ? 'City' : 'City (optional)'}
           type="text"
           name="city"
           value={address?.city ?? ''}
@@ -188,7 +189,7 @@ const Address = ({
       </div>
       <div className="FieldGroup">
         <InputField
-          placeholder={ hasRequiredFields && requiredAddressFields.includes('phone_number') ? "Phone" : "Phone (optional)" }
+          placeholder={hasRequiredFields && requiredAddressFields.includes('phone_number') ? 'Phone' : 'Phone (optional)'}
           type="tel"
           name="phone_number"
           className="Field Field--Phone"
