@@ -19,6 +19,13 @@ export const BillingAddress = ({
     provinceLabel,
   } = useCountryInfo(countryInfo, address);
 
+  let provincePlaceholder = provinceLabel;
+
+  // TODO: replace with languages config file
+  if (provinceLabel === 'state_territory') {
+    provincePlaceholder = 'state/territory';
+  }
+
   useEffect(() => {
     if (onChange) {
       onChange(address);
@@ -60,7 +67,7 @@ export const BillingAddress = ({
               provinces={provinces}
               showPostalCode={showPostalCode}
               showProvince={showProvince}
-              provinceLabel={provinceLabel}
+              provinceLabel={provincePlaceholder}
               submit={() => submitBillingAddress(address)}
               requiredAddressFields={requiredAddressFields}
             />

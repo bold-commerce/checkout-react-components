@@ -43,6 +43,13 @@ export const ShippingAddress = ({
     provinceLabel,
   } = useCountryInfo(countryInfo, address);
 
+  let provincePlaceholder = provinceLabel;
+
+  // TODO: replace with languages config file
+  if (provinceLabel === 'state_territory') {
+    provincePlaceholder = 'state/territory';
+  }
+
   const updateSelectedShippingAddress = (selectedAddress) => {
     submitShippingAddress(selectedAddress);
     setAddress(selectedAddress);
@@ -104,7 +111,7 @@ export const ShippingAddress = ({
                       provinces={provinces}
                       showPostalCode={showPostalCode}
                       showProvince={showProvince}
-                      provinceLabel={provinceLabel}
+                      provinceLabel={provincePlaceholder}
                       submit={() => submitShippingAddress(address)}
                       requiredAddressFields={requiredAddressFields}
                     />
