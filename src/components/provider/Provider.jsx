@@ -1,8 +1,9 @@
 /* eslint-disable react/forbid-prop-types */
 import React, { useReducer } from 'react';
 import PropTypes from 'prop-types';
-import { CheckoutApp } from '../checkout_app';
-import { initialState, reducer, CheckoutStore } from '../../store';
+import {
+  initialState, reducer, CheckoutStore, calculateTotals,
+} from '../../store';
 
 const CheckoutProvider = ({
   applicationState,
@@ -25,15 +26,16 @@ const CheckoutProvider = ({
     storeIdentifier,
     apiBase,
     apiPath,
+    orderTotals: calculateTotals(applicationState),
   };
 
   const [state, dispatch] = useReducer(reducer, currentState);
 
   return (
     <CheckoutStore.Provider value={{ state, dispatch, onError }}>
-      <CheckoutApp>
+      <div className="Checkout">
         {children}
-      </CheckoutApp>
+      </div>
     </CheckoutStore.Provider>
   );
 };

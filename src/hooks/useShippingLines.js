@@ -5,7 +5,7 @@ import { CheckoutStore } from '../store';
 const useShippingLines = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
 
-  const { csrf, apiPath, applicationState } = state;
+  const { token, apiPath, applicationState } = state;
   const shippingLines = applicationState.shipping.available_shipping_lines;
   const shippingAddressErrors = state.errors.shippingAddress;
   const selectedCountryCode = applicationState?.addresses?.shipping?.country_code;
@@ -24,7 +24,7 @@ const useShippingLines = () => {
     });
 
     try {
-      const response = await setShippingLine(csrf, apiPath, index);
+      const response = await setShippingLine(token, apiPath, index);
       if (!response.success) {
         if (response.error.errors) {
           dispatch({
@@ -72,7 +72,7 @@ const useShippingLines = () => {
       type: 'checkout/shippingLines/fetching',
     });
     try {
-      const response = await fetchShippingLines(csrf, apiPath);
+      const response = await fetchShippingLines(token, apiPath);
       if (!response.success) {
         if (response.error.errors) {
           dispatch({

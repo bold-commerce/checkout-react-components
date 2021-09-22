@@ -1,10 +1,10 @@
 import { fetchShippingLines } from '../../api';
 
-const getShippingLines = async (csrf, apiPath, dispatch) => {
+const getShippingLines = async (token, apiPath, dispatch) => {
   dispatch({
     type: 'checkout/shippingLines/fetching',
   });
-  const response = await fetchShippingLines(csrf, apiPath);
+  const response = await fetchShippingLines(token, apiPath);
   if (!response.success) {
     if (response.error.errors) {
       dispatch({

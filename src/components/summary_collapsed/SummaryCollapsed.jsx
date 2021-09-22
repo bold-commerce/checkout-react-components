@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import {
   Price,
 } from '@boldcommerce/stacks-ui';
-import Discount from '../discount/Discount';
-import Breakdown from '../breakdown/Breakdown';
-import AccordionCollapsed from '../accordian_collapsed/AccordianCollapsed';
-import LineItems from '../line_items/LineItems';
+import { Discount } from '../discount';
+import { Breakdown } from '../breakdown';
+import { AccordionCollapsed } from '../accordion_collapsed';
+import { LineItems } from '../line_items';
 import './SummaryCollapsed.css';
 import { useBreakdown } from '../../hooks';
 

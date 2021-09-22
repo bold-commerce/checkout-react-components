@@ -20,7 +20,7 @@ const emptyAddress = {
 
 const useBillingAddress = (requiredAddressFields) => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-  const { csrf, apiPath } = state;
+  const { token, apiPath } = state;
   const billingAddress = state.applicationState.addresses.billing;
   const billingAddressErrors = state.errors.billingAddress;
   const countryInfo = state.initialData.country_info;
@@ -117,7 +117,7 @@ const useBillingAddress = (requiredAddressFields) => {
     };
 
     try {
-      const response = await updateBillingAddress(csrf, apiPath, completeAddress);
+      const response = await updateBillingAddress(token, apiPath, completeAddress);
       if (!response.success) {
         if (response.error.errors) {
           dispatch({
@@ -159,7 +159,7 @@ const useBillingAddress = (requiredAddressFields) => {
     if (value) {
       if (memoizedShippingAddress?.country_code) {
         try {
-          const response = await updateBillingAddress(csrf, apiPath, memoizedShippingAddress);
+          const response = await updateBillingAddress(token, apiPath, memoizedShippingAddress);
           if (!response.success) {
             if (response.error.errors) {
               dispatch({

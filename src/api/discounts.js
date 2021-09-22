@@ -1,22 +1,22 @@
 import { fetchApi } from '../utils';
 
-export const validateDiscount = async (csrf, apiPath, code) => {
+export const validateDiscount = async (token, apiPath, code) => {
   const response = await fetchApi(`${apiPath}/validate_discount_code?discount_code=${code}`, {
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': csrf,
+      Authorization: `Bearer ${token}`,
     },
   });
 
   return response;
 };
 
-export const addDiscount = async (csrf, apiPath, code) => {
+export const addDiscount = async (token, apiPath, code) => {
   const response = await fetchApi(`${apiPath}/discounts`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': csrf,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       code,
@@ -26,12 +26,12 @@ export const addDiscount = async (csrf, apiPath, code) => {
   return response;
 };
 
-export const removeDiscount = async (csrf, apiPath, code) => {
+export const removeDiscount = async (token, apiPath, code) => {
   const response = await fetchApi(`${apiPath}/discounts`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': csrf,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       code,

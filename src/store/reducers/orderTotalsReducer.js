@@ -1,4 +1,4 @@
-const calculateTotals = (applicationState) => {
+export const calculateTotals = (applicationState) => {
   const lineItems = applicationState.line_items;
   const taxes = applicationState?.taxes;
   const payments = applicationState?.payments;

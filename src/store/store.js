@@ -9,7 +9,6 @@ export const initialState = {
   apiBase: 'https://api.boldcommerce.com/checkout/storefront',
   apiPath: '',
   isAuthenticated: false,
-  csrf: null,
   errors: {
     customer: null,
     shippingAddress: null,

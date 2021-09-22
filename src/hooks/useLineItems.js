@@ -5,7 +5,7 @@ import { getShippingLines } from './shared';
 
 const useLineItems = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-  const { csrf, apiPath } = state;
+  const { token, apiPath } = state;
   const countryCode = state.applicationState.addresses?.shipping?.country_code;
   const lineItems = state.applicationState.line_items;
   const memoizedLineItems = useMemo(() => lineItems, [JSON.stringify(lineItems)]);
@@ -16,7 +16,7 @@ const useLineItems = () => {
     });
 
     try {
-      const response = await api.removeLineItem(csrf, apiPath, lineItemKey);
+      const response = await api.removeLineItem(token, apiPath, lineItemKey);
       if (!response.success) {
         if (response.error.errors) {
           dispatch({
@@ -49,7 +49,7 @@ const useLineItems = () => {
     }
 
     if (countryCode) {
-      return getShippingLines(csrf, apiPath, dispatch);
+      return getShippingLines(token, apiPath, dispatch);
     }
     return Promise.resolve();
   }, [countryCode, onError]);
@@ -65,7 +65,7 @@ const useLineItems = () => {
     });
 
     try {
-      const response = await api.updateLineItem(csrf, apiPath, data);
+      const response = await api.updateLineItem(token, apiPath, data);
       if (!response.success) {
         if (response.error.errors) {
           dispatch({
@@ -102,7 +102,7 @@ const useLineItems = () => {
     }
 
     if (countryCode) {
-      return getShippingLines(csrf, apiPath, dispatch);
+      return getShippingLines(token, apiPath, dispatch);
     }
     return Promise.resolve();
   }, [countryCode, onError]);
@@ -119,7 +119,7 @@ const useLineItems = () => {
     });
 
     try {
-      const response = await api.addLineItem(csrf, apiPath, data);
+      const response = await api.addLineItem(token, apiPath, data);
       if (!response.success) {
         if (response.error.errors) {
           dispatch({
@@ -152,7 +152,7 @@ const useLineItems = () => {
     }
 
     if (countryCode) {
-      return getShippingLines(csrf, apiPath, dispatch);
+      return getShippingLines(token, apiPath, dispatch);
     }
     return Promise.resolve();
   }, [countryCode, onError]);

@@ -12,7 +12,7 @@ const emptyCustomer = {
 
 const useCustomer = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-  const { csrf, apiPath } = state;
+  const { token, apiPath } = state;
   const { customer } = state.applicationState;
   const customerErrors = state.errors.customer;
   const { isAuthenticated } = state;
@@ -52,7 +52,7 @@ const useCustomer = () => {
 
     const method = memoizedCustomer.email_address ? 'PUT' : 'POST';
     try {
-      const response = await updateCustomer(csrf, apiPath, customerData, method);
+      const response = await updateCustomer(token, apiPath, customerData, method);
       if (!response.success) {
         if (response.error.errors) {
           dispatch({
@@ -83,7 +83,7 @@ const useCustomer = () => {
       }
       return Promise.reject(e);
     }
-  }, [memoizedCustomer, csrf, apiPath, onError]);
+  }, [memoizedCustomer, token, apiPath, onError]);
 
   return {
     customer: memoizedCustomer,

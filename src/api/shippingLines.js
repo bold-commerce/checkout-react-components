@@ -1,11 +1,11 @@
 import { fetchApi } from '../utils';
 
-export const setShippingLine = async (csrf, apiPath, index) => {
+export const setShippingLine = async (token, apiPath, index) => {
   const response = await fetchApi(`${apiPath}/shipping_lines`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': csrf,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       index: index.toString(),
@@ -15,11 +15,11 @@ export const setShippingLine = async (csrf, apiPath, index) => {
   return response;
 };
 
-export const fetchShippingLines = async (csrf, apiPath) => {
+export const fetchShippingLines = async (token, apiPath) => {
   const response = await fetchApi(`${apiPath}/shipping_lines`, {
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': csrf,
+      Authorization: `Bearer ${token}`,
     },
   });
 

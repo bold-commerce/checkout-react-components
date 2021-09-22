@@ -4,7 +4,7 @@ import { deleteOrderMetadata, postOrderMetadata, patchOrderMetadata } from '../a
 
 const useOrderMetadata = () => {
   const { state, dispatch } = useContext(CheckoutStore);
-  const { csrf, apiPath } = state;
+  const { token, apiPath } = state;
   const orderMetadata = state.applicationState.order_meta_data;
   const orderMetadataLoadingStatus = state.loadingStatus.orderMetadata;
   const orderMetadataErrors = state.errors.orderMetadata;
@@ -14,7 +14,7 @@ const useOrderMetadata = () => {
       dispatch({
         type: 'checkout/orderMetadata/setting',
       });
-      const response = await deleteOrderMetadata(csrf, apiPath);
+      const response = await deleteOrderMetadata(token, apiPath);
       if (!response.success) {
         if (response.error.errors) {
           dispatch({
@@ -39,14 +39,14 @@ const useOrderMetadata = () => {
       console.error(e);
       return Promise.reject(e);
     }
-  }, [csrf, apiPath]);
+  }, [token, apiPath]);
 
   const overwriteOrderMetadata = useCallback(async (newOrderMetadata) => {
     try {
       dispatch({
         type: 'checkout/orderMetadata/setting',
       });
-      const response = await postOrderMetadata(csrf, apiPath, newOrderMetadata);
+      const response = await postOrderMetadata(token, apiPath, newOrderMetadata);
       if (!response.success) {
         if (response.error.errors) {
           dispatch({
@@ -71,7 +71,7 @@ const useOrderMetadata = () => {
       console.error(e);
       return Promise.reject(e);
     }
-  }, [csrf, apiPath]);
+  }, [token, apiPath]);
 
   const appendOrderMetadata = useCallback(async (propertyName, propertyValue) => {
     try {
@@ -82,7 +82,7 @@ const useOrderMetadata = () => {
       dispatch({
         type: 'checkout/orderMetadata/setting',
       });
-      const response = await patchOrderMetadata(csrf, apiPath, requestBody);
+      const response = await patchOrderMetadata(token, apiPath, requestBody);
       if (!response.success) {
         if (response.error.errors) {
           dispatch({
@@ -105,9 +105,9 @@ const useOrderMetadata = () => {
       });
     } catch (e) {
       console.error(e);
-      Promise.reject(e);
+      return Promise.reject(e);
     }
-  }, [csrf, apiPath]);
+  }, [token, apiPath]);
 
   return {
     orderMetadata,

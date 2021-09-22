@@ -1,7 +1,7 @@
 import { fetchTaxes } from '../../api';
 
-const generateTaxes = async (csrf, apiPath, dispatch) => {
-  const response = await fetchTaxes(csrf, apiPath);
+const generateTaxes = async (token, apiPath, dispatch) => {
+  const response = await fetchTaxes(token, apiPath);
   if (!response.success) {
     if (response.error.errors) {
       dispatch({

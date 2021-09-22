@@ -8,7 +8,7 @@ import { CheckoutStore } from '../store';
 const usePaymentIframe = () => {
   const { state, dispatch } = useContext(CheckoutStore);
   const [paymentIframeHeight, setPaymentIframeHeight] = useState(0);
-  const { csrf, token, apiPath } = state;
+  const { token, apiPath } = state;
   const paymentIframeLoadingStatus = state.loadingStatus.paymentIframe;
   const paymentIframeUrl = `${apiPath}/payments/iframe?token=${token}`;
 
@@ -48,7 +48,7 @@ const usePaymentIframe = () => {
     });
 
     try {
-      const response = await processOrder(csrf, apiPath);
+      const response = await processOrder(token, apiPath);
 
       if (!response.success) {
         dispatch({

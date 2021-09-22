@@ -4,7 +4,7 @@ import * as api from '../api';
 
 const useDiscount = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-  const { csrf, apiPath } = state;
+  const { token, apiPath } = state;
   const discounts = state.applicationState?.discounts;
   const memoizedDiscounts = useMemo(() => discounts, [JSON.stringify(discounts)]);
   const discountErrors = state.errors.discount;
@@ -16,7 +16,7 @@ const useDiscount = () => {
     });
 
     try {
-      const response = await api.addDiscount(csrf, apiPath, discount);
+      const response = await api.addDiscount(token, apiPath, discount);
       if (!response.success) {
         if (response.error.errors) {
           dispatch({
@@ -55,7 +55,7 @@ const useDiscount = () => {
     });
 
     try {
-      const response = await api.removeDiscount(csrf, apiPath, code);
+      const response = await api.removeDiscount(token, apiPath, code);
       if (!response.success) {
         if (response.error.errors) {
           dispatch({

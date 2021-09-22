@@ -22,7 +22,7 @@ const emptyAddress = {
 
 const useShippingAddress = (requiredAddressFields) => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-  const { csrf, apiPath } = state;
+  const { token, apiPath } = state;
   const shippingAddress = state.applicationState.addresses.shipping;
   const savedAddresses = state.applicationState.customer.saved_addresses;
   const shippingAddressErrors = state.errors.shippingAddress;
@@ -124,7 +124,7 @@ const useShippingAddress = (requiredAddressFields) => {
     let shippingAddressResponse;
 
     try {
-      shippingAddressResponse = await updateShippingAddress(csrf, apiPath, completeAddress);
+      shippingAddressResponse = await updateShippingAddress(token, apiPath, completeAddress);
       if (!shippingAddressResponse.success) {
         if (shippingAddressResponse.error.errors) {
           dispatch({
@@ -153,12 +153,12 @@ const useShippingAddress = (requiredAddressFields) => {
     }
 
     if (shippingAddressData.country_code) {
-      await getShippingLines(csrf, apiPath, dispatch);
+      await getShippingLines(token, apiPath, dispatch);
     }
 
     // Set billing address if same as shipping is selected
     if (billingSameAsShipping) {
-      const billingAddressResponse = await updateBillingAddress(csrf, apiPath, completeAddress);
+      const billingAddressResponse = await updateBillingAddress(token, apiPath, completeAddress);
       if (!billingAddressResponse.success) {
         if (billingAddressResponse.error.errors) {
           dispatch({
@@ -184,7 +184,7 @@ const useShippingAddress = (requiredAddressFields) => {
         payload: billingAddressResponse.data.application_state,
       });
 
-      return generateTaxes(csrf, apiPath, dispatch);
+      return generateTaxes(token, apiPath, dispatch);
     }
 
     dispatch({
@@ -192,7 +192,7 @@ const useShippingAddress = (requiredAddressFields) => {
       payload: shippingAddressResponse.data.application_state,
     });
 
-    return generateTaxes(csrf, apiPath, dispatch);
+    return generateTaxes(token, apiPath, dispatch);
   }, [memoizedShippingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedShippingAddressErrors, memoizedRequiredAddressFields, onError]);
 
   return {

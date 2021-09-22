@@ -1,11 +1,11 @@
 import { fetchApi } from '../utils';
 
-export const addLineItem = async (csrf, apiPath, data) => {
+export const addLineItem = async (token, apiPath, data) => {
   const response = await fetchApi(`${apiPath}/items`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': csrf,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
   });
@@ -13,12 +13,12 @@ export const addLineItem = async (csrf, apiPath, data) => {
   return response;
 };
 
-export const updateLineItem = async (csrf, apiPath, data) => {
+export const updateLineItem = async (token, apiPath, data) => {
   const response = await fetchApi(`${apiPath}/items`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': csrf,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
   });
@@ -26,12 +26,12 @@ export const updateLineItem = async (csrf, apiPath, data) => {
   return response;
 };
 
-export const removeLineItem = async (csrf, apiPath, lineItemKey) => {
+export const removeLineItem = async (token, apiPath, lineItemKey) => {
   const response = await fetchApi(`${apiPath}/items`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': csrf,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       quantity: 0,
