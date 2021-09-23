@@ -1,8 +1,9 @@
 import {
   useCallback, useContext, useMemo,
 } from 'react';
-import { CheckoutStore } from '../store';
+import { CheckoutStatus, CheckoutStore } from '../store';
 import { updateCustomer } from '../api';
+import { OrderError, PromiseError } from '../utils';
 
 const emptyCustomer = {
   first_name: null,
@@ -12,27 +13,38 @@ const emptyCustomer = {
 
 const useCustomer = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
+  const { statusState, dispatchStatus } = useContext(CheckoutStatus);
   const { token, apiPath } = state;
   const { customer } = state.applicationState;
-  const customerErrors = state.errors.customer;
+  const customerLoadingStatus = statusState.loadingStatus.customer;
+  const customerErrors = statusState.errors.customer;
   const { isAuthenticated } = state;
   const emailAddress = customer?.email_address;
   const firstName = customer?.first_name;
   const lastName = customer?.last_name;
-
-  const memoizedCustomer = useMemo(() => customer, [emailAddress, firstName, lastName]);
+  const memoizedCustomer = useMemo(() => ({
+    ...customer,
+    isAuthenticated,
+  }), [emailAddress, firstName, lastName, isAuthenticated]);
   const memoizedCustomerErrors = useMemo(() => customerErrors, [JSON.stringify(customerErrors)]);
 
   const submitCustomer = useCallback(async (customerData) => {
     if (!customerData.email_address) {
-      dispatch({
+      dispatchStatus({
         type: 'checkout/customer/setErrors',
         payload: [{
           field: 'email',
           message: 'Email address is required',
         }],
       });
-      return Promise.reject();
+      return Promise.reject(new PromiseError('Email address is required', {
+        errors: [
+          {
+            field: 'email',
+            message: 'Email address is required',
+          },
+        ],
+      }));
     }
 
     const appCustomer = JSON.stringify({
@@ -54,21 +66,30 @@ const useCustomer = () => {
     try {
       const response = await updateCustomer(token, apiPath, customerData, method);
       if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
+        if (onError) {
+          onError(response.error);
+        }
+
+        if (response.error?.body?.errors) {
+          dispatchStatus({
             type: 'checkout/customer/setErrors',
-            payload: response.error.errors,
+            payload: response.error.body.errors,
           });
           return Promise.reject(response.error);
         }
 
-        if (onError) {
-          onError(response.error);
-        }
-        return Promise.reject(response.error);
+        dispatchStatus({
+          type: 'checkout/order/setErrors',
+          payload: [{
+            field: 'order',
+            message: 'An error with your order has occured, please try again',
+          }],
+        });
+
+        return Promise.reject(new OrderError());
       }
 
-      dispatch({
+      dispatchStatus({
         type: 'checkout/customer/set',
         payload: response.data.customer,
       });
@@ -81,14 +102,22 @@ const useCustomer = () => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(e);
+
+      dispatchStatus({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+      return Promise.reject(new OrderError());
     }
   }, [memoizedCustomer, token, apiPath, onError]);
 
   return {
-    customer: memoizedCustomer,
-    customerErrors: memoizedCustomerErrors,
-    isAuthenticated,
+    data: memoizedCustomer,
+    errors: memoizedCustomerErrors,
+    loadingStatus: customerLoadingStatus,
     submitCustomer,
   };
 };

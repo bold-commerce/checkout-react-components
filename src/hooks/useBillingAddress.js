@@ -1,6 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { updateBillingAddress } from '../api';
-import { CheckoutStore } from '../store';
+import { CheckoutStatus, CheckoutStore } from '../store';
+import { OrderError, PromiseError } from '../utils';
 import { requiredAddressFieldValidation } from './shared';
 
 const emptyAddress = {
@@ -18,19 +19,24 @@ const emptyAddress = {
   phone_number: '',
 };
 
+/**
+ * @param {string[]} requiredAddressFields
+ */
 const useBillingAddress = (requiredAddressFields) => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
+  const { statusState, dispatchStatus } = useContext(CheckoutStatus);
   const { token, apiPath } = state;
   const billingAddress = state.applicationState.addresses.billing;
-  const billingAddressErrors = state.errors.billingAddress;
+  const billingAddressErrors = statusState.errors.billingAddress;
+  const billingAddressLoadingStatus = statusState.loadingStatus.billingAddress;
   const countryInfo = state.initialData.country_info;
   const { billingSameAsShipping } = state.orderInfo;
   const shippingAddress = state.applicationState?.addresses?.shipping;
 
-  const memoizedBillingAddress = useMemo(() => billingAddress, [JSON.stringify(billingAddress)]);
+  const memoizedBillingAddress = useMemo(() => (billingAddress), [JSON.stringify(billingAddress), billingSameAsShipping]);
   const memoizedBillingAddressErrors = useMemo(() => billingAddressErrors, [JSON.stringify(billingAddressErrors)]);
   const memoizedRequiredAddressFields = useMemo(() => requiredAddressFields, [JSON.stringify(requiredAddressFields)]);
-  const memoizedCountryInfo = useMemo(() => countryInfo, []); // country info never changes, so no need to update itc
+  const memoizedCountryInfo = useMemo(() => countryInfo, []); // country info never changes, so no need to update it
   const memoizedShippingAddress = useMemo(() => shippingAddress, [JSON.stringify(shippingAddress)]);
 
   const submitBillingAddress = useCallback(async (billingAddressData) => {
@@ -39,23 +45,30 @@ const useBillingAddress = (requiredAddressFields) => {
     if (requiredAddressFields) {
       const requiredAddressFieldErrors = requiredAddressFieldValidation(billingAddressData, memoizedRequiredAddressFields);
       if (requiredAddressFieldErrors) {
-        dispatch({
+        dispatchStatus({
           type: 'checkout/billingAddress/setErrors',
           payload: requiredAddressFieldErrors,
         });
-        return Promise.reject();
+        return Promise.reject(new PromiseError('Required fields missing data', { errors: requiredAddressFieldErrors }));
       }
     }
 
     if (!billingAddressData || !billingAddressData.country_code) {
-      dispatch({
+      dispatchStatus({
         type: 'checkout/billingAddress/setErrors',
         payload: [{
           field: 'country',
           message: 'Country is required',
         }],
       });
-      return Promise.reject();
+      return Promise.reject(new PromiseError('Country is required', {
+        errors: [
+          {
+            field: 'country',
+            message: 'Country is required',
+          },
+        ],
+      }));
     }
 
     const appShipping = JSON.stringify({
@@ -70,7 +83,7 @@ const useBillingAddress = (requiredAddressFields) => {
     // Prevent user from submitting shipping address that is already in app state
     if (appShipping === localShipping) {
       if (memoizedBillingAddressErrors && Object.keys(memoizedBillingAddressErrors).length > 0) {
-        return dispatch({
+        return dispatchStatus({
           type: 'checkout/billingAddress/set',
         });
       }
@@ -81,33 +94,56 @@ const useBillingAddress = (requiredAddressFields) => {
     const country = countryData.name;
 
     if (countryData.show_province && !billingAddressData.province_code) {
-      dispatch({
+      dispatchStatus({
         type: 'checkout/billingAddress/setErrors',
         payload: [{
           field: 'province',
           message: 'Province is required',
         }],
       });
-      return Promise.reject();
+
+      return Promise.reject(new PromiseError('Province is required', {
+        errors: [
+          {
+            field: 'province',
+            message: 'Province is required',
+          },
+        ],
+      }));
     }
     if (countryData.show_postal_code && !billingAddressData.postal_code) {
-      dispatch({
+      dispatchStatus({
         type: 'checkout/billingAddress/setErrors',
         payload: [{
           field: 'postal_code',
           message: 'Postal code is required',
         }],
       });
-      return Promise.reject();
+
+      return Promise.reject(new PromiseError('Postal code is required', {
+        errors: [
+          {
+            field: 'postal_code',
+            message: 'Postal code is required',
+          },
+        ],
+      }));
     }
 
     const provinceData = countryData.provinces.find((data) => data.iso_code === billingAddressData.province_code);
     if (!provinceData) {
-      dispatch({
+      dispatchStatus({
         type: 'checkout/billingAddress/setIncomplete',
       });
 
-      return Promise.reject(new Error('Incomplete billing address'));
+      return Promise.reject(new PromiseError('Address is incomplete', {
+        errors: [
+          {
+            field: 'shipping_address',
+            message: 'Address is incomplete',
+          },
+        ],
+      }));
     }
     const province = provinceData.name;
     const completeAddress = {
@@ -116,21 +152,34 @@ const useBillingAddress = (requiredAddressFields) => {
       province,
     };
 
+    dispatchStatus({
+      type: 'checkout/billingAddress/setting',
+    });
+
     try {
       const response = await updateBillingAddress(token, apiPath, completeAddress);
       if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
+        if (onError) {
+          onError(response.error);
+        }
+
+        if (response.error?.body?.errors) {
+          dispatchStatus({
             type: 'checkout/billingAddress/setErrors',
-            payload: response.error.errors,
+            payload: response.error.body.errors,
           });
           return Promise.reject(response.error);
         }
 
-        if (onError) {
-          onError(response.error);
-        }
-        return Promise.reject(response.error);
+        dispatchStatus({
+          type: 'checkout/order/setErrors',
+          payload: [{
+            field: 'order',
+            message: 'An error with your order has occured, please try again',
+          }],
+        });
+
+        return Promise.reject(new OrderError());
       }
 
       dispatch({
@@ -138,7 +187,7 @@ const useBillingAddress = (requiredAddressFields) => {
         payload: response.data.application_state,
       });
 
-      return dispatch({
+      return dispatchStatus({
         type: 'checkout/billingAddress/set',
         payload: response.data.address,
       });
@@ -146,62 +195,23 @@ const useBillingAddress = (requiredAddressFields) => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(e);
+      dispatchStatus({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+      return Promise.reject(new OrderError());
     }
   }, [memoizedBillingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedBillingAddressErrors, memoizedRequiredAddressFields, onError]);
 
-  const setBillingSameAsShipping = useCallback(async (value) => {
-    dispatch({
-      type: 'checkout/billingAddress/setBillingSameAsShipping',
-      payload: value,
-    });
-
-    if (value) {
-      if (memoizedShippingAddress?.country_code) {
-        try {
-          const response = await updateBillingAddress(token, apiPath, memoizedShippingAddress);
-          if (!response.success) {
-            if (response.error.errors) {
-              dispatch({
-                type: 'checkout/billingAddress/setErrors',
-                payload: response.error.errors,
-              });
-              return Promise.reject(response.error);
-            }
-
-            if (onError) {
-              onError(response.error);
-            }
-            return Promise.reject(response.error);
-          }
-
-          dispatch({
-            type: 'checkout/update',
-            payload: response.data.application_state,
-          });
-          return dispatch({
-            type: 'checkout/billingAddress/set',
-            payload: response.data.address,
-          });
-        } catch (e) {
-          if (onError) {
-            onError(e);
-          }
-          return Promise.reject(e);
-        }
-      }
-    }
-
-    return Promise.resolve();
-  }, [memoizedShippingAddress, onError]);
-
   return {
-    billingAddress: memoizedBillingAddress,
-    billingAddressErrors: memoizedBillingAddressErrors,
-    countryInfo: memoizedCountryInfo,
-    billingSameAsShipping,
+    // If billing address is an array, that means it's empty
+    data: memoizedBillingAddress,
+    errors: memoizedBillingAddressErrors,
+    loadingStatus: billingAddressLoadingStatus,
     submitBillingAddress,
-    setBillingSameAsShipping,
   };
 };
 

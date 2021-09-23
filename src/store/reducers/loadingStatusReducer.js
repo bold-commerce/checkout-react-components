@@ -12,6 +12,18 @@ const setLoadingState = (state, type, status) => {
   };
 };
 
+const clearLoadingState = () => ({
+  customer: 'fulfilled',
+  shippingAddress: 'fulfilled',
+  billingAddress: 'fulfilled',
+  shippingLines: 'fulfilled',
+  paymentIframe: 'fulfilled',
+  lineItems: 'fulfilled',
+  discount: 'fulfilled',
+  orderMetadata: 'fulfilled',
+  isLoading: false,
+});
+
 const loadingStatusReducer = (state, action) => {
   switch (action.type) {
     // Customer Actions
@@ -64,7 +76,7 @@ const loadingStatusReducer = (state, action) => {
 
     // Order Actions
     case 'checkout/order/setErrors':
-      return setLoadingState(state, 'paymentIframe', 'fulfilled');
+      return clearLoadingState();
 
     // Line Item Actions
     case 'checkout/lineItem/removing':

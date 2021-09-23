@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 import { CheckoutStatus } from '../store';
 
-const useLoadingStatus = () => {
+const useErrors = () => {
   const { statusState } = useContext(CheckoutStatus);
 
   return {
-    data: statusState.loadingStatus,
+    data: statusState.errors,
   };
 };
 
-export default useLoadingStatus;
+export default useErrors;

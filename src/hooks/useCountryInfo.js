@@ -1,6 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { CheckoutStore } from '../store';
 
-const useCountryInfo = (countryInfo, address) => {
+const useCountryInfo = (address) => {
+  const { state } = useContext(CheckoutStore);
+  const countryInfo = state.initialData.country_info;
+
   const [currentCountryInfo, setCurrentCountryInfo] = useState({
     countries: [],
     provinces: [],
@@ -39,11 +43,13 @@ const useCountryInfo = (countryInfo, address) => {
   }, [countryInfo, address?.country_code]);
 
   return {
-    countries: currentCountryInfo.countries,
-    provinces: currentCountryInfo.provinces,
-    showProvince: currentCountryInfo.showProvince,
-    showPostalCode: currentCountryInfo.showPostalCode,
-    provinceLabel: currentCountryInfo.provinceLabel,
+    data: {
+      countries: currentCountryInfo.countries,
+      provinces: currentCountryInfo.provinces,
+      showProvince: currentCountryInfo.showProvince,
+      showPostalCode: currentCountryInfo.showPostalCode,
+      provinceLabel: currentCountryInfo.provinceLabel,
+    },
   };
 };
 

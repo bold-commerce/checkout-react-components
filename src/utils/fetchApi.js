@@ -25,6 +25,13 @@ const fetchApi = async (url, options) => {
       };
     }
 
+    if (response.status === 401) {
+      return {
+        success: false,
+        error: new FetchError(response.status, 'Expired Session', responseData),
+      };
+    }
+
     return {
       success: false,
       error: new FetchError(response.status, 'Something went wrong', responseData),

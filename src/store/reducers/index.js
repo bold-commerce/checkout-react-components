@@ -4,16 +4,12 @@ import orderInfoReducer from './orderInfoReducer';
 import stateReducer from './stateReducer';
 import orderTotalsReducer from './orderTotalsReducer';
 
-const reducer = (state, action) => {
-  const {
-    applicationState, errors, loadingStatus, orderInfo,
-  } = state;
+export const reducer = (state, action) => {
+  const { applicationState, orderInfo } = state;
 
   const currentState = {
     ...state,
     applicationState: stateReducer(applicationState, action),
-    errors: errorsReducer(errors, action),
-    loadingStatus: loadingStatusReducer(loadingStatus, action),
     orderInfo: orderInfoReducer(orderInfo, action),
     orderTotals: orderTotalsReducer(state, action),
   };
@@ -21,4 +17,14 @@ const reducer = (state, action) => {
   return currentState;
 };
 
-export default reducer;
+export const statusReducer = (state, action) => {
+  const { errors, loadingStatus } = state;
+
+  const currentState = {
+    ...state,
+    errors: errorsReducer(errors, action),
+    loadingStatus: loadingStatusReducer(loadingStatus, action),
+  };
+
+  return currentState;
+};

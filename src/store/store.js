@@ -9,26 +9,6 @@ export const initialState = {
   apiBase: 'https://api.boldcommerce.com/checkout/storefront',
   apiPath: '',
   isAuthenticated: false,
-  errors: {
-    customer: null,
-    shippingAddress: null,
-    billingAddress: null,
-    lineItems: null,
-    orderMetadata: null,
-    discount: null,
-    paymentIframe: null,
-    order: null,
-  },
-  loadingStatus: {
-    customer: 'fulfilled',
-    shippingAddress: 'fulfilled',
-    shippingLines: 'fulfilled',
-    paymentIframe: 'fulfilled',
-    lineItems: 'fulfilled',
-    discount: 'fulfilled',
-    orderMetadata: 'fulfilled',
-    isLoading: false,
-  },
   orderInfo: {
     orderStatus: 'pending',
     billingSameAsShipping: true,
@@ -45,4 +25,31 @@ export const initialState = {
   },
 };
 
+export const initialStatus = {
+  errors: {
+    customer: null,
+    shippingAddress: null,
+    billingAddress: null,
+    shippingLines: null,
+    lineItems: null,
+    orderMetadata: null,
+    discount: null,
+    paymentIframe: null,
+    order: null,
+  },
+  loadingStatus: {
+    customer: 'fulfilled',
+    shippingAddress: 'fulfilled',
+    billingAddress: 'fulfilled',
+    shippingLines: 'fulfilled',
+    paymentIframe: 'fulfilled',
+    lineItems: 'fulfilled',
+    discount: 'fulfilled',
+    orderMetadata: 'fulfilled',
+    isLoading: false,
+  },
+};
+
 export const CheckoutStore = React.createContext(null);
+
+export const CheckoutStatus = React.createContext(null);
