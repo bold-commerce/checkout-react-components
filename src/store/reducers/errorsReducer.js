@@ -36,7 +36,19 @@ const errorsReducer = (state, action) => {
         billingAddress: null,
       };
 
-    // Line Items Actions
+    // Shipping Line Actions
+    case 'checkout/shippingLines/setErrors':
+      return {
+        ...state,
+        shippingLines: action.payload.reduce((errors, error) => ({ ...errors, [error.field]: error.message }), {}),
+      };
+    case 'checkout/shippingLines/set':
+      return {
+        ...state,
+        shippingLines: null,
+      };
+
+    // Line Item Actions
     case 'checkout/lineItem/setErrors':
       return {
         ...state,

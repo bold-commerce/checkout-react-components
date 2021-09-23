@@ -15,11 +15,13 @@ const useOrderSummary = () => {
   const memoizedPayments = useMemo(() => payments, [JSON.stringify(payments)]);
 
   return {
-    customer: memoizedCustomer,
-    shippingAddress: memoizedShippingAddress,
-    billingAddress: memoizedBillingAddress,
-    selectedShipping: memoizedSelectedShipping,
-    payments: memoizedPayments,
+    data: {
+      customer: memoizedCustomer,
+      shippingAddress: memoizedShippingAddress,
+      billingAddress: memoizedBillingAddress,
+      selectedShipping: memoizedSelectedShipping,
+      payments: memoizedPayments,
+    },
   };
 };
 

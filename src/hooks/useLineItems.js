@@ -1,38 +1,51 @@
 import { useCallback, useContext, useMemo } from 'react';
 import * as api from '../api';
-import { CheckoutStore } from '../store';
+import { CheckoutStatus, CheckoutStore } from '../store';
 import { getShippingLines } from './shared';
 
 const useLineItems = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
+  const { statusState, dispatchStatus } = useContext(CheckoutStatus);
   const { token, apiPath } = state;
   const countryCode = state.applicationState.addresses?.shipping?.country_code;
   const lineItems = state.applicationState.line_items;
+  const lineItemsLoadingStatus = statusState.loadingStatus.lineItems;
+  const lineItemErrors = statusState.errors.lineItems;
+  const memoizedLineItemErrors = useMemo(() => lineItemErrors, [JSON.stringify(lineItemErrors)]);
   const memoizedLineItems = useMemo(() => lineItems, [JSON.stringify(lineItems)]);
 
   const removeLineItem = useCallback(async (lineItemKey) => {
-    dispatch({
+    dispatchStatus({
       type: 'checkout/lineItem/removing',
     });
 
     try {
       const response = await api.removeLineItem(token, apiPath, lineItemKey);
       if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
+        if (onError) {
+          onError(response.error);
+        }
+
+        if (response.error?.body?.errors) {
+          dispatchStatus({
             type: 'checkout/lineItem/setErrors',
-            payload: response.error.errors,
+            payload: response.error.body.errors,
           });
           return Promise.reject(response.error);
         }
 
-        if (onError) {
-          onError(response.error);
-        }
+        dispatchStatus({
+          type: 'checkout/lineItem/setErrors',
+          payload: [{
+            field: 'order',
+            message: 'Something went wrong',
+          }],
+        });
+
         return Promise.reject(response.error);
       }
 
-      dispatch({
+      dispatchStatus({
         type: 'checkout/lineItem/removed',
       });
 
@@ -45,11 +58,19 @@ const useLineItems = () => {
         onError(e);
       }
 
+      dispatchStatus({
+        type: 'checkout/lineItem/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'Something went wrong',
+        }],
+      });
+
       return Promise.reject(e);
     }
 
     if (countryCode) {
-      return getShippingLines(token, apiPath, dispatch);
+      return getShippingLines(token, apiPath, dispatch, dispatchStatus);
     }
     return Promise.resolve();
   }, [countryCode, onError]);
@@ -60,33 +81,38 @@ const useLineItems = () => {
       line_item_key: lineItemKey,
     };
 
-    dispatch({
+    dispatchStatus({
       type: 'checkout/lineItem/setting',
     });
 
     try {
       const response = await api.updateLineItem(token, apiPath, data);
       if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
+        if (onError) {
+          onError(response.error);
+        }
+
+        if (response.error?.body?.errors) {
+          dispatchStatus({
             type: 'checkout/lineItem/setErrors',
-            payload: response.error.errors,
+            payload: response.error.body.errors,
           });
           return Promise.reject(response.error);
         }
 
-        if (onError) {
-          onError(response.error);
-        }
+        dispatchStatus({
+          type: 'checkout/lineItem/setErrors',
+          payload: [{
+            field: 'order',
+            message: 'Something went wrong',
+          }],
+        });
+
         return Promise.reject(response.error);
       }
 
-      dispatch({
+      dispatchStatus({
         type: 'checkout/lineItem/set',
-      });
-
-      console.log({
-        response,
       });
 
       dispatch({
@@ -98,11 +124,19 @@ const useLineItems = () => {
         onError(e);
       }
 
+      dispatchStatus({
+        type: 'checkout/lineItem/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'Something went wrong',
+        }],
+      });
+
       return Promise.reject(e);
     }
 
     if (countryCode) {
-      return getShippingLines(token, apiPath, dispatch);
+      return getShippingLines(token, apiPath, dispatch, dispatchStatus);
     }
     return Promise.resolve();
   }, [countryCode, onError]);
@@ -114,28 +148,37 @@ const useLineItems = () => {
       line_item_key: lineItemKey,
     };
 
-    dispatch({
+    dispatchStatus({
       type: 'checkout/lineItem/adding',
     });
 
     try {
       const response = await api.addLineItem(token, apiPath, data);
       if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
+        if (onError) {
+          onError(response.error);
+        }
+
+        if (response.error?.body?.errors) {
+          dispatchStatus({
             type: 'checkout/lineItem/setErrors',
-            payload: response.error.errors,
+            payload: response.error.body.errors,
           });
           return Promise.reject(response.error);
         }
 
-        if (onError) {
-          onError(response.error);
-        }
+        dispatchStatus({
+          type: 'checkout/lineItem/setErrors',
+          payload: [{
+            field: 'order',
+            message: 'Something went wrong',
+          }],
+        });
+
         return Promise.reject(response.error);
       }
 
-      dispatch({
+      dispatchStatus({
         type: 'checkout/lineItem/added',
       });
 
@@ -148,20 +191,30 @@ const useLineItems = () => {
         onError(e);
       }
 
+      dispatchStatus({
+        type: 'checkout/lineItem/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'Something went wrong',
+        }],
+      });
+
       return Promise.reject(e);
     }
 
     if (countryCode) {
-      return getShippingLines(token, apiPath, dispatch);
+      return getShippingLines(token, apiPath, dispatch, dispatchStatus);
     }
     return Promise.resolve();
   }, [countryCode, onError]);
 
   return {
-    lineItems: memoizedLineItems,
-    removeLineItem,
-    updateLineItemQuantity,
+    data: memoizedLineItems,
+    errors: memoizedLineItemErrors,
+    loadingStatus: lineItemsLoadingStatus,
     addLineItem,
+    updateLineItemQuantity,
+    removeLineItem,
   };
 };
 

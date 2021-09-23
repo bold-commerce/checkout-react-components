@@ -25,20 +25,22 @@ const useBreakdown = () => {
   const { orderStatus } = state.orderInfo;
 
   return {
-    subTotal,
-    shippingTotal,
-    shippingDescription,
-    excludedTaxes,
-    discountTotal,
-    total,
-    remainingBalance,
-    taxesTotal,
-    totalItems,
-    orderStatus,
-    payments: memoizedPayments,
-    hasPayments,
-    taxes: memoizedTaxes,
-    taxesIncluded,
+    data: {
+      subTotal,
+      shippingTotal,
+      shippingDescription,
+      excludedTaxes,
+      discountTotal,
+      total,
+      remainingBalance,
+      taxesTotal,
+      totalItems,
+      orderStatus,
+      payments: memoizedPayments,
+      hasPayments,
+      taxes: memoizedTaxes,
+      taxesIncluded,
+    },
   };
 };
 

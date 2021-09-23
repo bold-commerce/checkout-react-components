@@ -1,6 +1,6 @@
 {
   "name": "@boldcommerce/checkout-react-components",
-  "version": "3.3.4",
+  "version": "4.0.0-alpha",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "author": {
@@ -15,19 +15,15 @@
     "test": "jest"
   },
   "peerDependencies": {
-    "@boldcommerce/stacks-ui": "^1.0.2",
     "classnames": "^2.2.6",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-spring": "^8.0.27"
+    "react-dom": "^16.13.1"
   },
   "dependencies": {
-    "@boldcommerce/stacks-ui": "^1.0.2",
     "classnames": "^2.2.6",
     "jest-config": "^27.0.6",
-    "prop-types": "^15.7.2",
-    "react-spring": "^8.0.27"
+    "prop-types": "^15.7.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -46,13 +42,11 @@
     "eslint-plugin-react": "^7.19.0",
     "jest": "^27.0.6",
     "jest-fetch-mock": "^3.0.3",
-    "postcss": "^8.3.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "rollup": "^2.49.0",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
-    "rollup-plugin-postcss": "^4.0.0",
     "watch": "^1.0.2"
   },
   "browserslist": [

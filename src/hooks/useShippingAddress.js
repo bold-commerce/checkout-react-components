@@ -2,7 +2,7 @@ import { useCallback, useContext, useMemo } from 'react';
 import {
   updateBillingAddress, updateShippingAddress,
 } from '../api';
-import { CheckoutStore } from '../store';
+import { CheckoutStatus, CheckoutStore } from '../store';
 import { generateTaxes, getShippingLines, requiredAddressFieldValidation } from './shared';
 
 const emptyAddress = {
@@ -22,24 +22,23 @@ const emptyAddress = {
 
 const useShippingAddress = (requiredAddressFields) => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
+  const { statusState, dispatchStatus } = useContext(CheckoutStatus);
   const { token, apiPath } = state;
   const shippingAddress = state.applicationState.addresses.shipping;
-  const savedAddresses = state.applicationState.customer.saved_addresses;
-  const shippingAddressErrors = state.errors.shippingAddress;
+  const shippingAddressLoadingStatus = statusState.loadingStatus.shippingAddress;
+  const shippingAddressErrors = statusState.errors.shippingAddress;
   const countryInfo = state.initialData.country_info;
   const { billingSameAsShipping } = state.orderInfo;
-
   const memoizedShippingAddress = useMemo(() => shippingAddress, [JSON.stringify(shippingAddress)]);
   const memoizedRequiredAddressFields = useMemo(() => requiredAddressFields, [JSON.stringify(requiredAddressFields)]);
   const memoizedShippingAddressErrors = useMemo(() => shippingAddressErrors, [JSON.stringify(shippingAddressErrors)]);
   const memoizedCountryInfo = useMemo(() => countryInfo, []); // country info never changes, so no need to update it
-  const memoizedSavedAddresses = useMemo(() => savedAddresses, [JSON.stringify(savedAddresses)]);
 
   const submitShippingAddress = useCallback(async (shippingAddressData) => {
     if (requiredAddressFields) {
       const requiredAddressFieldErrors = requiredAddressFieldValidation(shippingAddressData, memoizedRequiredAddressFields);
       if (requiredAddressFieldErrors) {
-        dispatch({
+        dispatchStatus({
           type: 'checkout/shippingAddress/setErrors',
           payload: requiredAddressFieldErrors,
         });
@@ -47,7 +46,7 @@ const useShippingAddress = (requiredAddressFields) => {
       }
     }
     if (!shippingAddressData || !shippingAddressData.country_code) {
-      dispatch({
+      dispatchStatus({
         type: 'checkout/shippingAddress/setErrors',
         payload: [{
           field: 'country',
@@ -69,7 +68,7 @@ const useShippingAddress = (requiredAddressFields) => {
     // Prevent user from submitting shipping address that is already in app state
     if (appShipping === localShipping) {
       if (memoizedShippingAddressErrors && Object.keys(memoizedShippingAddressErrors).length > 0) {
-        return dispatch({
+        return dispatchStatus({
           type: 'checkout/shippingAddress/set',
         });
       }
@@ -81,7 +80,7 @@ const useShippingAddress = (requiredAddressFields) => {
     const country = countryData.name;
 
     if (countryData.show_province && !shippingAddressData.province_code) {
-      dispatch({
+      dispatchStatus({
         type: 'checkout/shippingAddress/setErrors',
         payload: [{
           field: 'province',
@@ -91,7 +90,7 @@ const useShippingAddress = (requiredAddressFields) => {
       return Promise.reject();
     }
     if (countryData.show_postal_code && !shippingAddressData.postal_code) {
-      dispatch({
+      dispatchStatus({
         type: 'checkout/shippingAddress/setErrors',
         payload: [{
           field: 'postal_code',
@@ -103,7 +102,7 @@ const useShippingAddress = (requiredAddressFields) => {
 
     const provinceData = countryData.provinces.find((data) => data.iso_code === shippingAddressData.province_code);
     if (!provinceData) {
-      dispatch({
+      dispatchStatus({
         type: 'checkout/shippingAddress/setIncomplete',
       });
 
@@ -117,7 +116,7 @@ const useShippingAddress = (requiredAddressFields) => {
       province,
     };
 
-    dispatch({
+    dispatchStatus({
       type: 'checkout/shippingAddress/setting',
     });
 
@@ -126,21 +125,30 @@ const useShippingAddress = (requiredAddressFields) => {
     try {
       shippingAddressResponse = await updateShippingAddress(token, apiPath, completeAddress);
       if (!shippingAddressResponse.success) {
-        if (shippingAddressResponse.error.errors) {
-          dispatch({
+        if (onError) {
+          onError(shippingAddressResponse.error);
+        }
+
+        if (shippingAddressResponse.error?.body?.errors) {
+          dispatchStatus({
             type: 'checkout/shippingAddress/setErrors',
-            payload: shippingAddressResponse.error.errors,
+            payload: shippingAddressResponse.error.body.errors,
           });
           return Promise.reject(shippingAddressResponse.error);
         }
 
-        if (onError) {
-          onError(shippingAddressResponse.error);
-        }
+        dispatchStatus({
+          type: 'checkout/shippingAddress/setErrors',
+          payload: [{
+            field: 'order',
+            message: 'Something went wrong',
+          }],
+        });
+
         return Promise.reject(shippingAddressResponse.error);
       }
 
-      dispatch({
+      dispatchStatus({
         type: 'checkout/shippingAddress/set',
         payload: shippingAddressResponse.data.address,
       });
@@ -149,32 +157,49 @@ const useShippingAddress = (requiredAddressFields) => {
         onError(e);
       }
 
+      dispatchStatus({
+        type: 'checkout/shippingAddress/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'Something went wrong',
+        }],
+      });
+
       return Promise.reject(e);
     }
 
     if (shippingAddressData.country_code) {
-      await getShippingLines(token, apiPath, dispatch);
+      await getShippingLines(token, apiPath, dispatch, dispatchStatus);
     }
 
     // Set billing address if same as shipping is selected
     if (billingSameAsShipping) {
       const billingAddressResponse = await updateBillingAddress(token, apiPath, completeAddress);
       if (!billingAddressResponse.success) {
-        if (billingAddressResponse.error.errors) {
-          dispatch({
+        if (onError) {
+          onError(billingAddressResponse.error);
+        }
+
+        if (billingAddressResponse?.error?.body?.errors) {
+          dispatchStatus({
             type: 'checkout/billingAddress/setErrors',
-            payload: billingAddressResponse.error.errors,
+            payload: billingAddressResponse.error.body.errors,
           });
           return Promise.reject(billingAddressResponse.error);
         }
 
-        if (onError) {
-          onError(billingAddressResponse.error);
-        }
+        dispatchStatus({
+          type: 'checkout/shippingAddress/setErrors',
+          payload: [{
+            field: 'order',
+            message: 'Something went wrong',
+          }],
+        });
+
         return Promise.reject(billingAddressResponse.error);
       }
 
-      dispatch({
+      dispatchStatus({
         type: 'checkout/billingAddress/set',
         payload: billingAddressResponse.data.address,
       });
@@ -184,7 +209,7 @@ const useShippingAddress = (requiredAddressFields) => {
         payload: billingAddressResponse.data.application_state,
       });
 
-      return generateTaxes(token, apiPath, dispatch);
+      return generateTaxes(token, apiPath, dispatch, dispatchStatus);
     }
 
     dispatch({
@@ -192,14 +217,13 @@ const useShippingAddress = (requiredAddressFields) => {
       payload: shippingAddressResponse.data.application_state,
     });
 
-    return generateTaxes(token, apiPath, dispatch);
+    return generateTaxes(token, apiPath, dispatch, dispatchStatus);
   }, [memoizedShippingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedShippingAddressErrors, memoizedRequiredAddressFields, onError]);
 
   return {
-    shippingAddress: memoizedShippingAddress,
-    savedAddresses: memoizedSavedAddresses,
-    countryInfo: memoizedCountryInfo,
-    shippingAddressErrors: memoizedShippingAddressErrors,
+    data: shippingAddress,
+    errors: memoizedShippingAddressErrors,
+    loadingStatus: shippingAddressLoadingStatus,
     submitShippingAddress,
   };
 };

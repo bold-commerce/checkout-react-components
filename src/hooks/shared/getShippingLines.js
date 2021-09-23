@@ -1,25 +1,32 @@
 import { fetchShippingLines } from '../../api';
 
-const getShippingLines = async (token, apiPath, dispatch) => {
-  dispatch({
+const getShippingLines = async (token, apiPath, dispatch, dispatchStatus) => {
+  dispatchStatus({
     type: 'checkout/shippingLines/fetching',
   });
   const response = await fetchShippingLines(token, apiPath);
   if (!response.success) {
-    if (response.error.errors) {
-      dispatch({
+    if (response.error?.body?.errors) {
+      dispatchStatus({
         type: 'checkout/shippingLines/setErrors',
-        payload: response.error.errors,
+        payload: response.error.body.errors,
       });
       return Promise.reject(response.error);
     }
 
-    // TODO: Handle server error
+    dispatchStatus({
+      type: 'checkout/shippingLines/setErrors',
+      payload: [{
+        field: 'order',
+        message: 'Something went wrong',
+      }],
+    });
+
     return Promise.reject(response.error);
   }
 
   if (response.data && response.data.application_state) {
-    dispatch({
+    dispatchStatus({
       type: 'checkout/shippingLines/fetched',
     });
     return dispatch({
@@ -28,7 +35,7 @@ const getShippingLines = async (token, apiPath, dispatch) => {
     });
   }
 
-  return dispatch({
+  return dispatchStatus({
     type: 'checkout/shippingLines/fetched',
   });
 };
