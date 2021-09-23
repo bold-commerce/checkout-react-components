@@ -85,10 +85,6 @@ const useLineItems = () => {
         type: 'checkout/lineItem/set',
       });
 
-      console.log({
-        response,
-      });
-
       dispatch({
         type: 'checkout/update',
         payload: response.data.application_state,
