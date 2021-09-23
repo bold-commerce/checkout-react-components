@@ -6,7 +6,7 @@ import { processOrder } from '../api';
 import { CheckoutStore } from '../store';
 
 const usePaymentIframe = () => {
-  const { state, dispatch } = useContext(CheckoutStore);
+  const { state, dispatch, onError } = useContext(CheckoutStore);
   const [paymentIframeHeight, setPaymentIframeHeight] = useState(0);
   const { token, apiPath } = state;
   const paymentIframeLoadingStatus = state.loadingStatus.paymentIframe;
@@ -42,7 +42,7 @@ const usePaymentIframe = () => {
 
   const refreshOrder = () => dispatchIframeAction('PIGI_REFRESH_ORDER');
 
-  const submitOrder = async () => {
+  const submitOrder = useCallback(async () => {
     dispatch({
       type: 'checkout/order/processing',
     });
@@ -59,6 +59,9 @@ const usePaymentIframe = () => {
           }],
         });
 
+        if (onError) {
+          onError(response.error);
+        }
         return Promise.reject(response.error);
       }
 
@@ -79,26 +82,33 @@ const usePaymentIframe = () => {
         }],
       });
 
+      if (onError) {
+        onError(e);
+      }
       return Promise.reject(e);
     }
-  };
+  }, [onError]);
 
   const addPayment = useCallback(async () => {
     try {
       await dispatchIframeAction('PIGI_ADD_PAYMENT');
       await submitOrder();
-      Promise.resolve();
+      return Promise.resolve();
     } catch (e) {
       dispatch({
         type: 'checkout/paymentIframe/setPaymentIframeErrors',
         payload: [{
           field: 'payment',
-          message: 'Invalid payment credentials',
+          message: 'Unprocessable order',
         }],
       });
-      Promise.reject();
+
+      if (onError) {
+        onError(e);
+      }
+      return Promise.reject(e);
     }
-  });
+  }, [dispatchIframeAction, submitOrder, onError]);
 
   const updateLanguage = useCallback((language) => dispatchIframeAction('PIGI_UPDATE_LANGUAGE', { language }));
 
@@ -111,7 +121,7 @@ const usePaymentIframe = () => {
     };
 
     return dispatchIframeAction('PIGI_DISPLAY_ERROR_MESSAGE', payload);
-  });
+  }, [dispatchIframeAction]);
 
   const clearErrorMessage = useCallback(() => dispatchIframeAction('PIGI_CLEAR_ERROR_MESSAGES'));
 
@@ -142,9 +152,13 @@ const usePaymentIframe = () => {
           message: 'Payment iframe does not exist',
         }],
       });
+
+      if (onError) {
+        onError(e);
+      }
       return Promise.reject(e);
     }
-  }, []);
+  }, [onError, refreshOrder, addPayment]);
 
   const paymentIframeOnLoaded = () => {
     dispatch({

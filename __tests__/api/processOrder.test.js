@@ -15,7 +15,7 @@ describe('Process Order API', () => {
     expect(res.success).toBe(true);
   });
 
-  test('postOrderMetadata with invalid data', async () => {
+  test('processOrder with invalid data', async () => {
     const mockData = {
       errors: [{
         message: 'Invalid request',

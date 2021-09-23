@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
@@ -6,7 +6,9 @@ import {
 } from '@boldcommerce/stacks-ui';
 import { useCheckoutStore, usePaymentIframe } from '../../hooks';
 
-const CheckoutButton = ({ disabled, onClick, loading, className, errorMessage }) => (
+const CheckoutButton = ({
+  disabled, onClick, loading, className, errorMessage,
+}) => (
   <>
     { errorMessage ? <Message type="alert">{ errorMessage }</Message> : null }
     <Button onClick={onClick} disabled={disabled} loading={loading} className={className}>
@@ -27,9 +29,13 @@ const CheckoutButtonContainer = ({ className }) => {
   const { state } = useCheckoutStore();
   const { orderStatus } = state.orderInfo;
   const orderErrorMessage = state.errors.order?.public_order_id;
+  const [hasErrors, setHasErrors] = useState(false);
 
-  // don't disable checkout button if only error is order error
-  const hasErrors = Object.keys(state.errors).some((errorKey) => errorKey != 'order' && state.errors[errorKey] != null);
+  useEffect(() => {
+  // don't disable checkout button if error is order error or PIGI error
+    setHasErrors(Object.keys(state.errors).some((errorKey) => (errorKey !== 'order' && errorKey !== 'paymentIframe') && state.errors[errorKey] !== null));
+  }, [state.errors]);
+
   const checkoutButtonDisabled = state.loadingStatus.isLoading || hasErrors;
 
   const { processPaymentIframe } = usePaymentIframe();

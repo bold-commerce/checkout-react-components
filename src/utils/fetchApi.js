@@ -27,7 +27,7 @@ const fetchApi = async (url, options) => {
 
     return {
       success: false,
-      error: new FetchError(response.status, 'Something went wrong'),
+      error: new FetchError(response.status, 'Something went wrong', responseData),
     };
   } catch (e) {
     return {
