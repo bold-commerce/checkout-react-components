@@ -1,12 +1,14 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { CheckoutStore } from '../store';
 import * as api from '../api';
+import { handleError, OrderError } from '../utils';
 
 const useDiscount = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
   const { token, apiPath } = state;
   const discounts = state.applicationState?.discounts;
   const memoizedDiscounts = useMemo(() => discounts, [JSON.stringify(discounts)]);
+  const discountLoadingStatus = state.loadingStatus.discount;
   const discountErrors = state.errors.discount;
   const memoizedDiscountErrors = useMemo(() => discountErrors, [JSON.stringify(discountErrors)]);
 
@@ -17,19 +19,18 @@ const useDiscount = () => {
 
     try {
       const response = await api.addDiscount(token, apiPath, discount);
-      if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
-            type: 'checkout/discount/setErrors',
-            payload: response.error.errors,
-          });
-          return Promise.reject(response.error);
+      const error = handleError('discount', response);
+      if (error) {
+        if (onError) {
+          onError(error.error);
         }
 
-        if (onError) {
-          onError(response.error);
-        }
-        return Promise.reject(response.error);
+        dispatch({
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
+        });
+
+        return Promise.reject(error.error);
       }
 
       dispatch({
@@ -45,7 +46,15 @@ const useDiscount = () => {
         onError(e);
       }
 
-      return Promise.reject(e);
+      dispatch({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
   }, [onError]);
 
@@ -56,19 +65,18 @@ const useDiscount = () => {
 
     try {
       const response = await api.removeDiscount(token, apiPath, code);
-      if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
-            type: 'checkout/discount/setErrors',
-            payload: response.error.errors,
-          });
-          return Promise.reject(response.error);
+      const error = handleError('discount', response);
+      if (error) {
+        if (onError) {
+          onError(error.error);
         }
 
-        if (onError) {
-          onError(response.error);
-        }
-        return Promise.reject(response.error);
+        dispatch({
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
+        });
+
+        return Promise.reject(error.error);
       }
 
       dispatch({
@@ -83,16 +91,28 @@ const useDiscount = () => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(e);
+
+      dispatch({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
   }, [onError]);
 
   return {
-    discounts: memoizedDiscounts,
-    discountApplied: discounts?.length > 0,
-    discountCode: discounts[0]?.code ?? '',
-    discountTotal: discounts[0]?.value ?? 0,
-    discountErrors: memoizedDiscountErrors,
+    data: {
+      discounts: memoizedDiscounts,
+      discountApplied: discounts?.length > 0,
+      discountCode: discounts[0]?.code ?? '',
+      discountTotal: discounts[0]?.value ?? 0,
+    },
+    errors: memoizedDiscountErrors,
+    loadingStatus: discountLoadingStatus,
     applyDiscount,
     removeDiscount,
   };

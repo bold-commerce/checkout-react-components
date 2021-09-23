@@ -16,6 +16,7 @@ const CheckoutProvider = ({
   onError,
 }) => {
   const apiPath = `${apiBase}/${storeIdentifier}/${publicOrderId}`;
+  const orderTotals = calculateTotals(applicationState);
   const currentState = {
     ...initialState,
     applicationState,
@@ -26,16 +27,18 @@ const CheckoutProvider = ({
     storeIdentifier,
     apiBase,
     apiPath,
-    orderTotals: calculateTotals(applicationState),
+    orderTotals,
+    orderInfo: {
+      ...initialState.orderInfo,
+      orderStatus: orderTotals.remainingBalance === 0 ? 'completed' : 'pending',
+    },
   };
 
   const [state, dispatch] = useReducer(reducer, currentState);
 
   return (
     <CheckoutStore.Provider value={{ state, dispatch, onError }}>
-      <div className="Checkout">
-        {children}
-      </div>
+      {children}
     </CheckoutStore.Provider>
   );
 };

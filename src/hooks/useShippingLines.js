@@ -1,43 +1,40 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { fetchShippingLines, setShippingLine } from '../api';
 import { CheckoutStore } from '../store';
+import { handleError, OrderError } from '../utils';
 
 const useShippingLines = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-
   const { token, apiPath, applicationState } = state;
   const shippingLines = applicationState.shipping.available_shipping_lines;
-  const shippingAddressErrors = state.errors.shippingAddress;
   const selectedCountryCode = applicationState?.addresses?.shipping?.country_code;
-  const shippingAddressLoadingStatus = state.loadingStatus.shippingAddress;
   const shippingLinesLoadingStatus = state.loadingStatus.shippingLines;
-  const shippingLinesFetching = shippingLinesLoadingStatus === 'fetching' || shippingAddressLoadingStatus === 'setting';
-  const showShippingLines = selectedCountryCode && !shippingAddressErrors && shippingAddressLoadingStatus !== 'incomplete';
   const selectedShippingLineIndex = parseInt(applicationState.shipping?.selected_shipping?.id ?? 0, 10);
   const selectedShippingAmount = applicationState.shipping?.selected_shipping?.amount;
   const selectedShippingDescription = applicationState.shipping?.selected_shipping?.description;
+  const shippingLineErrors = state.errors.shippingLines;
   const memoizedShippingLines = useMemo(() => shippingLines, [JSON.stringify(shippingLines)]);
+  const memoizedShippingLineErrors = useMemo(() => shippingLineErrors, [JSON.stringify(shippingLineErrors)]);
 
-  const setSelectedShippingLine = useCallback(async (index) => {
+  const updateShippingLine = useCallback(async (index) => {
     dispatch({
       type: 'checkout/shippingLines/setting',
     });
 
     try {
       const response = await setShippingLine(token, apiPath, index);
-      if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
-            type: 'checkout/shippingLines/setErrors',
-            payload: response.error.errors,
-          });
-          return Promise.reject(response.error);
+      const error = handleError('shippingLines', response);
+      if (error) {
+        if (onError) {
+          onError(error.error);
         }
 
-        if (onError) {
-          onError(response.error);
-        }
-        return Promise.reject(response.error);
+        dispatch({
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
+        });
+
+        return Promise.reject(error.error);
       }
 
       if (response.data && response.data.application_state) {
@@ -54,7 +51,15 @@ const useShippingLines = () => {
         onError(e);
       }
 
-      return Promise.reject(e);
+      dispatch({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
 
     return dispatch({
@@ -73,19 +78,18 @@ const useShippingLines = () => {
     });
     try {
       const response = await fetchShippingLines(token, apiPath);
-      if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
-            type: 'checkout/shippingLines/setErrors',
-            payload: response.error.errors,
-          });
-          return Promise.reject(response.error);
+      const error = handleError('shippingLines', response);
+      if (error) {
+        if (onError) {
+          onError(error.error);
         }
 
-        if (onError) {
-          onError(response.error);
-        }
-        return Promise.reject(response.error);
+        dispatch({
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
+        });
+
+        return Promise.reject(error.error);
       }
 
       if (response.data && response.data.application_state) {
@@ -102,7 +106,15 @@ const useShippingLines = () => {
         onError(e);
       }
 
-      return Promise.reject(e);
+      dispatch({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
 
     return dispatch({
@@ -111,14 +123,15 @@ const useShippingLines = () => {
   }, [selectedCountryCode, onError]);
 
   return {
-    showShippingLines,
-    shippingLinesFetching,
-    shippingLinesLoadingStatus,
-    selectedShippingAmount,
-    selectedShippingDescription,
-    shippingLines: memoizedShippingLines,
-    selectedShippingLineIndex,
-    setSelectedShippingLine,
+    data: {
+      shippingLines: memoizedShippingLines,
+      selectedShippingAmount,
+      selectedShippingDescription,
+      selectedShippingLineIndex,
+    },
+    errors: memoizedShippingLineErrors,
+    loadingStatus: shippingLinesLoadingStatus,
+    updateShippingLine,
     getShippingLines,
   };
 };

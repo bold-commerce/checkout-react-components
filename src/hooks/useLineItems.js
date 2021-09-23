@@ -1,6 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import * as api from '../api';
 import { CheckoutStore } from '../store';
+import { handleError, OrderError } from '../utils';
 import { getShippingLines } from './shared';
 
 const useLineItems = () => {
@@ -8,6 +9,9 @@ const useLineItems = () => {
   const { token, apiPath } = state;
   const countryCode = state.applicationState.addresses?.shipping?.country_code;
   const lineItems = state.applicationState.line_items;
+  const lineItemsLoadingStatus = state.loadingStatus.lineItems;
+  const lineItemErrors = state.errors.lineItems;
+  const memoizedLineItemErrors = useMemo(() => lineItemErrors, [JSON.stringify(lineItemErrors)]);
   const memoizedLineItems = useMemo(() => lineItems, [JSON.stringify(lineItems)]);
 
   const removeLineItem = useCallback(async (lineItemKey) => {
@@ -17,19 +21,18 @@ const useLineItems = () => {
 
     try {
       const response = await api.removeLineItem(token, apiPath, lineItemKey);
-      if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
-            type: 'checkout/lineItem/setErrors',
-            payload: response.error.errors,
-          });
-          return Promise.reject(response.error);
+      const error = handleError('lineItem', response);
+      if (error) {
+        if (onError) {
+          onError(error.error);
         }
 
-        if (onError) {
-          onError(response.error);
-        }
-        return Promise.reject(response.error);
+        dispatch({
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
+        });
+
+        return Promise.reject(error.error);
       }
 
       dispatch({
@@ -45,7 +48,15 @@ const useLineItems = () => {
         onError(e);
       }
 
-      return Promise.reject(e);
+      dispatch({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
 
     if (countryCode) {
@@ -66,27 +77,22 @@ const useLineItems = () => {
 
     try {
       const response = await api.updateLineItem(token, apiPath, data);
-      if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
-            type: 'checkout/lineItem/setErrors',
-            payload: response.error.errors,
-          });
-          return Promise.reject(response.error);
+      const error = handleError('lineItem', response);
+      if (error) {
+        if (onError) {
+          onError(error.error);
         }
 
-        if (onError) {
-          onError(response.error);
-        }
-        return Promise.reject(response.error);
+        dispatch({
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
+        });
+
+        return Promise.reject(error.error);
       }
 
       dispatch({
         type: 'checkout/lineItem/set',
-      });
-
-      console.log({
-        response,
       });
 
       dispatch({
@@ -98,7 +104,15 @@ const useLineItems = () => {
         onError(e);
       }
 
-      return Promise.reject(e);
+      dispatch({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
 
     if (countryCode) {
@@ -120,19 +134,18 @@ const useLineItems = () => {
 
     try {
       const response = await api.addLineItem(token, apiPath, data);
-      if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
-            type: 'checkout/lineItem/setErrors',
-            payload: response.error.errors,
-          });
-          return Promise.reject(response.error);
+      const error = handleError('lineItem', response);
+      if (error) {
+        if (onError) {
+          onError(error.error);
         }
 
-        if (onError) {
-          onError(response.error);
-        }
-        return Promise.reject(response.error);
+        dispatch({
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
+        });
+
+        return Promise.reject(error.error);
       }
 
       dispatch({
@@ -148,7 +161,15 @@ const useLineItems = () => {
         onError(e);
       }
 
-      return Promise.reject(e);
+      dispatch({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
 
     if (countryCode) {
@@ -158,10 +179,12 @@ const useLineItems = () => {
   }, [countryCode, onError]);
 
   return {
-    lineItems: memoizedLineItems,
-    removeLineItem,
-    updateLineItemQuantity,
+    data: memoizedLineItems,
+    errors: memoizedLineItemErrors,
+    loadingStatus: lineItemsLoadingStatus,
     addLineItem,
+    updateLineItemQuantity,
+    removeLineItem,
   };
 };
 

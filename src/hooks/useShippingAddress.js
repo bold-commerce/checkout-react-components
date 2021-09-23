@@ -1,8 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
-import {
-  updateBillingAddress, updateShippingAddress,
-} from '../api';
+import { updateBillingAddress, updateShippingAddress } from '../api';
 import { CheckoutStore } from '../store';
+import { handleError, OrderError, PromiseError } from '../utils';
 import { generateTaxes, getShippingLines, requiredAddressFieldValidation } from './shared';
 
 const emptyAddress = {
@@ -20,20 +19,21 @@ const emptyAddress = {
   phone_number: '',
 };
 
+/**
+ * @param {string[]} requiredAddressFields
+ */
 const useShippingAddress = (requiredAddressFields) => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
   const { token, apiPath } = state;
   const shippingAddress = state.applicationState.addresses.shipping;
-  const savedAddresses = state.applicationState.customer.saved_addresses;
+  const shippingAddressLoadingStatus = state.loadingStatus.shippingAddress;
   const shippingAddressErrors = state.errors.shippingAddress;
   const countryInfo = state.initialData.country_info;
   const { billingSameAsShipping } = state.orderInfo;
-
   const memoizedShippingAddress = useMemo(() => shippingAddress, [JSON.stringify(shippingAddress)]);
   const memoizedRequiredAddressFields = useMemo(() => requiredAddressFields, [JSON.stringify(requiredAddressFields)]);
   const memoizedShippingAddressErrors = useMemo(() => shippingAddressErrors, [JSON.stringify(shippingAddressErrors)]);
   const memoizedCountryInfo = useMemo(() => countryInfo, []); // country info never changes, so no need to update it
-  const memoizedSavedAddresses = useMemo(() => savedAddresses, [JSON.stringify(savedAddresses)]);
 
   const submitShippingAddress = useCallback(async (shippingAddressData) => {
     if (requiredAddressFields) {
@@ -43,7 +43,7 @@ const useShippingAddress = (requiredAddressFields) => {
           type: 'checkout/shippingAddress/setErrors',
           payload: requiredAddressFieldErrors,
         });
-        return Promise.reject();
+        return Promise.reject(new PromiseError('Required fields missing data', { errors: requiredAddressFieldErrors }));
       }
     }
     if (!shippingAddressData || !shippingAddressData.country_code) {
@@ -54,7 +54,14 @@ const useShippingAddress = (requiredAddressFields) => {
           message: 'Country is required',
         }],
       });
-      return Promise.reject();
+      return Promise.reject(new PromiseError('Country is required', {
+        errors: [
+          {
+            field: 'country',
+            message: 'Country is required',
+          },
+        ],
+      }));
     }
 
     const appShipping = JSON.stringify({
@@ -88,7 +95,14 @@ const useShippingAddress = (requiredAddressFields) => {
           message: 'Province is required',
         }],
       });
-      return Promise.reject();
+      return Promise.reject(new PromiseError('Province is required', {
+        errors: [
+          {
+            field: 'province',
+            message: 'Province is required',
+          },
+        ],
+      }));
     }
     if (countryData.show_postal_code && !shippingAddressData.postal_code) {
       dispatch({
@@ -98,7 +112,14 @@ const useShippingAddress = (requiredAddressFields) => {
           message: 'Postal code is required',
         }],
       });
-      return Promise.reject();
+      return Promise.reject(new PromiseError('Postal code is required', {
+        errors: [
+          {
+            field: 'postal_code',
+            message: 'Postal code is required',
+          },
+        ],
+      }));
     }
 
     const provinceData = countryData.provinces.find((data) => data.iso_code === shippingAddressData.province_code);
@@ -107,7 +128,14 @@ const useShippingAddress = (requiredAddressFields) => {
         type: 'checkout/shippingAddress/setIncomplete',
       });
 
-      return Promise.reject(new Error('Incomplete shipping address'));
+      return Promise.reject(new PromiseError('Address is incomplete', {
+        errors: [
+          {
+            field: 'shipping_address',
+            message: 'Address is incomplete',
+          },
+        ],
+      }));
     }
 
     const province = provinceData.name;
@@ -125,19 +153,18 @@ const useShippingAddress = (requiredAddressFields) => {
 
     try {
       shippingAddressResponse = await updateShippingAddress(token, apiPath, completeAddress);
-      if (!shippingAddressResponse.success) {
-        if (shippingAddressResponse.error.errors) {
-          dispatch({
-            type: 'checkout/shippingAddress/setErrors',
-            payload: shippingAddressResponse.error.errors,
-          });
-          return Promise.reject(shippingAddressResponse.error);
+      const error = handleError('shippingAddress', shippingAddressResponse);
+      if (error) {
+        if (onError) {
+          onError(error.error);
         }
 
-        if (onError) {
-          onError(shippingAddressResponse.error);
-        }
-        return Promise.reject(shippingAddressResponse.error);
+        dispatch({
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
+        });
+
+        return Promise.reject(error.error);
       }
 
       dispatch({
@@ -149,7 +176,15 @@ const useShippingAddress = (requiredAddressFields) => {
         onError(e);
       }
 
-      return Promise.reject(e);
+      dispatch({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
 
     if (shippingAddressData.country_code) {
@@ -159,19 +194,18 @@ const useShippingAddress = (requiredAddressFields) => {
     // Set billing address if same as shipping is selected
     if (billingSameAsShipping) {
       const billingAddressResponse = await updateBillingAddress(token, apiPath, completeAddress);
-      if (!billingAddressResponse.success) {
-        if (billingAddressResponse.error.errors) {
-          dispatch({
-            type: 'checkout/billingAddress/setErrors',
-            payload: billingAddressResponse.error.errors,
-          });
-          return Promise.reject(billingAddressResponse.error);
+      const error = handleError('billingAddress', shippingAddressResponse);
+      if (error) {
+        if (onError) {
+          onError(error.error);
         }
 
-        if (onError) {
-          onError(billingAddressResponse.error);
-        }
-        return Promise.reject(billingAddressResponse.error);
+        dispatch({
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
+        });
+
+        return Promise.reject(error.error);
       }
 
       dispatch({
@@ -193,13 +227,12 @@ const useShippingAddress = (requiredAddressFields) => {
     });
 
     return generateTaxes(token, apiPath, dispatch);
-  }, [memoizedShippingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedShippingAddressErrors, memoizedRequiredAddressFields, onError]);
+  }, [memoizedShippingAddress, memoizedCountryInfo, memoizedShippingAddressErrors, memoizedRequiredAddressFields, billingSameAsShipping, onError]);
 
   return {
-    shippingAddress: memoizedShippingAddress,
-    savedAddresses: memoizedSavedAddresses,
-    countryInfo: memoizedCountryInfo,
-    shippingAddressErrors: memoizedShippingAddressErrors,
+    data: shippingAddress,
+    errors: memoizedShippingAddressErrors,
+    loadingStatus: shippingAddressLoadingStatus,
     submitShippingAddress,
   };
 };

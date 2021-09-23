@@ -18,12 +18,12 @@ const orderInfoReducer = (state, action) => {
     case 'checkout/paymentIframe/setPaymentIframeErrors':
       return {
         ...state,
-        orderStatus: 'pending',
+        orderStatus: 'error',
       };
     case 'checkout/order/setErrors':
       return {
         ...state,
-        orderStatus: 'pending',
+        orderStatus: 'error',
       };
     case 'checkout/order/processed':
       return {

@@ -1,21 +1,19 @@
 import { fetchShippingLines } from '../../api';
+import { handleError } from '../../utils';
 
 const getShippingLines = async (token, apiPath, dispatch) => {
   dispatch({
     type: 'checkout/shippingLines/fetching',
   });
   const response = await fetchShippingLines(token, apiPath);
-  if (!response.success) {
-    if (response.error.errors) {
-      dispatch({
-        type: 'checkout/shippingLines/setErrors',
-        payload: response.error.errors,
-      });
-      return Promise.reject(response.error);
-    }
+  const error = handleError('shippingLines', response);
+  if (error) {
+    dispatch({
+      type: `checkout/${error.type}/setErrors`,
+      payload: error.payload,
+    });
 
-    // TODO: Handle server error
-    return Promise.reject(response.error);
+    return Promise.reject(error.error);
   }
 
   if (response.data && response.data.application_state) {

@@ -1,18 +1,16 @@
 import { fetchTaxes } from '../../api';
+import { handleError } from '../../utils';
 
 const generateTaxes = async (token, apiPath, dispatch) => {
   const response = await fetchTaxes(token, apiPath);
-  if (!response.success) {
-    if (response.error.errors) {
-      dispatch({
-        type: 'checkout/taxes/setErrors',
-        payload: response.error.errors,
-      });
-      return Promise.reject(response.error);
-    }
+  const error = handleError('taxes', response);
+  if (error) {
+    dispatch({
+      type: `checkout/${error.type}/setErrors`,
+      payload: error.payload,
+    });
 
-    // TODO: Handle server error
-    return Promise.reject(response.error);
+    return Promise.reject(error.error);
   }
 
   if (response.data && response.data.application_state) {

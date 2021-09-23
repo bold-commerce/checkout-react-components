@@ -1,13 +1,16 @@
-import { useContext, useCallback } from 'react';
+import { useContext, useCallback, useMemo } from 'react';
 import { CheckoutStore } from '../store';
 import { deleteOrderMetadata, postOrderMetadata, patchOrderMetadata } from '../api';
+import { handleError, OrderError } from '../utils';
 
 const useOrderMetadata = () => {
-  const { state, dispatch } = useContext(CheckoutStore);
+  const { state, dispatch, onError } = useContext(CheckoutStore);
   const { token, apiPath } = state;
   const orderMetadata = state.applicationState.order_meta_data;
   const orderMetadataLoadingStatus = state.loadingStatus.orderMetadata;
   const orderMetadataErrors = state.errors.orderMetadata;
+  const memoizedOrderMetadata = useMemo(() => orderMetadata, [JSON.stringify(orderMetadata)]);
+  const memoizedOrderMetadataErrors = useMemo(() => orderMetadataErrors, [JSON.stringify(orderMetadataErrors)]);
 
   const clearOrderMetadata = useCallback(async () => {
     try {
@@ -15,17 +18,18 @@ const useOrderMetadata = () => {
         type: 'checkout/orderMetadata/setting',
       });
       const response = await deleteOrderMetadata(token, apiPath);
-      if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
-            type: 'checkout/orderMetadata/setErrors',
-            payload: response.error.errors,
-          });
-          return Promise.reject(response.error);
+      const error = handleError('orderMetadata', response);
+      if (error) {
+        if (onError) {
+          onError(error.error);
         }
 
-        // TODO: Handle server error
-        return Promise.reject(response.error);
+        dispatch({
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
+        });
+
+        return Promise.reject(error.error);
       }
 
       dispatch({
@@ -36,8 +40,19 @@ const useOrderMetadata = () => {
         payload: response.data.application_state,
       });
     } catch (e) {
-      console.error(e);
-      return Promise.reject(e);
+      if (onError) {
+        onError(e);
+      }
+
+      dispatch({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
   }, [token, apiPath]);
 
@@ -47,17 +62,18 @@ const useOrderMetadata = () => {
         type: 'checkout/orderMetadata/setting',
       });
       const response = await postOrderMetadata(token, apiPath, newOrderMetadata);
-      if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
-            type: 'checkout/orderMetadata/setErrors',
-            payload: response.error.errors,
-          });
-          return Promise.reject(response.error);
+      const error = handleError('orderMetadata', response);
+      if (error) {
+        if (onError) {
+          onError(error.error);
         }
 
-        // TODO: Handle server error
-        return Promise.reject(response.error);
+        dispatch({
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
+        });
+
+        return Promise.reject(error.error);
       }
 
       dispatch({
@@ -68,32 +84,40 @@ const useOrderMetadata = () => {
         payload: response.data.application_state,
       });
     } catch (e) {
-      console.error(e);
-      return Promise.reject(e);
+      if (onError) {
+        onError(e);
+      }
+
+      dispatch({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
   }, [token, apiPath]);
 
-  const appendOrderMetadata = useCallback(async (propertyName, propertyValue) => {
+  const appendOrderMetadata = useCallback(async (data) => {
     try {
-      const requestBody = {
-        [propertyName]: propertyValue,
-      };
-
       dispatch({
         type: 'checkout/orderMetadata/setting',
       });
-      const response = await patchOrderMetadata(token, apiPath, requestBody);
-      if (!response.success) {
-        if (response.error.errors) {
-          dispatch({
-            type: 'checkout/orderMetadata/setErrors',
-            payload: response.error.errors,
-          });
-          return Promise.reject(response.error);
+      const response = await patchOrderMetadata(token, apiPath, data);
+      const error = handleError('orderMetadata', response);
+      if (error) {
+        if (onError) {
+          onError(error.error);
         }
 
-        // TODO: Handle server error
-        return Promise.reject(response.error);
+        dispatch({
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
+        });
+
+        return Promise.reject(error.error);
       }
 
       dispatch({
@@ -104,18 +128,29 @@ const useOrderMetadata = () => {
         payload: response.data.application_state,
       });
     } catch (e) {
-      console.error(e);
-      return Promise.reject(e);
+      if (onError) {
+        onError(e);
+      }
+
+      dispatch({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
   }, [token, apiPath]);
 
   return {
-    orderMetadata,
-    orderMetadataLoadingStatus,
-    orderMetadataErrors,
-    clearOrderMetadata,
-    overwriteOrderMetadata,
+    data: memoizedOrderMetadata,
+    errors: memoizedOrderMetadataErrors,
+    loadingStatus: orderMetadataLoadingStatus,
     appendOrderMetadata,
+    overwriteOrderMetadata,
+    clearOrderMetadata,
   };
 };
 
