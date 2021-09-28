@@ -17,11 +17,15 @@ export const ShippingLines = ({
         <div className="FieldSet__Header">
           <div className="FieldSet__Heading">Shipping method</div>
         </div>
-        <div className="FieldSet__Content"><EmptyState title="To view shipping options, complete filling in your address" /></div>
+        {
+          shippingLinesFetching ? <LoadingState />
+            : (
+              <div className="FieldSet__Content"><EmptyState title="To view shipping options, complete filling in your address" /></div>
+            )
+        }
       </section>
     );
   }
-
   return (
     <section className="FieldSet FieldSet--ShippingMethod">
       <div className="FieldSet__Header">
