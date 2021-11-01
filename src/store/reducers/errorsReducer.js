@@ -36,13 +36,25 @@ const errorsReducer = (state, action) => {
         billingAddress: null,
       };
 
+    // Line Items Actions
+    case 'checkout/lineItem/setErrors':
+      return {
+        ...state,
+        lineItems: action.payload.reduce((errors, error) => ({ ...errors, [error.field]: error.message }), {}),
+      };
+    case 'checkout/lineItem/set':
+      return {
+        ...state,
+        lineItems: null,
+      };
+
     // Payment Iframe Actions
     case 'checkout/paymentIframe/setPaymentIframeErrors':
       return {
         ...state,
         paymentIframe: action.payload.reduce((errors, error) => ({ ...errors, [error.field]: error.message }), {}),
       };
-    
+
     // Order Actions
     case 'checkout/order/setErrors':
       return {
@@ -71,12 +83,12 @@ const errorsReducer = (state, action) => {
         ...state,
         discount: null,
       };
-    
+
     // Order Metadata Actions
     case 'checkout/orderMetadata/setErrors':
       return {
         ...state,
-        orderMetadata: action.payload.reduce((errors,error) => ({ ...errors, [error.field]: error.message }),{}),
+        orderMetadata: action.payload.reduce((errors, error) => ({ ...errors, [error.field]: error.message }), {}),
       };
     case 'checkout/orderMetadata/set':
       return {

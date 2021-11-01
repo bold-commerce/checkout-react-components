@@ -13,6 +13,7 @@ export const initialState = {
     customer: null,
     shippingAddress: null,
     billingAddress: null,
+    lineItems: null,
     orderMetadata: null,
     discount: null,
     paymentIframe: null,
