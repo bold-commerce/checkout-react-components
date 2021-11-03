@@ -4,6 +4,7 @@ import {
 } from 'react';
 import { processOrder } from '../api';
 import { CheckoutStatus, CheckoutStore } from '../store';
+import { PromiseError } from '../utils';
 
 const usePaymentIframe = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
@@ -88,7 +89,14 @@ const usePaymentIframe = () => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'payment_iframe',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
   }, [onError]);
 
@@ -109,7 +117,14 @@ const usePaymentIframe = () => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'payment_iframe',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
   }, [dispatchIframeAction, submitOrder, onError]);
 
@@ -159,7 +174,14 @@ const usePaymentIframe = () => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'payment_iframe',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
   }, [onError, refreshOrder, addPayment]);
 

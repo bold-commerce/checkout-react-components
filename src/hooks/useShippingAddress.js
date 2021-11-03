@@ -3,6 +3,7 @@ import {
   updateBillingAddress, updateShippingAddress,
 } from '../api';
 import { CheckoutStatus, CheckoutStore } from '../store';
+import { PromiseError } from '../utils';
 import { generateTaxes, getShippingLines, requiredAddressFieldValidation } from './shared';
 
 const emptyAddress = {
@@ -141,7 +142,7 @@ const useShippingAddress = (requiredAddressFields) => {
           type: 'checkout/shippingAddress/setErrors',
           payload: [{
             field: 'order',
-            message: 'Something went wrong',
+            message: 'An error with your order has occured, please try again',
           }],
         });
 
@@ -161,11 +162,18 @@ const useShippingAddress = (requiredAddressFields) => {
         type: 'checkout/shippingAddress/setErrors',
         payload: [{
           field: 'order',
-          message: 'Something went wrong',
+          message: 'An error with your order has occured, please try again',
         }],
       });
 
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'shipping_address',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
 
     if (shippingAddressData.country_code) {
@@ -192,7 +200,7 @@ const useShippingAddress = (requiredAddressFields) => {
           type: 'checkout/shippingAddress/setErrors',
           payload: [{
             field: 'order',
-            message: 'Something went wrong',
+            message: 'An error with your order has occured, please try again',
           }],
         });
 

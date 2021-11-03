@@ -3,6 +3,7 @@ import {
 } from 'react';
 import { CheckoutStatus, CheckoutStore } from '../store';
 import { updateCustomer } from '../api';
+import { PromiseError } from '../utils';
 
 const emptyCustomer = {
   first_name: null,
@@ -36,7 +37,14 @@ const useCustomer = () => {
           message: 'Email address is required',
         }],
       });
-      return Promise.reject();
+      return Promise.reject(new PromiseError('Email address is required', {
+        errors: [
+          {
+            field: 'email',
+            message: 'Email address is required',
+          },
+        ],
+      }));
     }
 
     const appCustomer = JSON.stringify({
@@ -74,7 +82,7 @@ const useCustomer = () => {
           type: 'checkout/customer/setErrors',
           payload: [{
             field: 'order',
-            message: 'Something went wrong',
+            message: 'An error with your order has occured, please try again',
           }],
         });
 
@@ -99,10 +107,17 @@ const useCustomer = () => {
         type: 'checkout/customer/setErrors',
         payload: [{
           field: 'order',
-          message: 'Something went wrong',
+          message: 'An error with your order has occured, please try again',
         }],
       });
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'email',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
   }, [memoizedCustomer, token, apiPath, onError]);
 

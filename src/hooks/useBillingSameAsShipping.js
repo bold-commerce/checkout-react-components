@@ -1,6 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { CheckoutStatus, CheckoutStore } from '../store';
 import { updateBillingAddress } from '../api';
+import { PromiseError } from '../utils';
 
 const useBillingSameAsShipping = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
@@ -44,7 +45,7 @@ const useBillingSameAsShipping = () => {
               type: 'checkout/billingAddress/setErrors',
               payload: [{
                 field: 'order',
-                message: 'Something went wrong',
+                message: 'An error with your order has occured, please try again',
               }],
             });
 
@@ -68,10 +69,17 @@ const useBillingSameAsShipping = () => {
             type: 'checkout/billingAddress/setErrors',
             payload: [{
               field: 'order',
-              message: 'Something went wrong',
+              message: 'An error with your order has occured, please try again',
             }],
           });
-          return Promise.reject(e);
+          return Promise.reject(new PromiseError('Something went wrong', {
+            errors: [
+              {
+                field: 'billing_address',
+                message: 'An error with your order has occured, please try again',
+              },
+            ],
+          }));
         }
       }
     }

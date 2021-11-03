@@ -139,30 +139,38 @@ import { useBillingAddress } from '@boldcommerce/checkout-react-components';
 const BillingAddress = () => {
   const {
     data,
-    errors,
-    loadingStatus,
     submitBillingAddress
   } = useBillingAddress();
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(null);
 
   const handleSubmit = async () => {
-    await submitBillingAddress({
-      first_name: "Jane",
-      last_name: "Doe",
-      address_line_1: "123 Fake Street",
-      address_line_2: "Unit 10",
-      country: "Canada",
-      country_code: "CA",
-      province: "Manitoba",
-      province_code: "MB",
-      postal_code: "R5H 3V4",
-      business_name: "Fake Business",
-      phone_name: "2048885555"
-    });
+    setLoading(true);
+    try {
+      await submitBillingAddress({
+        first_name: "Jane",
+        last_name: "Doe",
+        address_line_1: "123 Fake Street",
+        address_line_2: "Unit 10",
+        country: "Canada",
+        country_code: "CA",
+        province: "Manitoba",
+        province_code: "MB",
+        postal_code: "R5H 3V4",
+        business_name: "Fake Business",
+        phone_name: "2048885555"
+      });
+      setErrors(null);
+    } catch(e) {
+      setErrors(e.body.errors);
+    }
+    setLoading(false);
   };
 
   return (
     <div>
-      <button type="button" onClick={handleSubmit}>Submit Address</button>
+      { errors && <p>{errors[0].message}</p>}
+      <button type="button" onClick={handleSubmit} disabled={loading}>Submit Address</button>
     </div>
   );
 };
@@ -175,16 +183,26 @@ Returns all information and methods related to setting the billing address to be
   import { useBillingSameAsShipping } from '@boldcommerce/checkout-react-components';
 
   const BillingSameAsShipping = () => {
-    const { data, errors, loadingStatus, setBillingSameAsShipping } = useBillingSameAsShipping();
+    const { data, setBillingSameAsShipping } = useBillingSameAsShipping();
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState(null);
 
     const handleChange = async (e) => {
-      await setBillingSameAsShipping(e.target.value);
+      setLoading(true);
+      try {
+        await setBillingSameAsShipping(e.target.value);
+        setErrors(null);
+      } catch(e) {
+        setErrors(e.body.errors);
+      }
+      setLoading(false);
     };
 
     return (
       <div>
+        { errors && <p>{errors[0].message}</p>}
         <label htmlFor="same_as_shipping">Same as Shipping</label>
-        <input id="same_as_shipping" type="checkbox" onChange={handleChange} >
+        <input id="same_as_shipping" type="checkbox" onChange={handleChange} disabled={loading} />
       </div>
     );
   };
@@ -212,7 +230,7 @@ Returns all information related to order status, totals, discount, taxes, and pa
 ```
 
 ### useCountryInfo
-Returns all country, province, and postal code information for the current address.
+Takes an address as an argument and returns available countries, available provinces, and if postal codes are applicable for the selected address.
 
 ```javascript
 import { useCountryInfo } from '@boldcommerce/checkout-react-components';
@@ -260,21 +278,31 @@ Returns all information related to the customer.
 import { useCustomer } from '@boldcommerce/checkout-react-components';
 
 const Customer = () => {
-  const { data, errors, loadingStatus, submitCustomer } = useCustomer();
+  const { data, submitCustomer } = useCustomer();
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(null);
 
   const handleSubmit = async () => {
-    await submitCustomer({
-      email_address: 'john.doe@email.com',
-      first_name: 'John',
-      last_name: 'Doe',
-    });
+    setLoading(true);
+    try {
+       await submitCustomer({
+        email_address: 'john.doe@email.com',
+        first_name: 'John',
+        last_name: 'Doe',
+      });
+      setErrors(null);
+    } catch(e) {
+      setErrors(e.body.errors);
+    }
+    setLoading(false);
   };
 
   return (
     <div>
+      { errors && <p>{errors[0].message}</p>}
       <label htmlFor="email">Email</label>
       <input type="email" id="email" value={data.email_address} />
-      <button type="button" onClick={handleSubmit}>Submit</button>
+      <button type="button" onClick={handleSubmit} disabled={loading}>Submit</button>
     </div>
   );
 };
@@ -288,14 +316,24 @@ import { useDiscount } from '@boldcommerce/checkout-react-components';
 
 const Discount = () => {
   const { data, errors, loadingStatus, applyDiscount, removeDiscount } = useDiscount();
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(null);
   const [discount, setDiscount] = useState(data.discountCode);
 
   const handleSubmit = useCallback(async () => {
-    await applyDiscount(discount);
+    setLoading(true);
+    try {
+      await applyDiscount(discount);
+      setErrors(null);
+    } catch(e) {
+      setErrors(e.body.errors);
+    }
+    setLoading(false);
   }, [discount]);
 
   return (
     <div>
+      { errors && <p>{errors[0].message}</p>}
       <label htmlFor="discount">Discount</label>
       <input
         type="text"
@@ -303,7 +341,7 @@ const Discount = () => {
         value={discount} 
         onChange={(e) => setDiscount(e.target.value)}
       />
-      <button type="button" onClick={handleSubmit}>Apply Discount</button>
+      <button type="button" onClick={handleSubmit} disabled={loading}>Apply Discount</button>
     </div>
   );
 };
@@ -341,18 +379,32 @@ Returns all information related to line items.
 import { useLineItems } from '@boldcommerce/checkout-react-components';
 
 const LineItems = () => {
-  const { data, errors, loadingStatus, addLineItem, updateLineItemQuantity, removeLineItem } = useLineItems();
+  const { data, addLineItem, updateLineItemQuantity, removeLineItem } = useLineItems();
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(null);
+
+  const handleRemove = async (lineItemKey) => {
+    setLoading(true);
+    try {
+      await removeLineItems(lineItemKey);
+      setErrors(null);
+    } catch(e) {
+      setErrors(e.body.errors);
+    }
+    setLoading(false);
+  };
 
   const lineItems = data.map((lineItem) => (
     <li>
       <p>{lineItem.product_data.title}</p>
       <p>{lineItem.product_data.quantity}</p>
-      <button type="button" onClick={() => removeLineItem(lineItem.line_item_key)}>Remove</button>
+      <button type="button" onClick={() => handleRemove(lineItem.line_item_key)} disabled={loading}>Remove</button>
     </li>
   ));
 
   return (
     <ul>
+      { errors && <p>{errors[0].message}</p>}
       {lineItems}
     </ul>
   );
@@ -395,37 +447,54 @@ Returns all information related to the order metadata.
 import { useOrderMetadata } from '@boldcommerce/checkout-react-components';
 
 const OrderMetadata = () => {
-  const { data, errors, loadingStatus, appendOrderMetadata, overwriteOrderMetadata, clearOrderMetadata } = useOrderMetadata();
+  const { data, appendOrderMetadata, overwriteOrderMetadata, clearOrderMetadata } = useOrderMetadata();
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(null);
 
+  // This will not overwrite what is currently in cart_paraterms, note_attributes, or tags. This will append to them.
   const handleAdd = async () => {
-    // This will not overwrite what is currently in cart_paraterms, note_attributes, or tags. This will append to them.
-    appendOrderMetadata({
-      cart_parameters: {
-        "cp-key2": "Another cart param",
-      },
-      note_attributes: {
-        "na-key2": "Another note attribute",
-      },
-      notes: "A different delivery instruction.",
-      tags: [
-        "order-1-other",
-      ],
-    });
+    setLoading(true);
+    try {
+      await appendOrderMetadata({
+        cart_parameters: {
+          "cp-key2": "Another cart param",
+        },
+        note_attributes: {
+          "na-key2": "Another note attribute",
+        },
+        notes: "A different delivery instruction.",
+        tags: [
+          "order-1-other",
+        ],
+      });
+      setErrors(null);
+    } catch(e) {
+      setErrors(e.body.errors);
+    }
+    setLoading(false);
   };
 
+  // This will completely remove what is currently in cart parameters and add what was passed into handleOverwrite.
   const handleOverwrite = async () => {
-    // This will completely remove what is currently in cart parameters and add what was passed into handleOverwrite.
-    handleOverwrite({
-      tags: [
-        "order-1-other",
-      ],
-    });
+    setLoading(true);
+    try {
+      await handleOverwrite({
+        tags: [
+          "order-1-other",
+        ],
+      });
+      setErrors(null);
+    } catch(e) {
+      setErrors(e.body.errors);
+    }
+    setLoading(false);
   };
 
   return (
     <div>
-      <button type="button" onClick={handleAdd}>Add Metadata</button>
-      <button type="button" onClick={handleOverwrite}>Overwrite Metadata</button>
+      { errors && <p>{errors[0].message}</p>}
+      <button type="button" onClick={handleAdd} disabled={loading}>Add Metadata</button>
+      <button type="button" onClick={handleOverwrite} disabled={loading}>Overwrite Metadata</button>
     </div>
   );
 };
@@ -488,32 +557,37 @@ Returns all information and methods related to the shipping address.
 import { useShippingAddress } from '@boldcommerce/checkout-react-components';
 
 const ShippingAddress = () => {
-  const {
-    data,
-    errors,
-    loadingStatus,
-    submitShippingAddress
-  } = useShippingAddress();
+  const { data, submitShippingAddress } = useShippingAddress();
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(null);
 
   const handleSubmit = async () => {
-    await submitShippingAddress({
-      first_name: "Jane",
-      last_name: "Doe",
-      address_line_1: "123 Fake Street",
-      address_line_2: "Unit 10",
-      country: "Canada",
-      country_code: "CA",
-      province: "Manitoba",
-      province_code: "MB",
-      postal_code: "R5H 3V4",
-      business_name: "Fake Business",
-      phone_name: "2048885555"
-    });
+    setLoading(true);
+    try {
+      await submitShippingAddress({
+        first_name: "Jane",
+        last_name: "Doe",
+        address_line_1: "123 Fake Street",
+        address_line_2: "Unit 10",
+        country: "Canada",
+        country_code: "CA",
+        province: "Manitoba",
+        province_code: "MB",
+        postal_code: "R5H 3V4",
+        business_name: "Fake Business",
+        phone_name: "2048885555"
+      });
+      setErrors(null);
+    } catch(e) {
+      setErrors(e.body.errors);
+    }
+    setLoading(false);
   };
 
   return (
     <div>
-      <button type="button" onClick={handleSubmit}>Submit Address</button>
+      { errors && <p>{errors[0].message}</p>}
+      <button type="button" onClick={handleSubmit} disabled={loading}>Submit Address</button>
     </div>
   );
 };
@@ -526,16 +600,25 @@ Returns all information related to shipping lines.
 import { useShippingLines } from '@boldcommerce/checkout-react-components';
 
 const ShippingLines = () => {
-  const { data, errors, loadingStatus, updateShippingLine, getShippingLines } = useShippingLines();
+  const { data, updateShippingLine, getShippingLines } = useShippingLines();
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(null);
 
   const handleChange = async (id) => {
-    await updateShippingLine(id);
+    setLoading(true);
+    try {
+      await updateShippingLine(id);
+      setErrors(null);
+    } catch(e) {
+      setErrors(e.body.errors);
+    }
+    setLoading(false);
   }
 
   const shippingLines = data.shippingLines.map((shippingLine) => {
     return (
       <li>
-        <input type="radio" name="shipping_lines" id="shipping_lines" onChange={() => handleChange(shippingLine.id)}/>
+        <input type="radio" name="shipping_lines" id="shipping_lines" onChange={() => handleChange(shippingLine.id)} disabled={loading} />
         <p>{ shippingLine.line.description }</p>
         <p>{ shippingLine.line.amount }</p>
       </li>
@@ -544,17 +627,9 @@ const ShippingLines = () => {
 
   return (
     <ul>
+      { errors && <p>{errors[0].message}</p>}
       {shippingLines}
     </ul>
   );
 };
 ```
-
-
-
-
-
-
-
-
-

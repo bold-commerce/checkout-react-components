@@ -1,6 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { CheckoutStatus, CheckoutStore } from '../store';
 import * as api from '../api';
+import { PromiseError } from '../utils';
 
 const useDiscount = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
@@ -36,7 +37,7 @@ const useDiscount = () => {
           type: 'checkout/discount/setErrors',
           payload: [{
             field: 'order',
-            message: 'Something went wrong',
+            message: 'An error with your order has occured, please try again',
           }],
         });
 
@@ -60,11 +61,18 @@ const useDiscount = () => {
         type: 'checkout/discount/setErrors',
         payload: [{
           field: 'order',
-          message: 'Something went wrong',
+          message: 'An error with your order has occured, please try again',
         }],
       });
 
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'discount',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
   }, [onError]);
 
@@ -92,7 +100,7 @@ const useDiscount = () => {
           type: 'checkout/discount/setErrors',
           payload: [{
             field: 'order',
-            message: 'Something went wrong',
+            message: 'An error with your order has occured, please try again',
           }],
         });
 
@@ -116,11 +124,18 @@ const useDiscount = () => {
         type: 'checkout/discount/setErrors',
         payload: [{
           field: 'order',
-          message: 'Something went wrong',
+          message: 'An error with your order has occured, please try again',
         }],
       });
 
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'discount',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
   }, [onError]);
 

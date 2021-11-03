@@ -1,6 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { updateBillingAddress } from '../api';
 import { CheckoutStatus, CheckoutStore } from '../store';
+import { PromiseError } from '../utils';
 import { requiredAddressFieldValidation } from './shared';
 
 const emptyAddress = {
@@ -141,7 +142,7 @@ const useBillingAddress = (requiredAddressFields) => {
           type: 'checkout/billingAddress/setErrors',
           payload: [{
             field: 'order',
-            message: 'Something went wrong',
+            message: 'An error with your order has occured, please try again',
           }],
         });
 
@@ -165,10 +166,17 @@ const useBillingAddress = (requiredAddressFields) => {
         type: 'checkout/billingAddress/setErrors',
         payload: [{
           field: 'order',
-          message: 'Something went wrong',
+          message: 'An error with your order has occured, please try again',
         }],
       });
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'billing_address',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
   }, [memoizedBillingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedBillingAddressErrors, memoizedRequiredAddressFields, onError]);
 

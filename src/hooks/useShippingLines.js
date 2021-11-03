@@ -1,6 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { fetchShippingLines, setShippingLine } from '../api';
 import { CheckoutStatus, CheckoutStore } from '../store';
+import { PromiseError } from '../utils';
 
 const useShippingLines = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
@@ -40,7 +41,7 @@ const useShippingLines = () => {
           type: 'checkout/shippingLines/setErrors',
           payload: [{
             field: 'order',
-            message: 'Something went wrong',
+            message: 'An error with your order has occured, please try again',
           }],
         });
 
@@ -65,11 +66,18 @@ const useShippingLines = () => {
         type: 'checkout/shippingLines/setErrors',
         payload: [{
           field: 'order',
-          message: 'Something went wrong',
+          message: 'An error with your order has occured, please try again',
         }],
       });
 
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'shipping_lines',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
 
     return dispatchStatus({
@@ -105,7 +113,7 @@ const useShippingLines = () => {
           type: 'checkout/shippingLines/setErrors',
           payload: [{
             field: 'order',
-            message: 'Something went wrong',
+            message: 'An error with your order has occured, please try again',
           }],
         });
 
@@ -130,11 +138,18 @@ const useShippingLines = () => {
         type: 'checkout/shippingLines/setErrors',
         payload: [{
           field: 'order',
-          message: 'Something went wrong',
+          message: 'An error with your order has occured, please try again',
         }],
       });
 
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'shipping_lines',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
 
     return dispatchStatus({

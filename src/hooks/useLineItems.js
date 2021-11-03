@@ -1,6 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import * as api from '../api';
 import { CheckoutStatus, CheckoutStore } from '../store';
+import { PromiseError } from '../utils';
 import { getShippingLines } from './shared';
 
 const useLineItems = () => {
@@ -38,7 +39,7 @@ const useLineItems = () => {
           type: 'checkout/lineItem/setErrors',
           payload: [{
             field: 'order',
-            message: 'Something went wrong',
+            message: 'An error with your order has occured, please try again',
           }],
         });
 
@@ -62,11 +63,18 @@ const useLineItems = () => {
         type: 'checkout/lineItem/setErrors',
         payload: [{
           field: 'order',
-          message: 'Something went wrong',
+          message: 'An error with your order has occured, please try again',
         }],
       });
 
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'line_items',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
 
     if (countryCode) {
@@ -104,7 +112,7 @@ const useLineItems = () => {
           type: 'checkout/lineItem/setErrors',
           payload: [{
             field: 'order',
-            message: 'Something went wrong',
+            message: 'An error with your order has occured, please try again',
           }],
         });
 
@@ -128,11 +136,18 @@ const useLineItems = () => {
         type: 'checkout/lineItem/setErrors',
         payload: [{
           field: 'order',
-          message: 'Something went wrong',
+          message: 'An error with your order has occured, please try again',
         }],
       });
 
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'line_items',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
 
     if (countryCode) {
@@ -171,7 +186,7 @@ const useLineItems = () => {
           type: 'checkout/lineItem/setErrors',
           payload: [{
             field: 'order',
-            message: 'Something went wrong',
+            message: 'An error with your order has occured, please try again',
           }],
         });
 
@@ -195,11 +210,18 @@ const useLineItems = () => {
         type: 'checkout/lineItem/setErrors',
         payload: [{
           field: 'order',
-          message: 'Something went wrong',
+          message: 'An error with your order has occured, please try again',
         }],
       });
 
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'line_items',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
 
     if (countryCode) {

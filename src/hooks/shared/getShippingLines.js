@@ -18,7 +18,7 @@ const getShippingLines = async (token, apiPath, dispatch, dispatchStatus) => {
       type: 'checkout/shippingLines/setErrors',
       payload: [{
         field: 'order',
-        message: 'Something went wrong',
+        message: 'An error with your order has occured, please try again',
       }],
     });
 

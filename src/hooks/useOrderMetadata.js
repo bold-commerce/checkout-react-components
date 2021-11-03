@@ -1,6 +1,7 @@
 import { useContext, useCallback, useMemo } from 'react';
 import { CheckoutStatus, CheckoutStore } from '../store';
 import { deleteOrderMetadata, postOrderMetadata, patchOrderMetadata } from '../api';
+import { PromiseError } from '../utils';
 
 const useOrderMetadata = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
@@ -44,7 +45,14 @@ const useOrderMetadata = () => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'order_metadata',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
   }, [token, apiPath]);
 
@@ -80,7 +88,14 @@ const useOrderMetadata = () => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'order_metadata',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
   }, [token, apiPath]);
 
@@ -116,7 +131,14 @@ const useOrderMetadata = () => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(e);
+      return Promise.reject(new PromiseError('Something went wrong', {
+        errors: [
+          {
+            field: 'order_metadata',
+            message: 'An error with your order has occured, please try again',
+          },
+        ],
+      }));
     }
   }, [token, apiPath]);
 
