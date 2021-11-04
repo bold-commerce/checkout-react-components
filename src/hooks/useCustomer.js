@@ -3,7 +3,7 @@ import {
 } from 'react';
 import { CheckoutStatus, CheckoutStore } from '../store';
 import { updateCustomer } from '../api';
-import { PromiseError } from '../utils';
+import { OrderError, PromiseError } from '../utils';
 
 const emptyCustomer = {
   first_name: null,
@@ -79,14 +79,14 @@ const useCustomer = () => {
         }
 
         dispatchStatus({
-          type: 'checkout/customer/setErrors',
+          type: 'checkout/order/setErrors',
           payload: [{
             field: 'order',
             message: 'An error with your order has occured, please try again',
           }],
         });
 
-        return Promise.reject(response.error);
+        return Promise.reject(new OrderError());
       }
 
       dispatchStatus({
@@ -104,20 +104,13 @@ const useCustomer = () => {
       }
 
       dispatchStatus({
-        type: 'checkout/customer/setErrors',
+        type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
           message: 'An error with your order has occured, please try again',
         }],
       });
-      return Promise.reject(new PromiseError('Something went wrong', {
-        errors: [
-          {
-            field: 'email',
-            message: 'An error with your order has occured, please try again',
-          },
-        ],
-      }));
+      return Promise.reject(new OrderError());
     }
   }, [memoizedCustomer, token, apiPath, onError]);
 

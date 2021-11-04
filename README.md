@@ -131,7 +131,14 @@ const CustomWidget = () => {
 ```
 
 ### useBillingAddress
-Returns all information and methods related to the billing address.
+Returns all information and methods related to the billing address. You can pass an array of required fields as an argument to useBillingAddress. The required fields you can add are.
+- first_name
+- last_name
+- business_name
+- address_line_1
+- address_line_2
+- city
+- phone_number
 
 ```javascript
 import { useBillingAddress } from '@boldcommerce/checkout-react-components';
@@ -140,7 +147,8 @@ const BillingAddress = () => {
   const {
     data,
     submitBillingAddress
-  } = useBillingAddress();
+  } = useBillingAddress(['first_name', 'last_name']); // Additional required fields
+
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState(null);
 
@@ -551,13 +559,20 @@ const SavedAddresses = () => {
 ```
 
 ### useShippingAddress
-Returns all information and methods related to the shipping address.
+Returns all information and methods related to the shipping address. You can pass an array of required fields as an argument to useShippingAddress. The required fields you can add are.
+- first_name
+- last_name
+- business_name
+- address_line_1
+- address_line_2
+- city
+- phone_number
 
 ```javascript
 import { useShippingAddress } from '@boldcommerce/checkout-react-components';
 
 const ShippingAddress = () => {
-  const { data, submitShippingAddress } = useShippingAddress();
+  const { data, submitShippingAddress } = useShippingAddress(['first_name', 'last_name']); // Additional required fields
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState(null);
 

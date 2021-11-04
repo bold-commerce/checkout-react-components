@@ -1,7 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { updateBillingAddress } from '../api';
 import { CheckoutStatus, CheckoutStore } from '../store';
-import { PromiseError } from '../utils';
+import { OrderError, PromiseError } from '../utils';
 import { requiredAddressFieldValidation } from './shared';
 
 const emptyAddress = {
@@ -19,6 +19,9 @@ const emptyAddress = {
   phone_number: '',
 };
 
+/**
+ * @param {string[]} requiredAddressFields
+ */
 const useBillingAddress = (requiredAddressFields) => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
   const { statusState, dispatchStatus } = useContext(CheckoutStatus);
@@ -46,7 +49,7 @@ const useBillingAddress = (requiredAddressFields) => {
           type: 'checkout/billingAddress/setErrors',
           payload: requiredAddressFieldErrors,
         });
-        return Promise.reject();
+        return Promise.reject(new PromiseError('Required fields missing data', { errors: requiredAddressFieldErrors }));
       }
     }
 
@@ -58,7 +61,14 @@ const useBillingAddress = (requiredAddressFields) => {
           message: 'Country is required',
         }],
       });
-      return Promise.reject();
+      return Promise.reject(new PromiseError('Country is required', {
+        errors: [
+          {
+            field: 'country',
+            message: 'Country is required',
+          },
+        ],
+      }));
     }
 
     const appShipping = JSON.stringify({
@@ -91,7 +101,15 @@ const useBillingAddress = (requiredAddressFields) => {
           message: 'Province is required',
         }],
       });
-      return Promise.reject();
+
+      return Promise.reject(new PromiseError('Province is required', {
+        errors: [
+          {
+            field: 'province',
+            message: 'Province is required',
+          },
+        ],
+      }));
     }
     if (countryData.show_postal_code && !billingAddressData.postal_code) {
       dispatchStatus({
@@ -101,7 +119,15 @@ const useBillingAddress = (requiredAddressFields) => {
           message: 'Postal code is required',
         }],
       });
-      return Promise.reject();
+
+      return Promise.reject(new PromiseError('Postal code is required', {
+        errors: [
+          {
+            field: 'postal_code',
+            message: 'Postal code is required',
+          },
+        ],
+      }));
     }
 
     const provinceData = countryData.provinces.find((data) => data.iso_code === billingAddressData.province_code);
@@ -110,7 +136,14 @@ const useBillingAddress = (requiredAddressFields) => {
         type: 'checkout/billingAddress/setIncomplete',
       });
 
-      return Promise.reject(new Error('Incomplete billing address'));
+      return Promise.reject(new PromiseError('Address is incomplete', {
+        errors: [
+          {
+            field: 'shipping_address',
+            message: 'Address is incomplete',
+          },
+        ],
+      }));
     }
     const province = provinceData.name;
     const completeAddress = {
@@ -139,14 +172,14 @@ const useBillingAddress = (requiredAddressFields) => {
         }
 
         dispatchStatus({
-          type: 'checkout/billingAddress/setErrors',
+          type: 'checkout/order/setErrors',
           payload: [{
             field: 'order',
             message: 'An error with your order has occured, please try again',
           }],
         });
 
-        return Promise.reject(response.error);
+        return Promise.reject(new OrderError());
       }
 
       dispatch({
@@ -163,24 +196,18 @@ const useBillingAddress = (requiredAddressFields) => {
         onError(e);
       }
       dispatchStatus({
-        type: 'checkout/billingAddress/setErrors',
+        type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
           message: 'An error with your order has occured, please try again',
         }],
       });
-      return Promise.reject(new PromiseError('Something went wrong', {
-        errors: [
-          {
-            field: 'billing_address',
-            message: 'An error with your order has occured, please try again',
-          },
-        ],
-      }));
+      return Promise.reject(new OrderError());
     }
   }, [memoizedBillingAddress, memoizedCountryInfo, billingSameAsShipping, memoizedBillingAddressErrors, memoizedRequiredAddressFields, onError]);
 
   return {
+    // If billing address is an array, that means it's empty
     data: memoizedBillingAddress,
     errors: memoizedBillingAddressErrors,
     loadingStatus: billingAddressLoadingStatus,

@@ -1,7 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import * as api from '../api';
 import { CheckoutStatus, CheckoutStore } from '../store';
-import { PromiseError } from '../utils';
+import { OrderError } from '../utils';
 import { getShippingLines } from './shared';
 
 const useLineItems = () => {
@@ -36,14 +36,14 @@ const useLineItems = () => {
         }
 
         dispatchStatus({
-          type: 'checkout/lineItem/setErrors',
+          type: 'checkout/order/setErrors',
           payload: [{
             field: 'order',
             message: 'An error with your order has occured, please try again',
           }],
         });
 
-        return Promise.reject(response.error);
+        return Promise.reject(new OrderError());
       }
 
       dispatchStatus({
@@ -60,21 +60,14 @@ const useLineItems = () => {
       }
 
       dispatchStatus({
-        type: 'checkout/lineItem/setErrors',
+        type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
           message: 'An error with your order has occured, please try again',
         }],
       });
 
-      return Promise.reject(new PromiseError('Something went wrong', {
-        errors: [
-          {
-            field: 'line_items',
-            message: 'An error with your order has occured, please try again',
-          },
-        ],
-      }));
+      return Promise.reject(new OrderError());
     }
 
     if (countryCode) {
@@ -109,14 +102,14 @@ const useLineItems = () => {
         }
 
         dispatchStatus({
-          type: 'checkout/lineItem/setErrors',
+          type: 'checkout/order/setErrors',
           payload: [{
             field: 'order',
             message: 'An error with your order has occured, please try again',
           }],
         });
 
-        return Promise.reject(response.error);
+        return Promise.reject(new OrderError());
       }
 
       dispatchStatus({
@@ -133,21 +126,14 @@ const useLineItems = () => {
       }
 
       dispatchStatus({
-        type: 'checkout/lineItem/setErrors',
+        type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
           message: 'An error with your order has occured, please try again',
         }],
       });
 
-      return Promise.reject(new PromiseError('Something went wrong', {
-        errors: [
-          {
-            field: 'line_items',
-            message: 'An error with your order has occured, please try again',
-          },
-        ],
-      }));
+      return Promise.reject(new OrderError());
     }
 
     if (countryCode) {
@@ -183,14 +169,14 @@ const useLineItems = () => {
         }
 
         dispatchStatus({
-          type: 'checkout/lineItem/setErrors',
+          type: 'checkout/order/setErrors',
           payload: [{
             field: 'order',
             message: 'An error with your order has occured, please try again',
           }],
         });
 
-        return Promise.reject(response.error);
+        return Promise.reject(new OrderError());
       }
 
       dispatchStatus({
@@ -207,21 +193,14 @@ const useLineItems = () => {
       }
 
       dispatchStatus({
-        type: 'checkout/lineItem/setErrors',
+        type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
           message: 'An error with your order has occured, please try again',
         }],
       });
 
-      return Promise.reject(new PromiseError('Something went wrong', {
-        errors: [
-          {
-            field: 'line_items',
-            message: 'An error with your order has occured, please try again',
-          },
-        ],
-      }));
+      return Promise.reject(new OrderError());
     }
 
     if (countryCode) {

@@ -4,7 +4,7 @@ import {
 } from 'react';
 import { processOrder } from '../api';
 import { CheckoutStatus, CheckoutStore } from '../store';
-import { PromiseError } from '../utils';
+import { OrderError } from '../utils';
 
 const usePaymentIframe = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
@@ -89,14 +89,16 @@ const usePaymentIframe = () => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(new PromiseError('Something went wrong', {
-        errors: [
-          {
-            field: 'payment_iframe',
-            message: 'An error with your order has occured, please try again',
-          },
-        ],
-      }));
+
+      dispatchStatus({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
   }, [onError]);
 
@@ -117,14 +119,16 @@ const usePaymentIframe = () => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(new PromiseError('Something went wrong', {
-        errors: [
-          {
-            field: 'payment_iframe',
-            message: 'An error with your order has occured, please try again',
-          },
-        ],
-      }));
+
+      dispatchStatus({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
   }, [dispatchIframeAction, submitOrder, onError]);
 
@@ -174,14 +178,16 @@ const usePaymentIframe = () => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(new PromiseError('Something went wrong', {
-        errors: [
-          {
-            field: 'payment_iframe',
-            message: 'An error with your order has occured, please try again',
-          },
-        ],
-      }));
+
+      dispatchStatus({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
   }, [onError, refreshOrder, addPayment]);
 

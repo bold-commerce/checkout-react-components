@@ -23,3 +23,15 @@ export const updateBillingAddress = async (token, apiPath, address) => {
 
   return response;
 };
+
+export const removeBillingAddress = async (token, apiPath) => {
+  const response = await fetchApi(`${apiPath}/addresses/billing`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response;
+};

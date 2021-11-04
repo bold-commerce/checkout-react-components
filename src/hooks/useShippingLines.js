@@ -1,7 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { fetchShippingLines, setShippingLine } from '../api';
 import { CheckoutStatus, CheckoutStore } from '../store';
-import { PromiseError } from '../utils';
+import { OrderError } from '../utils';
 
 const useShippingLines = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
@@ -38,14 +38,14 @@ const useShippingLines = () => {
         }
 
         dispatchStatus({
-          type: 'checkout/shippingLines/setErrors',
+          type: 'checkout/order/setErrors',
           payload: [{
             field: 'order',
             message: 'An error with your order has occured, please try again',
           }],
         });
 
-        return Promise.reject(response.error);
+        return Promise.reject(new OrderError());
       }
 
       if (response.data && response.data.application_state) {
@@ -63,21 +63,14 @@ const useShippingLines = () => {
       }
 
       dispatchStatus({
-        type: 'checkout/shippingLines/setErrors',
+        type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
           message: 'An error with your order has occured, please try again',
         }],
       });
 
-      return Promise.reject(new PromiseError('Something went wrong', {
-        errors: [
-          {
-            field: 'shipping_lines',
-            message: 'An error with your order has occured, please try again',
-          },
-        ],
-      }));
+      return Promise.reject(new OrderError());
     }
 
     return dispatchStatus({
@@ -110,14 +103,14 @@ const useShippingLines = () => {
         }
 
         dispatchStatus({
-          type: 'checkout/shippingLines/setErrors',
+          type: 'checkout/order/setErrors',
           payload: [{
             field: 'order',
             message: 'An error with your order has occured, please try again',
           }],
         });
 
-        return Promise.reject(response.error);
+        return Promise.reject(new OrderError());
       }
 
       if (response.data && response.data.application_state) {
@@ -135,21 +128,14 @@ const useShippingLines = () => {
       }
 
       dispatchStatus({
-        type: 'checkout/shippingLines/setErrors',
+        type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
           message: 'An error with your order has occured, please try again',
         }],
       });
 
-      return Promise.reject(new PromiseError('Something went wrong', {
-        errors: [
-          {
-            field: 'shipping_lines',
-            message: 'An error with your order has occured, please try again',
-          },
-        ],
-      }));
+      return Promise.reject(new OrderError());
     }
 
     return dispatchStatus({

@@ -1,7 +1,7 @@
 import { useContext, useCallback, useMemo } from 'react';
 import { CheckoutStatus, CheckoutStore } from '../store';
 import { deleteOrderMetadata, postOrderMetadata, patchOrderMetadata } from '../api';
-import { PromiseError } from '../utils';
+import { OrderError } from '../utils';
 
 const useOrderMetadata = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
@@ -31,7 +31,16 @@ const useOrderMetadata = () => {
         if (onError) {
           onError(response.error);
         }
-        return Promise.reject(response.error);
+
+        dispatchStatus({
+          type: 'checkout/order/setErrors',
+          payload: [{
+            field: 'order',
+            message: 'An error with your order has occured, please try again',
+          }],
+        });
+
+        return Promise.reject(new OrderError());
       }
 
       dispatchStatus({
@@ -45,14 +54,16 @@ const useOrderMetadata = () => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(new PromiseError('Something went wrong', {
-        errors: [
-          {
-            field: 'order_metadata',
-            message: 'An error with your order has occured, please try again',
-          },
-        ],
-      }));
+
+      dispatchStatus({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
   }, [token, apiPath]);
 
@@ -74,7 +85,16 @@ const useOrderMetadata = () => {
         if (onError) {
           onError(response.error);
         }
-        return Promise.reject(response.error);
+
+        dispatchStatus({
+          type: 'checkout/order/setErrors',
+          payload: [{
+            field: 'order',
+            message: 'An error with your order has occured, please try again',
+          }],
+        });
+
+        return Promise.reject(new OrderError());
       }
 
       dispatchStatus({
@@ -88,14 +108,16 @@ const useOrderMetadata = () => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(new PromiseError('Something went wrong', {
-        errors: [
-          {
-            field: 'order_metadata',
-            message: 'An error with your order has occured, please try again',
-          },
-        ],
-      }));
+
+      dispatchStatus({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
   }, [token, apiPath]);
 
@@ -117,7 +139,16 @@ const useOrderMetadata = () => {
         if (onError) {
           onError(response.error);
         }
-        return Promise.reject(response.error);
+
+        dispatchStatus({
+          type: 'checkout/order/setErrors',
+          payload: [{
+            field: 'order',
+            message: 'An error with your order has occured, please try again',
+          }],
+        });
+
+        return Promise.reject(new OrderError());
       }
 
       dispatchStatus({
@@ -131,14 +162,16 @@ const useOrderMetadata = () => {
       if (onError) {
         onError(e);
       }
-      return Promise.reject(new PromiseError('Something went wrong', {
-        errors: [
-          {
-            field: 'order_metadata',
-            message: 'An error with your order has occured, please try again',
-          },
-        ],
-      }));
+
+      dispatchStatus({
+        type: 'checkout/order/setErrors',
+        payload: [{
+          field: 'order',
+          message: 'An error with your order has occured, please try again',
+        }],
+      });
+
+      return Promise.reject(new OrderError());
     }
   }, [token, apiPath]);
 
