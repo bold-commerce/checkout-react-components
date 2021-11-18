@@ -1,5 +1,5 @@
 import { useCallback, useContext, useMemo } from 'react';
-import { updateShippingAddress } from '../api';
+import { updateBillingAddress, updateShippingAddress } from '../api';
 import { CheckoutStatus, CheckoutStore } from '../store';
 import { OrderError, PromiseError } from '../utils';
 import { generateTaxes, getShippingLines, requiredAddressFieldValidation } from './shared';
@@ -30,6 +30,7 @@ const useShippingAddress = (requiredAddressFields) => {
   const shippingAddressLoadingStatus = statusState.loadingStatus.shippingAddress;
   const shippingAddressErrors = statusState.errors.shippingAddress;
   const countryInfo = state.initialData.country_info;
+  const { billingSameAsShipping } = state.orderInfo;
   const memoizedShippingAddress = useMemo(() => shippingAddress, [JSON.stringify(shippingAddress)]);
   const memoizedRequiredAddressFields = useMemo(() => requiredAddressFields, [JSON.stringify(requiredAddressFields)]);
   const memoizedShippingAddressErrors = useMemo(() => shippingAddressErrors, [JSON.stringify(shippingAddressErrors)]);
@@ -201,13 +202,53 @@ const useShippingAddress = (requiredAddressFields) => {
       await getShippingLines(token, apiPath, dispatch, dispatchStatus);
     }
 
+    // Set billing address if same as shipping is selected
+    if (billingSameAsShipping) {
+      const billingAddressResponse = await updateBillingAddress(token, apiPath, completeAddress);
+      if (!billingAddressResponse.success) {
+        if (onError) {
+          onError(billingAddressResponse.error);
+        }
+
+        if (billingAddressResponse?.error?.body?.errors) {
+          dispatchStatus({
+            type: 'checkout/billingAddress/setErrors',
+            payload: billingAddressResponse.error.body.errors,
+          });
+          return Promise.reject(billingAddressResponse.error);
+        }
+
+        dispatchStatus({
+          type: 'checkout/order/setErrors',
+          payload: [{
+            field: 'order',
+            message: 'An error with your order has occured, please try again',
+          }],
+        });
+
+        return Promise.reject(new OrderError());
+      }
+
+      dispatchStatus({
+        type: 'checkout/billingAddress/set',
+        payload: billingAddressResponse.data.address,
+      });
+
+      dispatch({
+        type: 'checkout/update',
+        payload: billingAddressResponse.data.application_state,
+      });
+
+      return generateTaxes(token, apiPath, dispatch, dispatchStatus);
+    }
+
     dispatch({
       type: 'checkout/update',
       payload: shippingAddressResponse.data.application_state,
     });
 
     return generateTaxes(token, apiPath, dispatch, dispatchStatus);
-  }, [memoizedShippingAddress, memoizedCountryInfo, memoizedShippingAddressErrors, memoizedRequiredAddressFields, onError]);
+  }, [memoizedShippingAddress, memoizedCountryInfo, memoizedShippingAddressErrors, memoizedRequiredAddressFields, billingSameAsShipping, onError]);
 
   return {
     data: shippingAddress,
