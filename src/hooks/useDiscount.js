@@ -1,7 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { CheckoutStatus, CheckoutStore } from '../store';
 import * as api from '../api';
-import { OrderError } from '../utils';
+import { handleError, OrderError } from '../utils';
 
 const useDiscount = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
@@ -20,28 +20,18 @@ const useDiscount = () => {
 
     try {
       const response = await api.addDiscount(token, apiPath, discount);
-      if (!response.success) {
+      const error = handleError('discount', response);
+      if (error) {
         if (onError) {
-          onError(response.error);
-        }
-
-        if (response.error?.body?.errors) {
-          dispatchStatus({
-            type: 'checkout/discount/setErrors',
-            payload: response.error.body.errors,
-          });
-          return Promise.reject(response.error);
+          onError(error.error);
         }
 
         dispatchStatus({
-          type: 'checkout/order/setErrors',
-          payload: [{
-            field: 'order',
-            message: 'An error with your order has occured, please try again',
-          }],
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
         });
 
-        return Promise.reject(new OrderError());
+        return Promise.reject(error.error);
       }
 
       dispatchStatus({
@@ -76,28 +66,18 @@ const useDiscount = () => {
 
     try {
       const response = await api.removeDiscount(token, apiPath, code);
-      if (!response.success) {
+      const error = handleError('discount', response);
+      if (error) {
         if (onError) {
-          onError(response.error);
-        }
-
-        if (response.error?.body?.errors) {
-          dispatchStatus({
-            type: 'checkout/discount/setErrors',
-            payload: response.error.body.errors,
-          });
-          return Promise.reject(response.error);
+          onError(error.error);
         }
 
         dispatchStatus({
-          type: 'checkout/order/setErrors',
-          payload: [{
-            field: 'order',
-            message: 'An error with your order has occured, please try again',
-          }],
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
         });
 
-        return Promise.reject(new OrderError());
+        return Promise.reject(error.error);
       }
 
       dispatchStatus({

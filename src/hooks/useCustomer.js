@@ -3,7 +3,7 @@ import {
 } from 'react';
 import { CheckoutStatus, CheckoutStore } from '../store';
 import { updateCustomer } from '../api';
-import { OrderError, PromiseError } from '../utils';
+import { handleError, OrderError, PromiseError } from '../utils';
 
 const emptyCustomer = {
   first_name: null,
@@ -65,28 +65,18 @@ const useCustomer = () => {
     const method = memoizedCustomer.email_address ? 'PUT' : 'POST';
     try {
       const response = await updateCustomer(token, apiPath, customerData, method);
-      if (!response.success) {
+      const error = handleError('customer', response);
+      if (error) {
         if (onError) {
-          onError(response.error);
-        }
-
-        if (response.error?.body?.errors) {
-          dispatchStatus({
-            type: 'checkout/customer/setErrors',
-            payload: response.error.body.errors,
-          });
-          return Promise.reject(response.error);
+          onError(error.error);
         }
 
         dispatchStatus({
-          type: 'checkout/order/setErrors',
-          payload: [{
-            field: 'order',
-            message: 'An error with your order has occured, please try again',
-          }],
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
         });
 
-        return Promise.reject(new OrderError());
+        return Promise.reject(error.error);
       }
 
       dispatchStatus({

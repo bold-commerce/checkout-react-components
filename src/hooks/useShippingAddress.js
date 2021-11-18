@@ -1,7 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { updateBillingAddress, updateShippingAddress } from '../api';
 import { CheckoutStatus, CheckoutStore } from '../store';
-import { OrderError, PromiseError } from '../utils';
+import { handleError, OrderError, PromiseError } from '../utils';
 import { generateTaxes, getShippingLines, requiredAddressFieldValidation } from './shared';
 
 const emptyAddress = {
@@ -154,28 +154,18 @@ const useShippingAddress = (requiredAddressFields) => {
 
     try {
       shippingAddressResponse = await updateShippingAddress(token, apiPath, completeAddress);
-      if (!shippingAddressResponse.success) {
+      const error = handleError('shippingAddress', shippingAddressResponse);
+      if (error) {
         if (onError) {
-          onError(shippingAddressResponse.error);
-        }
-
-        if (shippingAddressResponse.error?.body?.errors) {
-          dispatchStatus({
-            type: 'checkout/shippingAddress/setErrors',
-            payload: shippingAddressResponse.error.body.errors,
-          });
-          return Promise.reject(shippingAddressResponse.error);
+          onError(error.error);
         }
 
         dispatchStatus({
-          type: 'checkout/order/setErrors',
-          payload: [{
-            field: 'order',
-            message: 'An error with your order has occured, please try again',
-          }],
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
         });
 
-        return Promise.reject(new OrderError());
+        return Promise.reject(error.error);
       }
 
       dispatchStatus({
@@ -205,28 +195,18 @@ const useShippingAddress = (requiredAddressFields) => {
     // Set billing address if same as shipping is selected
     if (billingSameAsShipping) {
       const billingAddressResponse = await updateBillingAddress(token, apiPath, completeAddress);
-      if (!billingAddressResponse.success) {
+      const error = handleError('billingAddress', shippingAddressResponse);
+      if (error) {
         if (onError) {
-          onError(billingAddressResponse.error);
-        }
-
-        if (billingAddressResponse?.error?.body?.errors) {
-          dispatchStatus({
-            type: 'checkout/billingAddress/setErrors',
-            payload: billingAddressResponse.error.body.errors,
-          });
-          return Promise.reject(billingAddressResponse.error);
+          onError(error.error);
         }
 
         dispatchStatus({
-          type: 'checkout/order/setErrors',
-          payload: [{
-            field: 'order',
-            message: 'An error with your order has occured, please try again',
-          }],
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
         });
 
-        return Promise.reject(new OrderError());
+        return Promise.reject(error.error);
       }
 
       dispatchStatus({

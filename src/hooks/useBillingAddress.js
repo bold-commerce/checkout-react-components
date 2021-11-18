@@ -1,7 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { updateBillingAddress } from '../api';
 import { CheckoutStatus, CheckoutStore } from '../store';
-import { OrderError, PromiseError } from '../utils';
+import { handleError, OrderError, PromiseError } from '../utils';
 import { requiredAddressFieldValidation } from './shared';
 
 const emptyAddress = {
@@ -158,28 +158,18 @@ const useBillingAddress = (requiredAddressFields) => {
 
     try {
       const response = await updateBillingAddress(token, apiPath, completeAddress);
-      if (!response.success) {
+      const error = handleError('billingAddress', response);
+      if (error) {
         if (onError) {
-          onError(response.error);
-        }
-
-        if (response.error?.body?.errors) {
-          dispatchStatus({
-            type: 'checkout/billingAddress/setErrors',
-            payload: response.error.body.errors,
-          });
-          return Promise.reject(response.error);
+          onError(error.error);
         }
 
         dispatchStatus({
-          type: 'checkout/order/setErrors',
-          payload: [{
-            field: 'order',
-            message: 'An error with your order has occured, please try again',
-          }],
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
         });
 
-        return Promise.reject(new OrderError());
+        return Promise.reject(error.error);
       }
 
       dispatch({

@@ -4,7 +4,7 @@ import {
 } from 'react';
 import { processOrder } from '../api';
 import { CheckoutStatus, CheckoutStore } from '../store';
-import { OrderError } from '../utils';
+import { handleError, OrderError } from '../utils';
 
 const usePaymentIframe = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
@@ -53,20 +53,18 @@ const usePaymentIframe = () => {
 
     try {
       const response = await processOrder(token, apiPath);
+      const error = handleError('order', response);
+      if (error) {
+        if (onError) {
+          onError(error.error);
+        }
 
-      if (!response.success) {
         dispatchStatus({
-          type: 'checkout/order/setErrors',
-          payload: [{
-            field: 'payment',
-            message: response.error.message,
-          }],
+          type: `checkout/${error.type}/setErrors`,
+          payload: error.payload,
         });
 
-        if (onError) {
-          onError(response.error);
-        }
-        return Promise.reject(response.error);
+        return Promise.reject(error.error);
       }
 
       dispatchStatus({
