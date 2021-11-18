@@ -4,25 +4,18 @@ import orderInfoReducer from './orderInfoReducer';
 import stateReducer from './stateReducer';
 import orderTotalsReducer from './orderTotalsReducer';
 
+// eslint-disable-next-line import/prefer-default-export
 export const reducer = (state, action) => {
-  const { applicationState, orderInfo } = state;
+  const {
+    applicationState, orderInfo, errors, loadingStatus,
+  } = state;
 
   const currentState = {
     ...state,
     applicationState: stateReducer(applicationState, action),
     orderInfo: orderInfoReducer(orderInfo, action),
-    orderTotals: orderTotalsReducer(state, action),
-  };
-
-  return currentState;
-};
-
-export const statusReducer = (state, action) => {
-  const { errors, loadingStatus } = state;
-
-  const currentState = {
-    ...state,
     errors: errorsReducer(errors, action),
+    orderTotals: orderTotalsReducer(state, action),
     loadingStatus: loadingStatusReducer(loadingStatus, action),
   };
 

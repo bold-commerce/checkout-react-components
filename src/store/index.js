@@ -1,5 +1,5 @@
-export { reducer, statusReducer } from './reducers/index';
+export { reducer } from './reducers/index';
 export {
-  initialState, initialStatus, CheckoutStore, CheckoutStatus,
+  initialState, CheckoutStore,
 } from './store';
 export { calculateTotals } from './reducers/orderTotalsReducer';

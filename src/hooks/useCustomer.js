@@ -1,7 +1,7 @@
 import {
   useCallback, useContext, useMemo,
 } from 'react';
-import { CheckoutStatus, CheckoutStore } from '../store';
+import { CheckoutStore } from '../store';
 import { updateCustomer } from '../api';
 import { handleError, OrderError, PromiseError } from '../utils';
 
@@ -13,11 +13,10 @@ const emptyCustomer = {
 
 const useCustomer = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-  const { statusState, dispatchStatus } = useContext(CheckoutStatus);
   const { token, apiPath } = state;
   const { customer } = state.applicationState;
-  const customerLoadingStatus = statusState.loadingStatus.customer;
-  const customerErrors = statusState.errors.customer;
+  const customerLoadingStatus = state.loadingStatus.customer;
+  const customerErrors = state.errors.customer;
   const { isAuthenticated } = state;
   const emailAddress = customer?.email_address;
   const firstName = customer?.first_name;
@@ -30,7 +29,7 @@ const useCustomer = () => {
 
   const submitCustomer = useCallback(async (customerData) => {
     if (!customerData.email_address) {
-      dispatchStatus({
+      dispatch({
         type: 'checkout/customer/setErrors',
         payload: [{
           field: 'email',
@@ -71,7 +70,7 @@ const useCustomer = () => {
           onError(error.error);
         }
 
-        dispatchStatus({
+        dispatch({
           type: `checkout/${error.type}/setErrors`,
           payload: error.payload,
         });
@@ -79,7 +78,7 @@ const useCustomer = () => {
         return Promise.reject(error.error);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/customer/set',
         payload: response.data.customer,
       });
@@ -93,7 +92,7 @@ const useCustomer = () => {
         onError(e);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',

@@ -1,24 +1,23 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { fetchShippingLines, setShippingLine } from '../api';
-import { CheckoutStatus, CheckoutStore } from '../store';
+import { CheckoutStore } from '../store';
 import { handleError, OrderError } from '../utils';
 
 const useShippingLines = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-  const { statusState, dispatchStatus } = useContext(CheckoutStatus);
   const { token, apiPath, applicationState } = state;
   const shippingLines = applicationState.shipping.available_shipping_lines;
   const selectedCountryCode = applicationState?.addresses?.shipping?.country_code;
-  const shippingLinesLoadingStatus = statusState.loadingStatus.shippingLines;
+  const shippingLinesLoadingStatus = state.loadingStatus.shippingLines;
   const selectedShippingLineIndex = parseInt(applicationState.shipping?.selected_shipping?.id ?? 0, 10);
   const selectedShippingAmount = applicationState.shipping?.selected_shipping?.amount;
   const selectedShippingDescription = applicationState.shipping?.selected_shipping?.description;
-  const shippingLineErrors = statusState.errors.shippingLines;
+  const shippingLineErrors = state.errors.shippingLines;
   const memoizedShippingLines = useMemo(() => shippingLines, [JSON.stringify(shippingLines)]);
   const memoizedShippingLineErrors = useMemo(() => shippingLineErrors, [JSON.stringify(shippingLineErrors)]);
 
   const updateShippingLine = useCallback(async (index) => {
-    dispatchStatus({
+    dispatch({
       type: 'checkout/shippingLines/setting',
     });
 
@@ -30,7 +29,7 @@ const useShippingLines = () => {
           onError(error.error);
         }
 
-        dispatchStatus({
+        dispatch({
           type: `checkout/${error.type}/setErrors`,
           payload: error.payload,
         });
@@ -39,7 +38,7 @@ const useShippingLines = () => {
       }
 
       if (response.data && response.data.application_state) {
-        dispatchStatus({
+        dispatch({
           type: 'checkout/shippingLines/set',
         });
         return dispatch({
@@ -52,7 +51,7 @@ const useShippingLines = () => {
         onError(e);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
@@ -63,7 +62,7 @@ const useShippingLines = () => {
       return Promise.reject(new OrderError());
     }
 
-    return dispatchStatus({
+    return dispatch({
       type: 'checkout/shippingLines/set',
     });
   }, [onError]);
@@ -74,7 +73,7 @@ const useShippingLines = () => {
       return Promise.resolve();
     }
 
-    dispatchStatus({
+    dispatch({
       type: 'checkout/shippingLines/fetching',
     });
     try {
@@ -85,7 +84,7 @@ const useShippingLines = () => {
           onError(error.error);
         }
 
-        dispatchStatus({
+        dispatch({
           type: `checkout/${error.type}/setErrors`,
           payload: error.payload,
         });
@@ -94,7 +93,7 @@ const useShippingLines = () => {
       }
 
       if (response.data && response.data.application_state) {
-        dispatchStatus({
+        dispatch({
           type: 'checkout/shippingLines/fetched',
         });
         return dispatch({
@@ -107,7 +106,7 @@ const useShippingLines = () => {
         onError(e);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
@@ -118,7 +117,7 @@ const useShippingLines = () => {
       return Promise.reject(new OrderError());
     }
 
-    return dispatchStatus({
+    return dispatch({
       type: 'checkout/shippingLines/fetched',
     });
   }, [selectedCountryCode, onError]);

@@ -1,11 +1,11 @@
 import { useContext } from 'react';
-import { CheckoutStatus } from '../store';
+import { CheckoutStore } from '../store';
 
 const useErrors = () => {
-  const { statusState } = useContext(CheckoutStatus);
+  const { state } = useContext(CheckoutStore);
 
   return {
-    data: statusState.errors,
+    data: state.errors,
   };
 };
 

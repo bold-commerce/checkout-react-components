@@ -1,22 +1,21 @@
 import { useCallback, useContext, useMemo } from 'react';
 import * as api from '../api';
-import { CheckoutStatus, CheckoutStore } from '../store';
+import { CheckoutStore } from '../store';
 import { handleError, OrderError } from '../utils';
 import { getShippingLines } from './shared';
 
 const useLineItems = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-  const { statusState, dispatchStatus } = useContext(CheckoutStatus);
   const { token, apiPath } = state;
   const countryCode = state.applicationState.addresses?.shipping?.country_code;
   const lineItems = state.applicationState.line_items;
-  const lineItemsLoadingStatus = statusState.loadingStatus.lineItems;
-  const lineItemErrors = statusState.errors.lineItems;
+  const lineItemsLoadingStatus = state.loadingStatus.lineItems;
+  const lineItemErrors = state.errors.lineItems;
   const memoizedLineItemErrors = useMemo(() => lineItemErrors, [JSON.stringify(lineItemErrors)]);
   const memoizedLineItems = useMemo(() => lineItems, [JSON.stringify(lineItems)]);
 
   const removeLineItem = useCallback(async (lineItemKey) => {
-    dispatchStatus({
+    dispatch({
       type: 'checkout/lineItem/removing',
     });
 
@@ -28,7 +27,7 @@ const useLineItems = () => {
           onError(error.error);
         }
 
-        dispatchStatus({
+        dispatch({
           type: `checkout/${error.type}/setErrors`,
           payload: error.payload,
         });
@@ -36,7 +35,7 @@ const useLineItems = () => {
         return Promise.reject(error.error);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/lineItem/removed',
       });
 
@@ -49,7 +48,7 @@ const useLineItems = () => {
         onError(e);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
@@ -61,7 +60,7 @@ const useLineItems = () => {
     }
 
     if (countryCode) {
-      return getShippingLines(token, apiPath, dispatch, dispatchStatus);
+      return getShippingLines(token, apiPath, dispatch);
     }
     return Promise.resolve();
   }, [countryCode, onError]);
@@ -72,7 +71,7 @@ const useLineItems = () => {
       line_item_key: lineItemKey,
     };
 
-    dispatchStatus({
+    dispatch({
       type: 'checkout/lineItem/setting',
     });
 
@@ -84,7 +83,7 @@ const useLineItems = () => {
           onError(error.error);
         }
 
-        dispatchStatus({
+        dispatch({
           type: `checkout/${error.type}/setErrors`,
           payload: error.payload,
         });
@@ -92,7 +91,7 @@ const useLineItems = () => {
         return Promise.reject(error.error);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/lineItem/set',
       });
 
@@ -105,7 +104,7 @@ const useLineItems = () => {
         onError(e);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
@@ -117,7 +116,7 @@ const useLineItems = () => {
     }
 
     if (countryCode) {
-      return getShippingLines(token, apiPath, dispatch, dispatchStatus);
+      return getShippingLines(token, apiPath, dispatch);
     }
     return Promise.resolve();
   }, [countryCode, onError]);
@@ -129,7 +128,7 @@ const useLineItems = () => {
       line_item_key: lineItemKey,
     };
 
-    dispatchStatus({
+    dispatch({
       type: 'checkout/lineItem/adding',
     });
 
@@ -141,7 +140,7 @@ const useLineItems = () => {
           onError(error.error);
         }
 
-        dispatchStatus({
+        dispatch({
           type: `checkout/${error.type}/setErrors`,
           payload: error.payload,
         });
@@ -149,7 +148,7 @@ const useLineItems = () => {
         return Promise.reject(error.error);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/lineItem/added',
       });
 
@@ -162,7 +161,7 @@ const useLineItems = () => {
         onError(e);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
@@ -174,7 +173,7 @@ const useLineItems = () => {
     }
 
     if (countryCode) {
-      return getShippingLines(token, apiPath, dispatch, dispatchStatus);
+      return getShippingLines(token, apiPath, dispatch);
     }
     return Promise.resolve();
   }, [countryCode, onError]);

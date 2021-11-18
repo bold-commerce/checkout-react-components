@@ -23,9 +23,6 @@ export const initialState = {
     taxesTotal: 0,
     totalItems: 0,
   },
-};
-
-export const initialStatus = {
   errors: {
     customer: null,
     shippingAddress: null,
@@ -51,5 +48,3 @@ export const initialStatus = {
 };
 
 export const CheckoutStore = React.createContext(null);
-
-export const CheckoutStatus = React.createContext(null);

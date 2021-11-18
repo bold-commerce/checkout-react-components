@@ -1,21 +1,20 @@
 import { useContext, useCallback, useMemo } from 'react';
-import { CheckoutStatus, CheckoutStore } from '../store';
+import { CheckoutStore } from '../store';
 import { deleteOrderMetadata, postOrderMetadata, patchOrderMetadata } from '../api';
 import { handleError, OrderError } from '../utils';
 
 const useOrderMetadata = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-  const { statusState, dispatchStatus } = useContext(CheckoutStatus);
   const { token, apiPath } = state;
   const orderMetadata = state.applicationState.order_meta_data;
-  const orderMetadataLoadingStatus = statusState.loadingStatus.orderMetadata;
-  const orderMetadataErrors = statusState.errors.orderMetadata;
+  const orderMetadataLoadingStatus = state.loadingStatus.orderMetadata;
+  const orderMetadataErrors = state.errors.orderMetadata;
   const memoizedOrderMetadata = useMemo(() => orderMetadata, [JSON.stringify(orderMetadata)]);
   const memoizedOrderMetadataErrors = useMemo(() => orderMetadataErrors, [JSON.stringify(orderMetadataErrors)]);
 
   const clearOrderMetadata = useCallback(async () => {
     try {
-      dispatchStatus({
+      dispatch({
         type: 'checkout/orderMetadata/setting',
       });
       const response = await deleteOrderMetadata(token, apiPath);
@@ -25,7 +24,7 @@ const useOrderMetadata = () => {
           onError(error.error);
         }
 
-        dispatchStatus({
+        dispatch({
           type: `checkout/${error.type}/setErrors`,
           payload: error.payload,
         });
@@ -33,7 +32,7 @@ const useOrderMetadata = () => {
         return Promise.reject(error.error);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/orderMetadata/set',
       });
       return dispatch({
@@ -45,7 +44,7 @@ const useOrderMetadata = () => {
         onError(e);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
@@ -59,7 +58,7 @@ const useOrderMetadata = () => {
 
   const overwriteOrderMetadata = useCallback(async (newOrderMetadata) => {
     try {
-      dispatchStatus({
+      dispatch({
         type: 'checkout/orderMetadata/setting',
       });
       const response = await postOrderMetadata(token, apiPath, newOrderMetadata);
@@ -69,7 +68,7 @@ const useOrderMetadata = () => {
           onError(error.error);
         }
 
-        dispatchStatus({
+        dispatch({
           type: `checkout/${error.type}/setErrors`,
           payload: error.payload,
         });
@@ -77,7 +76,7 @@ const useOrderMetadata = () => {
         return Promise.reject(error.error);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/orderMetadata/set',
       });
       return dispatch({
@@ -89,7 +88,7 @@ const useOrderMetadata = () => {
         onError(e);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
@@ -103,7 +102,7 @@ const useOrderMetadata = () => {
 
   const appendOrderMetadata = useCallback(async (data) => {
     try {
-      dispatchStatus({
+      dispatch({
         type: 'checkout/orderMetadata/setting',
       });
       const response = await patchOrderMetadata(token, apiPath, data);
@@ -113,7 +112,7 @@ const useOrderMetadata = () => {
           onError(error.error);
         }
 
-        dispatchStatus({
+        dispatch({
           type: `checkout/${error.type}/setErrors`,
           payload: error.payload,
         });
@@ -121,7 +120,7 @@ const useOrderMetadata = () => {
         return Promise.reject(error.error);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/orderMetadata/set',
       });
       return dispatch({
@@ -133,7 +132,7 @@ const useOrderMetadata = () => {
         onError(e);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',

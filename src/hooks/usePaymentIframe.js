@@ -3,16 +3,15 @@ import {
   useCallback, useContext, useEffect, useMemo, useState,
 } from 'react';
 import { processOrder } from '../api';
-import { CheckoutStatus, CheckoutStore } from '../store';
+import { CheckoutStore } from '../store';
 import { handleError, OrderError } from '../utils';
 
 const usePaymentIframe = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-  const { statusState, dispatchStatus } = useContext(CheckoutStatus);
   const [paymentIframeHeight, setPaymentIframeHeight] = useState(0);
   const { token, apiPath } = state;
-  const paymentIframeLoadingStatus = statusState.loadingStatus.paymentIframe;
-  const paymentIframeErrors = statusState.errors.paymentIframe;
+  const paymentIframeLoadingStatus = state.loadingStatus.paymentIframe;
+  const paymentIframeErrors = state.errors.paymentIframe;
   const paymentIframeUrl = `${apiPath}/payments/iframe?token=${token}`;
   const memoizedPaymentIframeErrors = useMemo(() => paymentIframeErrors, [JSON.stringify(paymentIframeErrors)]);
 
@@ -47,7 +46,7 @@ const usePaymentIframe = () => {
   const refreshOrder = () => dispatchIframeAction('PIGI_REFRESH_ORDER');
 
   const submitOrder = useCallback(async () => {
-    dispatchStatus({
+    dispatch({
       type: 'checkout/order/processing',
     });
 
@@ -59,7 +58,7 @@ const usePaymentIframe = () => {
           onError(error.error);
         }
 
-        dispatchStatus({
+        dispatch({
           type: `checkout/${error.type}/setErrors`,
           payload: error.payload,
         });
@@ -67,7 +66,7 @@ const usePaymentIframe = () => {
         return Promise.reject(error.error);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/processed',
       });
 
@@ -76,7 +75,7 @@ const usePaymentIframe = () => {
         payload: response.data.application_state,
       });
     } catch (e) {
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
@@ -88,7 +87,7 @@ const usePaymentIframe = () => {
         onError(e);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
@@ -106,7 +105,7 @@ const usePaymentIframe = () => {
       await submitOrder();
       return Promise.resolve();
     } catch (e) {
-      dispatchStatus({
+      dispatch({
         type: 'checkout/paymentIframe/setPaymentIframeErrors',
         payload: [{
           field: 'payment',
@@ -118,7 +117,7 @@ const usePaymentIframe = () => {
         onError(e);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
@@ -155,7 +154,7 @@ const usePaymentIframe = () => {
   });
 
   const processPaymentIframe = useCallback(async () => {
-    dispatchStatus({
+    dispatch({
       type: 'checkout/paymentIframe/authorizing',
     });
 
@@ -165,7 +164,7 @@ const usePaymentIframe = () => {
       await addPayment();
       return Promise.resolve();
     } catch (e) {
-      dispatchStatus({
+      dispatch({
         type: 'checkout/paymentIframe/setPaymentIframeErrors',
         payload: [{
           field: 'payment',
@@ -177,7 +176,7 @@ const usePaymentIframe = () => {
         onError(e);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
@@ -190,7 +189,7 @@ const usePaymentIframe = () => {
   }, [onError, refreshOrder, addPayment]);
 
   const paymentIframeOnLoaded = () => {
-    dispatchStatus({
+    dispatch({
       type: 'checkout/paymentIframe/fetched',
     });
   };
@@ -204,7 +203,7 @@ const usePaymentIframe = () => {
   };
 
   useEffect(() => {
-    dispatchStatus({
+    dispatch({
       type: 'checkout/paymentIframe/fetching',
     });
   }, []);

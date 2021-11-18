@@ -1,14 +1,14 @@
 import { fetchShippingLines } from '../../api';
 import { handleError } from '../../utils';
 
-const getShippingLines = async (token, apiPath, dispatch, dispatchStatus) => {
-  dispatchStatus({
+const getShippingLines = async (token, apiPath, dispatch) => {
+  dispatch({
     type: 'checkout/shippingLines/fetching',
   });
   const response = await fetchShippingLines(token, apiPath);
   const error = handleError('shippingLines', response);
   if (error) {
-    dispatchStatus({
+    dispatch({
       type: `checkout/${error.type}/setErrors`,
       payload: error.payload,
     });
@@ -17,7 +17,7 @@ const getShippingLines = async (token, apiPath, dispatch, dispatchStatus) => {
   }
 
   if (response.data && response.data.application_state) {
-    dispatchStatus({
+    dispatch({
       type: 'checkout/shippingLines/fetched',
     });
     return dispatch({
@@ -26,7 +26,7 @@ const getShippingLines = async (token, apiPath, dispatch, dispatchStatus) => {
     });
   }
 
-  return dispatchStatus({
+  return dispatch({
     type: 'checkout/shippingLines/fetched',
   });
 };

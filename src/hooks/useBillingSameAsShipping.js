@@ -1,15 +1,14 @@
 import { useCallback, useContext, useMemo } from 'react';
-import { CheckoutStatus, CheckoutStore } from '../store';
+import { CheckoutStore } from '../store';
 import { updateBillingAddress } from '../api';
 import { handleError, OrderError } from '../utils';
 
 const useBillingSameAsShipping = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-  const { statusState, dispatchStatus } = useContext(CheckoutStatus);
   const { token, apiPath } = state;
   const shippingAddress = state.applicationState?.addresses?.shipping;
-  const billingAddressErrors = statusState.errors.billingAddress;
-  const billingAddressLoadingStatus = statusState.loadingStatus.billingAddress;
+  const billingAddressErrors = state.errors.billingAddress;
+  const billingAddressLoadingStatus = state.loadingStatus.billingAddress;
   const memoizedBillingAddressErrors = useMemo(() => billingAddressErrors, [JSON.stringify(billingAddressErrors)]);
   const memoizedShippingAddress = useMemo(() => shippingAddress, [JSON.stringify(shippingAddress)]);
   const { billingSameAsShipping } = state.orderInfo;
@@ -22,7 +21,7 @@ const useBillingSameAsShipping = () => {
 
     if (value) {
       if (memoizedShippingAddress?.country_code) {
-        dispatchStatus({
+        dispatch({
           type: 'checkout/billingAddress/setting',
         });
 
@@ -34,7 +33,7 @@ const useBillingSameAsShipping = () => {
               onError(error.error);
             }
 
-            dispatchStatus({
+            dispatch({
               type: `checkout/${error.type}/setErrors`,
               payload: error.payload,
             });
@@ -47,7 +46,7 @@ const useBillingSameAsShipping = () => {
             payload: response.data.application_state,
           });
 
-          return dispatchStatus({
+          return dispatch({
             type: 'checkout/billingAddress/set',
             payload: response.data.address,
           });
@@ -56,7 +55,7 @@ const useBillingSameAsShipping = () => {
             onError(e);
           }
 
-          dispatchStatus({
+          dispatch({
             type: 'checkout/billingAddress/setErrors',
             payload: [{
               field: 'order',

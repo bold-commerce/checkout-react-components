@@ -2,7 +2,7 @@
 import React, { useReducer } from 'react';
 import PropTypes from 'prop-types';
 import {
-  initialState, initialStatus, reducer, statusReducer, CheckoutStore, CheckoutStatus, calculateTotals,
+  initialState, reducer, CheckoutStore, calculateTotals,
 } from '../../store';
 
 const CheckoutProvider = ({
@@ -30,13 +30,10 @@ const CheckoutProvider = ({
   };
 
   const [state, dispatch] = useReducer(reducer, currentState);
-  const [statusState, dispatchStatus] = useReducer(statusReducer, initialStatus);
 
   return (
     <CheckoutStore.Provider value={{ state, dispatch, onError }}>
-      <CheckoutStatus.Provider value={{ statusState, dispatchStatus }}>
-        {children}
-      </CheckoutStatus.Provider>
+      {children}
     </CheckoutStore.Provider>
   );
 };

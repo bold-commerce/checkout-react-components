@@ -1,11 +1,11 @@
 import { fetchTaxes } from '../../api';
 import { handleError } from '../../utils';
 
-const generateTaxes = async (token, apiPath, dispatch, dispatchStatus) => {
+const generateTaxes = async (token, apiPath, dispatch) => {
   const response = await fetchTaxes(token, apiPath);
   const error = handleError('taxes', response);
   if (error) {
-    dispatchStatus({
+    dispatch({
       type: `checkout/${error.type}/setErrors`,
       payload: error.payload,
     });

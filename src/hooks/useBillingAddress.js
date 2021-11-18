@@ -1,6 +1,6 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { updateBillingAddress } from '../api';
-import { CheckoutStatus, CheckoutStore } from '../store';
+import { CheckoutStore } from '../store';
 import { handleError, OrderError, PromiseError } from '../utils';
 import { requiredAddressFieldValidation } from './shared';
 
@@ -24,11 +24,10 @@ const emptyAddress = {
  */
 const useBillingAddress = (requiredAddressFields) => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-  const { statusState, dispatchStatus } = useContext(CheckoutStatus);
   const { token, apiPath } = state;
   const billingAddress = state.applicationState.addresses.billing;
-  const billingAddressErrors = statusState.errors.billingAddress;
-  const billingAddressLoadingStatus = statusState.loadingStatus.billingAddress;
+  const billingAddressErrors = state.errors.billingAddress;
+  const billingAddressLoadingStatus = state.loadingStatus.billingAddress;
   const countryInfo = state.initialData.country_info;
   const { billingSameAsShipping } = state.orderInfo;
   const shippingAddress = state.applicationState?.addresses?.shipping;
@@ -45,7 +44,7 @@ const useBillingAddress = (requiredAddressFields) => {
     if (requiredAddressFields) {
       const requiredAddressFieldErrors = requiredAddressFieldValidation(billingAddressData, memoizedRequiredAddressFields);
       if (requiredAddressFieldErrors) {
-        dispatchStatus({
+        dispatch({
           type: 'checkout/billingAddress/setErrors',
           payload: requiredAddressFieldErrors,
         });
@@ -54,7 +53,7 @@ const useBillingAddress = (requiredAddressFields) => {
     }
 
     if (!billingAddressData || !billingAddressData.country_code) {
-      dispatchStatus({
+      dispatch({
         type: 'checkout/billingAddress/setErrors',
         payload: [{
           field: 'country',
@@ -83,7 +82,7 @@ const useBillingAddress = (requiredAddressFields) => {
     // Prevent user from submitting shipping address that is already in app state
     if (appShipping === localShipping) {
       if (memoizedBillingAddressErrors && Object.keys(memoizedBillingAddressErrors).length > 0) {
-        return dispatchStatus({
+        return dispatch({
           type: 'checkout/billingAddress/set',
         });
       }
@@ -94,7 +93,7 @@ const useBillingAddress = (requiredAddressFields) => {
     const country = countryData.name;
 
     if (countryData.show_province && !billingAddressData.province_code) {
-      dispatchStatus({
+      dispatch({
         type: 'checkout/billingAddress/setErrors',
         payload: [{
           field: 'province',
@@ -112,7 +111,7 @@ const useBillingAddress = (requiredAddressFields) => {
       }));
     }
     if (countryData.show_postal_code && !billingAddressData.postal_code) {
-      dispatchStatus({
+      dispatch({
         type: 'checkout/billingAddress/setErrors',
         payload: [{
           field: 'postal_code',
@@ -132,7 +131,7 @@ const useBillingAddress = (requiredAddressFields) => {
 
     const provinceData = countryData.provinces.find((data) => data.iso_code === billingAddressData.province_code);
     if (!provinceData) {
-      dispatchStatus({
+      dispatch({
         type: 'checkout/billingAddress/setIncomplete',
       });
 
@@ -152,7 +151,7 @@ const useBillingAddress = (requiredAddressFields) => {
       province,
     };
 
-    dispatchStatus({
+    dispatch({
       type: 'checkout/billingAddress/setting',
     });
 
@@ -164,7 +163,7 @@ const useBillingAddress = (requiredAddressFields) => {
           onError(error.error);
         }
 
-        dispatchStatus({
+        dispatch({
           type: `checkout/${error.type}/setErrors`,
           payload: error.payload,
         });
@@ -177,7 +176,7 @@ const useBillingAddress = (requiredAddressFields) => {
         payload: response.data.application_state,
       });
 
-      return dispatchStatus({
+      return dispatch({
         type: 'checkout/billingAddress/set',
         payload: response.data.address,
       });
@@ -185,7 +184,7 @@ const useBillingAddress = (requiredAddressFields) => {
       if (onError) {
         onError(e);
       }
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',

@@ -1,16 +1,15 @@
 import { useCallback, useContext, useMemo } from 'react';
-import { CheckoutStatus, CheckoutStore } from '../store';
+import { CheckoutStore } from '../store';
 import * as api from '../api';
 import { handleError, OrderError } from '../utils';
 
 const useDiscount = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-  const { statusState, dispatchStatus } = useContext(CheckoutStatus);
   const { token, apiPath } = state;
   const discounts = state.applicationState?.discounts;
   const memoizedDiscounts = useMemo(() => discounts, [JSON.stringify(discounts)]);
-  const discountLoadingStatus = statusState.loadingStatus.discount;
-  const discountErrors = statusState.errors.discount;
+  const discountLoadingStatus = state.loadingStatus.discount;
+  const discountErrors = state.errors.discount;
   const memoizedDiscountErrors = useMemo(() => discountErrors, [JSON.stringify(discountErrors)]);
 
   const applyDiscount = useCallback(async (discount) => {
@@ -26,7 +25,7 @@ const useDiscount = () => {
           onError(error.error);
         }
 
-        dispatchStatus({
+        dispatch({
           type: `checkout/${error.type}/setErrors`,
           payload: error.payload,
         });
@@ -34,7 +33,7 @@ const useDiscount = () => {
         return Promise.reject(error.error);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/discount/added',
       });
 
@@ -47,7 +46,7 @@ const useDiscount = () => {
         onError(e);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
@@ -60,7 +59,7 @@ const useDiscount = () => {
   }, [onError]);
 
   const removeDiscount = useCallback(async (code) => {
-    dispatchStatus({
+    dispatch({
       type: 'checkout/discount/removing',
     });
 
@@ -72,7 +71,7 @@ const useDiscount = () => {
           onError(error.error);
         }
 
-        dispatchStatus({
+        dispatch({
           type: `checkout/${error.type}/setErrors`,
           payload: error.payload,
         });
@@ -80,7 +79,7 @@ const useDiscount = () => {
         return Promise.reject(error.error);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/discount/removed',
       });
 
@@ -93,7 +92,7 @@ const useDiscount = () => {
         onError(e);
       }
 
-      dispatchStatus({
+      dispatch({
         type: 'checkout/order/setErrors',
         payload: [{
           field: 'order',
