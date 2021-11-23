@@ -1,4 +1,7 @@
 # Checkout React Components
+
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/bold-commerce/checkout-react-components/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/@boldcommerce/checkout-react-components.svg?style=flat)](https://www.npmjs.com/package/@boldcommerce/checkout-react-components)
+
 A React component and hooks library for creating checkout experiences utilizing [Bold API's](https://developer.boldcommerce.com/default/documentation/checkout).
 
 ## Table of Contents
