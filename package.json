@@ -1,11 +1,15 @@
 {
   "name": "@boldcommerce/checkout-react-components",
-  "version": "4.0.0-beta-20211122",
+  "version": "4.0.0-beta-20211123",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "author": {
     "name": "Bold Commerce",
     "url": "https://boldcommerce.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bold-commerce/checkout-react-components.git"
   },
   "description": "A React component library for creating checkout experiences utilizing Bold API's.",
   "license": "MIT",
