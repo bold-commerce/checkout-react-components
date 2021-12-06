@@ -21,11 +21,14 @@ const useCountryInfo = (countryInfo, address) => {
 
       if (address?.country_code) {
         const countryData = countries.find((countryItem) => countryItem.iso_code === address.country_code);
-        // eslint-disable-next-line no-nested-ternary
-        provinces = countryData.provinces.sort((a, b) => ((a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)));
-        showPostalCode = countryData.show_postal_code;
-        showProvince = countryData.show_province;
-        provinceLabel = countryData.province_label;
+
+        if (countryData) {
+          // eslint-disable-next-line no-nested-ternary
+          provinces = countryData.provinces.sort((a, b) => ((a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)));
+          showPostalCode = countryData.show_postal_code;
+          showProvince = countryData.show_province;
+          provinceLabel = countryData.province_label;
+        }
       }
 
       setCurrentCountryInfo({
