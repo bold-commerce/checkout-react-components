@@ -83,6 +83,11 @@ const errorsReducer = (state, action) => {
         ...state,
         order: null,
       };
+    case 'checkout/order/processing':
+      return {
+        ...state, 
+        order: null
+      };
 
     // Discount Actions
     case 'checkout/discount/setErrors':
