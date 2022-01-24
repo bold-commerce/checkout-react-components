@@ -1,6 +1,7 @@
 import React from 'react';
+import { InitialState } from '../types/initialState';
 
-export const initialState = {
+export const initialState: InitialState = {
   applicationState: {},
   initialData: {},
   publicOrderId: null,
