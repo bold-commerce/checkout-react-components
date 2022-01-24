@@ -1,5 +1,5 @@
-import { ApplicationState } from "./applicationState";
-import { InitialData } from "./initialData";
+import { ApplicationState } from "./ApplicationState";
+import { InitialData } from "./InitialData";
 
 export interface InitialState {
   applicationState: ApplicationState,

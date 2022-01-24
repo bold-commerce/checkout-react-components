@@ -1,4 +1,4 @@
-import { ProvinceInfo } from "./provinceInfo";
+import { ProvinceInfo } from "./ProvinceInfo";
 
 export interface CountryInfo {
   isoCode: string,

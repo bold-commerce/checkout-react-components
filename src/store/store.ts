@@ -1,9 +1,26 @@
 import React from 'react';
-import { InitialState } from '../types/initialState';
+import { InitialState } from '../types/InitialState';
 
 export const initialState: InitialState = {
-  applicationState: {},
-  initialData: {},
+  applicationState: {
+    customer: null,
+    addresses: {
+      shipping: null,
+      billing: null
+    },
+    lineItems: [],
+    shipping: {},
+    taxes: {},
+    discounts: {},
+    payments: {},
+    orderTotal: 0,
+    orderMetaData: {}
+  },
+  initialData: {
+    shopName: '',
+    countryInfo: [],
+    supportedLanguages: []
+  },
   publicOrderId: null,
   token: null,
   storeIdentifier: null,
