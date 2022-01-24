@@ -2,6 +2,7 @@ node_modules
 eslintrc
 /lib
 /dist
+/tsc
 .env
 examples/*/public/*
 examples/*/yarn.lock
