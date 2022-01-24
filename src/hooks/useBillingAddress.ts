@@ -2,7 +2,7 @@ import { useCallback, useContext, useMemo } from 'react';
 import { updateBillingAddress } from '../api';
 import { CheckoutStore } from '../store';
 import { Address } from '../types/Address';
-import { CountryInfo } from '../types/CountryInfo';
+import { CountryInfo } from '../types/countryInfo';
 import { handleError, OrderError, PromiseError } from '../utils';
 import { requiredAddressFieldValidation } from './shared';
 
