@@ -4,9 +4,9 @@ import { InitialData } from "./initialData";
 export interface InitialState {
   applicationState: ApplicationState,
   initialData: InitialData,
-  publicOrderId: string
-  token: string,
-  storeIdentifier: string,
+  publicOrderId: string | null,
+  token: string | null,
+  storeIdentifier: string | null,
   apiBase: string,
   apiPath: string,
   isAuthenticated: boolean,
