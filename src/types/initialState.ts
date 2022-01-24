@@ -1,4 +1,5 @@
 import { ApplicationState } from "./ApplicationState";
+import { Errors } from "./Errors";
 import { InitialData } from "./InitialData";
 
 export interface InitialState {
@@ -12,6 +13,6 @@ export interface InitialState {
   isAuthenticated: boolean,
   orderInfo: any, //TODO
   orderTotals: any, //TODO
-  errors: any, //TODO
+  errors: Errors, 
   loadingStatus: any //TODO
 }

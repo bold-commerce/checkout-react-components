@@ -9,12 +9,12 @@ export const initialState: InitialState = {
       billing: null
     },
     lineItems: [],
-    shipping: {},
-    taxes: {},
-    discounts: {},
-    payments: {},
+    shipping: null,
+    taxes: [],
+    discounts: [],
+    payments: [],
     orderTotal: 0,
-    orderMetaData: {}
+    orderMetaData: null
   },
   initialData: {
     shopName: '',

@@ -1,6 +1,11 @@
 import { Address } from "./Address";
 import { Customer } from "./Customer";
+import { Discount } from "./Discount";
 import { LineItems } from "./LineItem";
+import { OrderMetaData } from "./OrderMetaData";
+import { Payment } from "./Payment";
+import { Shipping } from "./Shipping";
+import { Tax } from "./Tax";
 
 export interface ApplicationState {
   customer: Customer | null,
@@ -9,10 +14,10 @@ export interface ApplicationState {
     billing: Address | null
   }, 
   lineItems: LineItems[],
-  shipping: any, //TODO
-  taxes: any, //TODO
-  discounts: any, //TODO
-  payments: any, //TODO
+  shipping: Shipping | null,
+  taxes: Tax[], 
+  discounts: Discount[],
+  payments: Payment[],
   orderTotal: number,
-  orderMetaData: any //TODO
+  orderMetaData: OrderMetaData | null
 }
