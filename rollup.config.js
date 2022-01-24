@@ -7,7 +7,7 @@ import commonjs from '@rollup/plugin-commonjs';
 const packageJson = require('./package.json');
 
 export default {
-  input: 'src/index.js',
+  input: 'src/index.ts',
   external: ['react', 'react-dom'],
   globals: {
     react: 'React',
