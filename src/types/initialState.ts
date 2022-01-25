@@ -1,6 +1,9 @@
 import { ApplicationState } from "./ApplicationState";
 import { Errors } from "./Errors";
 import { InitialData } from "./InitialData";
+import { LoadingStatus } from "./LoadingStatus";
+import { OrderInfo } from "./OrderInfo";
+import { OrderTotals } from "./OrderTotals";
 
 export interface InitialState {
   applicationState: ApplicationState,
@@ -11,8 +14,8 @@ export interface InitialState {
   apiBase: string,
   apiPath: string,
   isAuthenticated: boolean,
-  orderInfo: any, //TODO
-  orderTotals: any, //TODO
+  orderInfo: OrderInfo, 
+  orderTotals: OrderTotals, 
   errors: Errors, 
-  loadingStatus: any //TODO
+  loadingStatus: LoadingStatus
 }
