@@ -1,4 +1,8 @@
-const errorsReducer = (state, action) => {
+import { Action } from "../../types/Action";
+import { Error } from "../../types/Error";
+import { Errors } from "../../types/Errors";
+
+const errorsReducer = (state : Errors, action: Action<Error>): Errors => {
   switch (action.type) {
     // Customer Actions
     case 'checkout/customer/setErrors':
