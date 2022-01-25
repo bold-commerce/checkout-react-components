@@ -7,4 +7,4 @@ export interface OrderTotals {
   remainingBalance: number,
   taxesTotal: number,
   totalItems: number
-}
+};

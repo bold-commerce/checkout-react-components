@@ -12,4 +12,4 @@ export interface Address {
   postal_code: string,
   business_Name: string,
   phone_number: string 
-}
+};

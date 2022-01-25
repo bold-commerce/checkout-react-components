@@ -4,4 +4,4 @@ export interface Error {
   field: string,
   severity: string,
   sub_type: string
-}
+};

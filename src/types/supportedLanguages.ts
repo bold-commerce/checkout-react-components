@@ -1,6 +1,6 @@
 export interface SupportedLanguages {
-  created_at: string, //TODO datetime
-  deleted_at: string //TODO datetime
+  created_at: string, 
+  deleted_at: string,
   enabled: boolean,
   id: number,
   iso_language: string,
@@ -11,6 +11,6 @@ export interface SupportedLanguages {
   out_of_date: string,
   shop_id: number,
   shop_language_id: string,
-  source: any, //TODO not sure
-  updated_at: string, //TODO datetime
-}
+  source: any,
+  updated_at: string, 
+};

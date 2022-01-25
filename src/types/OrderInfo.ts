@@ -1,4 +1,6 @@
+import { OrderState } from "./enums/OrderState";
+
 export interface OrderInfo {
-  orderStatus: string, //enum??
+  orderStatus: OrderState,
   billingSameAsShipping: boolean
-}
+};

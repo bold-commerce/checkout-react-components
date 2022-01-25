@@ -21,4 +21,4 @@ export interface ProductData {
   sku: string,
   taxable: boolean,
   tags: string
-}
+};

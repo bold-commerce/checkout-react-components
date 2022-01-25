@@ -8,4 +8,4 @@ export interface Customer {
   email_address: string,
   accepts_marketing: boolean,
   saved_addresses: Address[],
-} 
+};

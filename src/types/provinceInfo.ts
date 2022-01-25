@@ -3,4 +3,4 @@ export interface ProvinceInfo {
   name: string,
   valid_for_billing: boolean,
   valid_for_shipping: boolean,
-}
+};
