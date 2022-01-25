@@ -20,4 +20,4 @@ export interface ApplicationState {
   payments: Payment[],
   order_total: number,
   order_meta_data: OrderMetaData | null
-}
+};

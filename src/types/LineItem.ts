@@ -9,4 +9,4 @@ export interface LineItems{
   fees: Fee[],
   discounts: Discount[], 
   fulfilled_quantity: number
-}
+};

@@ -1,4 +1,6 @@
 import React from 'react';
+import { LoadingState } from '../types/enums/LoadingState';
+import { OrderState } from '../types/enums/OrderState';
 import { InitialState } from '../types/InitialState';
 
 export const initialState: InitialState = {
@@ -23,12 +25,12 @@ export const initialState: InitialState = {
   },
   publicOrderId: null,
   token: null,
-  storeIdentifier: null,
+  storeIdentifier: '',
   apiBase: 'https://api.boldcommerce.com/checkout/storefront',
   apiPath: '',
   isAuthenticated: false,
   orderInfo: {
-    orderStatus: 'pending',
+    orderStatus: OrderState.pending,
     billingSameAsShipping: true,
   },
   orderTotals: {
@@ -53,16 +55,16 @@ export const initialState: InitialState = {
     order: null,
   },
   loadingStatus: {
-    customer: 'fulfilled',
-    shippingAddress: 'fulfilled',
-    billingAddress: 'fulfilled',
-    shippingLines: 'fulfilled',
-    paymentIframe: 'fulfilled',
-    lineItems: 'fulfilled',
-    discount: 'fulfilled',
-    orderMetadata: 'fulfilled',
+    customer: LoadingState.fulfilled,
+    shippingAddress: LoadingState.fulfilled,
+    billingAddress: LoadingState.fulfilled,
+    shippingLines: LoadingState.fulfilled,
+    paymentIframe: LoadingState.fulfilled,
+    lineItems: LoadingState.fulfilled,
+    discount: LoadingState.fulfilled,
+    orderMetadata: LoadingState.fulfilled,
     isLoading: false,
   },
 };
 
-export const CheckoutStore = React.createContext(null);
+export const CheckoutStore = React.createContext<InitialState | null>(null);

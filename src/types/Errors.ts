@@ -10,4 +10,4 @@ export interface Errors {
   discount: Error | null,
   paymentIframe: Error | null,
   order: Error | null
-}
+};

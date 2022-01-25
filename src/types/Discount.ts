@@ -3,4 +3,4 @@ export interface Discount {
   text: string,
   value: string,
   valid: boolean
-}
+};

@@ -10,7 +10,7 @@ export interface InitialState {
   initialData: InitialData,
   publicOrderId: string | null,
   token: string | null,
-  storeIdentifier: string | null,
+  storeIdentifier: string,
   apiBase: string,
   apiPath: string,
   isAuthenticated: boolean,
@@ -18,4 +18,4 @@ export interface InitialState {
   orderTotals: OrderTotals, 
   errors: Errors, 
   loadingStatus: LoadingStatus
-}
+};

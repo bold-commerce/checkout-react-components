@@ -5,4 +5,4 @@ export interface OrderMetaData {
   note_attributes: string[],
   notes: string,
   tags: string[]
-}
+};

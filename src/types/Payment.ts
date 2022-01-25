@@ -7,4 +7,4 @@ export interface Payment {
   id: string,
   token: string,
   retain: boolean
-}
+};

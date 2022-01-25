@@ -11,4 +11,4 @@ export interface Address {
   province_code: string,
   business_name: string,
   phone_number: string 
-}
+};
