@@ -1,11 +1,11 @@
 import { Address } from "./Address";
 
 export interface Customer {
-  platformId: string,
-  publicId: string,
-  firstName: string,
-  lastName: string,
-  emailAddress: string,
-  acceptsMarketing: boolean,
-  savedAddresses: Address[],
+  platform_id: string,
+  public_id: string,
+  first_name: string,
+  last_name: string,
+  email_address: string,
+  accepts_marketing: boolean,
+  saved_addresses: Address[],
 } 

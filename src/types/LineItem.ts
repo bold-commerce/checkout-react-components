@@ -4,9 +4,9 @@ import { ProductData } from "./ProductData";
 import { Tax } from "./Tax";
 
 export interface LineItems{
-  productData: ProductData,
+  product_data: ProductData,
   taxes: Tax[],
   fees: Fee[],
   discounts: Discount[], 
-  fulfilledQuantity: number
+  fulfilled_quantity: number
 }

@@ -1,6 +1,6 @@
 export interface ProvinceInfo {
-  isoCode: string,
+  iso_code: string,
   name: string,
-  validForBilling: boolean,
-  validForShipping: boolean,
+  valid_for_billing: boolean,
+  valid_for_shipping: boolean,
 }

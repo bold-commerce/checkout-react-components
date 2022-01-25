@@ -1,5 +1,5 @@
 export interface Tax {
   name: string,
   value: number,
-  isIncluded: boolean
+  is_included: boolean
 }

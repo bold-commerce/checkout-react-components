@@ -1,9 +1,9 @@
 export interface Payment {
-  gatewayPublicId: string,
+  gateway_public_id: string,
   amount: number,
   currency: string,
   type: string,
-  displayString: string,
+  display_string: string,
   id: string,
   token: string,
   retain: boolean

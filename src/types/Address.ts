@@ -1,14 +1,14 @@
 export interface Address {
   id: string,
-  firstName: string,
-  lastName: string,
-  addressLine1: string,
-  addressLine2: string,
+  first_name: string,
+  last_name: string,
+  address_line_1: string,
+  address_line_2: string,
   country: string,
   city: string,
   province: string,
-  countryCode: string,
-  provinceCode: string,
-  businessName: string,
-  phoneNumber: string 
+  country_code: string,
+  province_code: string,
+  business_name: string,
+  phone_number: string 
 }
