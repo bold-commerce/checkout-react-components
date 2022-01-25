@@ -1,8 +1,8 @@
 export interface OrderMetaData {
-  cartParameters: {
+  cart_parameters: {
     [key: string]: string
   }, 
-  noteAttributes: string[],
+  note_attributes: string[],
   notes: string,
   tags: string[]
 }

@@ -13,11 +13,11 @@ export interface ApplicationState {
     shipping: Address | null,
     billing: Address | null
   }, 
-  lineItems: LineItems[],
+  line_items: LineItems[],
   shipping: Shipping | null,
   taxes: Tax[], 
   discounts: Discount[],
   payments: Payment[],
-  orderTotal: number,
-  orderMetaData: OrderMetaData | null
+  order_total: number,
+  order_meta_data: OrderMetaData | null
 }

@@ -8,18 +8,18 @@ export const initialState: InitialState = {
       shipping: null,
       billing: null
     },
-    lineItems: [],
+    line_items: [],
     shipping: null,
     taxes: [],
     discounts: [],
     payments: [],
-    orderTotal: 0,
-    orderMetaData: null
+    order_total: 0,
+    order_meta_data: null
   },
   initialData: {
-    shopName: '',
-    countryInfo: [],
-    supportedLanguages: []
+    shop_name: '',
+    country_info: [],
+    supported_languages: []
   },
   publicOrderId: null,
   token: null,

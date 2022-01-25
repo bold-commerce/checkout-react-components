@@ -1,16 +1,16 @@
 export interface SupportedLanguages {
-  createdAt: string, //TODO datetime
-  deletedAt: string //TODO datetime
+  created_at: string, //TODO datetime
+  deleted_at: string //TODO datetime
   enabled: boolean,
   id: number,
-  isoLanguage: string,
-  isDefault: boolean,
-  languageName: string,
-  languageBlob: string,
+  iso_language: string,
+  is_default: boolean,
+  language_name: string,
+  language_blob: string,
   name: string,
-  outOfDate: string,
-  shopId: number,
-  shopLanguageId: string,
+  out_of_date: string,
+  shop_id: number,
+  shop_language_id: string,
   source: any, //TODO not sure
-  updatedAt: string, //TODO datetime
+  updated_at: string, //TODO datetime
 }
