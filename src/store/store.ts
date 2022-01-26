@@ -67,4 +67,10 @@ export const initialState: InitialState = {
   },
 };
 
-export const CheckoutStore = React.createContext<InitialState | null>(null);
+export const CheckoutStore = React.createContext<{
+  state: InitialState | null,
+  dispatch: React.Dispatch<any>
+}>({
+  state: null,
+  dispatch: () => null
+});
