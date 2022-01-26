@@ -1,5 +1,7 @@
 export default class PromiseError extends Error {
-  constructor(message, body) {
+  body: Object;
+
+  constructor(message: string, body: Object) {
     super(message);
     this.body = body;
   }

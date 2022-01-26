@@ -1,4 +1,4 @@
-export interface Error {
+export interface CheckoutError {
   message: string,
   type: string,
   field: string,

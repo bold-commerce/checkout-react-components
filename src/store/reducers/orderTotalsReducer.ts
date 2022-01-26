@@ -1,6 +1,6 @@
 import { Action } from "../../types/Action";
 import { ApplicationState } from "../../types/ApplicationState";
-import { InitialState } from "../../types/InitialState";
+import { CheckoutState } from "../../types/CheckoutState";
 import { OrderTotals } from "../../types/OrderTotals";
 
 export const calculateTotals = (applicationState: ApplicationState): OrderTotals => {
@@ -29,7 +29,7 @@ export const calculateTotals = (applicationState: ApplicationState): OrderTotals
   };
 };
 
-const orderTotalsReducer = (state: InitialState, action: Action<ApplicationState>): OrderTotals => {
+const orderTotalsReducer = (state: CheckoutState, action: Action<ApplicationState>): OrderTotals => {
   switch (action.type) {
     case 'checkout/update':
       return calculateTotals(action.payload);
