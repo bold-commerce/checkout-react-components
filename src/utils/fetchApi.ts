@@ -1,6 +1,7 @@
 import FetchError from './fetchError';
+import { FetchResponse } from './fetchResponse';
 
-const fetchApi = async (url, options) => {
+const fetchApi = async (url: string, options: Object) : Promise<FetchResponse> => {
   try {
     const response = await fetch(url, {
       mode: 'cors',
@@ -39,7 +40,7 @@ const fetchApi = async (url, options) => {
   } catch (e) {
     return {
       success: false,
-      error: new FetchError(500, 'Something went wrong'),
+      error: new FetchError(500, 'Something went wrong', {}),
     };
   }
 };
