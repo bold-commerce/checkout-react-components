@@ -1,6 +1,6 @@
 import { FetchError } from ".";
 
-export interface FetchResponse {
+export default interface FetchResponse {
   success: boolean,
   data?: any,
   error?: FetchError
