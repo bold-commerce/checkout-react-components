@@ -1,6 +1,7 @@
-import { fetchApi } from '../utils';
+import { LineItem } from '../types/LineItem';
+import { fetchApi, FetchResponse  } from '../utils';
 
-export const addLineItem = async (token, apiPath, data) => {
+export const addLineItem = async (token: string, apiPath: string, data: LineItem): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/items`, {
     method: 'POST',
     headers: {
@@ -13,7 +14,7 @@ export const addLineItem = async (token, apiPath, data) => {
   return response;
 };
 
-export const updateLineItem = async (token, apiPath, data) => {
+export const updateLineItem = async (token: string, apiPath: string, data: LineItem): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/items`, {
     method: 'PUT',
     headers: {
@@ -26,7 +27,7 @@ export const updateLineItem = async (token, apiPath, data) => {
   return response;
 };
 
-export const removeLineItem = async (token, apiPath, lineItemKey) => {
+export const removeLineItem = async (token: string, apiPath: string, lineItemKey: string): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/items`, {
     method: 'DELETE',
     headers: {

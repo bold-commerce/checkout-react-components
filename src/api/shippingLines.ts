@@ -1,6 +1,6 @@
-import { fetchApi } from '../utils';
+import { fetchApi, FetchResponse } from '../utils';
 
-export const setShippingLine = async (token, apiPath, index) => {
+export const setShippingLine = async (token: string, apiPath: string, index: number): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/shipping_lines`, {
     method: 'POST',
     headers: {
@@ -15,7 +15,7 @@ export const setShippingLine = async (token, apiPath, index) => {
   return response;
 };
 
-export const fetchShippingLines = async (token, apiPath) => {
+export const fetchShippingLines = async (token: string, apiPath: string): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/shipping_lines`, {
     headers: {
       'Content-Type': 'application/json',

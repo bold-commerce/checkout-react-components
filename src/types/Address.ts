@@ -9,6 +9,7 @@ export interface Address {
   province: string,
   country_code: string,
   province_code: string,
+  postal_code: string,
   business_name: string,
-  phone_number: string 
+  phone_number: string
 };

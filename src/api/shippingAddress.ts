@@ -1,6 +1,7 @@
-import fetchApi from '../utils/fetchApi';
+import { Address } from '../types/Address';
+import { fetchApi, FetchResponse } from '../utils';
 
-export const validateShippingAddress = async (token, apiPath, address) => {
+export const validateShippingAddress = async (token: string, apiPath: string, address: Address): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/validate_address?country_code=${address.country_code}&province=${address.province}&postal_code=${address.postal_code}`, {
     headers: {
       'Content-Type': 'application/json',
@@ -11,7 +12,7 @@ export const validateShippingAddress = async (token, apiPath, address) => {
   return response;
 };
 
-export const updateShippingAddress = async (token, apiPath, address) => {
+export const updateShippingAddress = async (token: string, apiPath: string, address: Address): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/addresses/shipping`, {
     method: 'POST',
     headers: {

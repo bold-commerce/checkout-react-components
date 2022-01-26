@@ -1,6 +1,7 @@
+import { Customer } from '../types/Customer';
 import fetchApi from '../utils/fetchApi';
 
-export const validateCustomer = async (token, apiPath, customer) => {
+export const validateCustomer = async (token: string, apiPath: string, customer: Customer) => {
   const email = encodeURIComponent(customer.email_address);
 
   const response = await fetchApi(`${apiPath}/validate_email_address?email_address=${email}`, {
@@ -13,7 +14,7 @@ export const validateCustomer = async (token, apiPath, customer) => {
   return response;
 };
 
-export const updateCustomer = async (token, apiPath, customer, method) => {
+export const updateCustomer = async (token: string, apiPath: string, customer: Customer, method: "PUT" | "POST") => {
   const response = await fetchApi(`${apiPath}/customer/guest`, {
     method,
     headers: {
