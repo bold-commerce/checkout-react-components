@@ -1,7 +1,6 @@
-import { OrderError } from '.';
+import { OrderError, FetchResponse } from '.';
 import { Action } from '../types/Action';
 import { ActionPayload } from '../types/ActionPayload';
-import { FetchResponse } from './fetchResponse';
 
 const handleError = (actionType: string, response: FetchResponse) : Action<ActionPayload[]> | null => {
   if (!response.success) {
