@@ -1,9 +1,9 @@
 import React from 'react';
 import { LoadingState } from '../types/enums/LoadingState';
 import { OrderState } from '../types/enums/OrderState';
-import { InitialState } from '../types/InitialState';
+import { CheckoutState } from '../types/CheckoutState';
 
-export const initialState: InitialState = {
+export const initialState: CheckoutState = {
   applicationState: {
     customer: null,
     addresses: {
@@ -68,7 +68,7 @@ export const initialState: InitialState = {
 };
 
 export const CheckoutStore = React.createContext<{
-  state: InitialState | null,
+  state: CheckoutState | null,
   dispatch: React.Dispatch<any>
 }>({
   state: null,

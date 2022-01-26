@@ -1,11 +1,11 @@
 import { ApplicationState } from "./ApplicationState";
-import { Errors } from "./Errors";
+import { CheckoutErrors } from "./CheckoutErrors";
 import { InitialData } from "./InitialData";
 import { LoadingStatus } from "./LoadingStatus";
 import { OrderInfo } from "./OrderInfo";
 import { OrderTotals } from "./OrderTotals";
 
-export interface InitialState {
+export interface CheckoutState {
   applicationState: ApplicationState,
   initialData: InitialData,
   publicOrderId: string | null,
@@ -16,6 +16,6 @@ export interface InitialState {
   isAuthenticated: boolean,
   orderInfo: OrderInfo, 
   orderTotals: OrderTotals, 
-  errors: Errors, 
+  errors: CheckoutErrors, 
   loadingStatus: LoadingStatus
 };
