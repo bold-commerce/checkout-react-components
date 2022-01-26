@@ -1,6 +1,7 @@
-import { fetchApi } from '../utils';
+import { OrderMetaData } from '../types/OrderMetaData';
+import { fetchApi, FetchResponse } from '../utils';
 
-export const deleteOrderMetadata = async (token, apiPath) => {
+export const deleteOrderMetadata = async (token: string, apiPath: string): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/meta_data`, {
     method: 'DELETE',
     headers: {
@@ -12,7 +13,7 @@ export const deleteOrderMetadata = async (token, apiPath) => {
   return response;
 };
 
-export const postOrderMetadata = async (token, apiPath, newOrderMetadata) => {
+export const postOrderMetadata = async (token: string, apiPath: string, newOrderMetadata: OrderMetaData): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/meta_data`, {
     method: 'POST',
     headers: {
@@ -27,7 +28,7 @@ export const postOrderMetadata = async (token, apiPath, newOrderMetadata) => {
   return response;
 };
 
-export const patchOrderMetadata = async (token, apiPath, requestBody) => {
+export const patchOrderMetadata = async (token: string, apiPath: string, orderMetadata: OrderMetaData): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/meta_data`, {
     method: 'PATCH',
     headers: {
@@ -35,7 +36,7 @@ export const patchOrderMetadata = async (token, apiPath, requestBody) => {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(
-      requestBody,
+      orderMetadata,
     ),
   });
 

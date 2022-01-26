@@ -1,6 +1,6 @@
-import { fetchApi } from '../utils';
+import { fetchApi, FetchResponse } from '../utils';
 
-const processOrder = async (token, apiPath) => {
+const processOrder = async (token: string, apiPath: string): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/process_order`, {
     method: 'POST',
     headers: {

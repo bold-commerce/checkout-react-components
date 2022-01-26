@@ -1,6 +1,6 @@
-import { fetchApi } from '../utils';
+import { fetchApi, FetchResponse } from '../utils';
 
-export const validateDiscount = async (token, apiPath, code) => {
+export const validateDiscount = async (token: string, apiPath: string, code: string): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/validate_discount_code?discount_code=${code}`, {
     headers: {
       'Content-Type': 'application/json',
@@ -11,7 +11,7 @@ export const validateDiscount = async (token, apiPath, code) => {
   return response;
 };
 
-export const addDiscount = async (token, apiPath, code) => {
+export const addDiscount = async (token: string, apiPath: string, code: string): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/discounts`, {
     method: 'POST',
     headers: {
@@ -26,7 +26,7 @@ export const addDiscount = async (token, apiPath, code) => {
   return response;
 };
 
-export const removeDiscount = async (token, apiPath, code) => {
+export const removeDiscount = async (token: string, apiPath: string, code: string): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/discounts`, {
     method: 'DELETE',
     headers: {

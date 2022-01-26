@@ -1,6 +1,6 @@
-import { fetchApi } from '../utils';
+import { fetchApi, FetchResponse } from '../utils';
 
-const fetchTaxes = async (token, apiPath) => {
+const fetchTaxes = async (token: string, apiPath: string): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/taxes`, {
     method: 'POST',
     headers: {
