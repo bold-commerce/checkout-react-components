@@ -1,8 +1,5 @@
-import { Action } from "../../types/Action";
-import { ApplicationState } from "../../types/ApplicationState";
-import { CheckoutState } from "../../types/CheckoutState";
-import { ActionType } from "../../types/enums/ActionType";
-import { OrderTotals } from "../../types/OrderTotals";
+import { Action, ApplicationState, CheckoutState, OrderTotals } from "../../types";
+import { ActionType } from "../../types/enums";
 
 export const calculateTotals = (applicationState: ApplicationState): OrderTotals => {
   const lineItems = applicationState.line_items;

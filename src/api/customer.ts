@@ -1,4 +1,4 @@
-import { Customer } from '../types/Customer';
+import { Customer } from '../types';
 import fetchApi from '../utils/fetchApi';
 
 export const validateCustomer = async (token: string, apiPath: string, customer: Customer) => {

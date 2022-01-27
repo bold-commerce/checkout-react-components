@@ -1,7 +1,5 @@
-import { ActionType } from "../../types/enums/ActionType";
-import { Action } from "../../types/Action";
-import { OrderState } from "../../types/enums/OrderState";
-import { OrderInfo } from "../../types/OrderInfo";
+import { ActionType, OrderState } from "../../types/enums";
+import { Action, OrderInfo } from "../../types";
 
 const orderInfoReducer = (state: OrderInfo, action: Action): OrderInfo => {
   switch (action.type) {

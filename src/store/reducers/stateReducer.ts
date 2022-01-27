@@ -1,6 +1,5 @@
-import { Action } from "../../types/Action";
-import { ApplicationState } from "../../types/ApplicationState";
-import { ActionType } from "../../types/enums/ActionType";
+import { Action, ApplicationState } from "../../types";
+import { ActionType } from "../../types/enums";
 
 const stateReducer = (state: ApplicationState, action: Action): ApplicationState => {
   switch (action.type) {

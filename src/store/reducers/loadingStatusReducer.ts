@@ -1,7 +1,5 @@
-import { ActionType } from "../../types/enums/ActionType";
-import { Action } from "../../types/Action";
-import { LoadingState } from "../../types/enums/LoadingState";
-import { LoadingStatus } from "../../types/LoadingStatus";
+import { ActionType, LoadingState } from "../../types/enums";
+import { Action, LoadingStatus } from "../../types";
 
 const setLoadingState = (state: LoadingStatus, type: string, status: LoadingState): LoadingStatus => {
   const loadingState = {

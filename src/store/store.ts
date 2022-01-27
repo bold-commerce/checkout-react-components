@@ -1,8 +1,6 @@
 import React from 'react';
-import { LoadingState } from '../types/enums/LoadingState';
-import { OrderState } from '../types/enums/OrderState';
-import { CheckoutState } from '../types/CheckoutState';
-import { Action } from '../types/Action';
+import { LoadingState, OrderState } from '../types/enums';
+import { CheckoutState, Action } from '../types';
 
 export const initialState: CheckoutState = {
   applicationState: {

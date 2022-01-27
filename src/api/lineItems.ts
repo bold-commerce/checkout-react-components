@@ -1,4 +1,4 @@
-import { LineItem } from '../types/LineItem';
+import { LineItem } from '../types';
 import { fetchApi, FetchResponse  } from '../utils';
 
 export const addLineItem = async (token: string, apiPath: string, data: LineItem): Promise<FetchResponse> => {

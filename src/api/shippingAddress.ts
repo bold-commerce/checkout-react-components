@@ -1,4 +1,4 @@
-import { Address } from '../types/Address';
+import { Address } from '../types';
 import { fetchApi, FetchResponse } from '../utils';
 
 export const validateShippingAddress = async (token: string, apiPath: string, address: Address): Promise<FetchResponse> => {

@@ -1,6 +1,5 @@
-import { Action } from "../../types/Action";
-import { CheckoutErrors } from "../../types/CheckoutErrors";
-import { ActionType } from "../../types/enums/ActionType";
+import { Action, CheckoutErrors } from "../../types";
+import { ActionType } from "../../types/enums";
 
 const errorsReducer = (state : CheckoutErrors, action: Action): CheckoutErrors => {
   switch (action.type) {
