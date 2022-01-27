@@ -7,7 +7,7 @@ import { CheckoutState } from '../../types/CheckoutState';
 import { Action } from '../../types/Action';
 
 // eslint-disable-next-line import/prefer-default-export
-export const reducer = (state: CheckoutState, action: Action<any>): CheckoutState => {
+export const reducer = (state: CheckoutState, action: Action): CheckoutState => {
   const {
     applicationState, orderInfo, errors, loadingStatus,
   } = state;

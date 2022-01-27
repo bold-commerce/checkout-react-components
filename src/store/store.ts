@@ -3,7 +3,6 @@ import { LoadingState } from '../types/enums/LoadingState';
 import { OrderState } from '../types/enums/OrderState';
 import { CheckoutState } from '../types/CheckoutState';
 import { Action } from '../types/Action';
-import { ActionPayload } from '../types/ActionPayload';
 
 export const initialState: CheckoutState = {
   applicationState: {
@@ -71,7 +70,7 @@ export const initialState: CheckoutState = {
 
 export const CheckoutStore = React.createContext<{
   state: CheckoutState,
-  dispatch: React.Dispatch<Action<ActionPayload[]>>,
+  dispatch: React.Dispatch<Action>,
   onError: Function
 }>({
   state: initialState,

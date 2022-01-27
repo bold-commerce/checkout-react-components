@@ -1,5 +1,5 @@
-export interface Action<T> {
+export type Action = {
   type: string,
-  payload: T,
+  payload: any,
   error?: Error
 }
