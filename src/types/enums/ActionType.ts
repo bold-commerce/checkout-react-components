@@ -48,6 +48,6 @@ export enum ActionType {
   Checkout_OrderMetadata_Setting = 'checkout/orderMetadata/setting',
   Checkout_OrderMetadata_Set = 'checkout/orderMetadata/set',
 
-  Checkout_Init = 'checkout_init',
-  Checkout_Update = 'checkout_update'
+  Checkout_Init = 'checkout/init',
+  Checkout_Update = 'checkout/update'
 }
