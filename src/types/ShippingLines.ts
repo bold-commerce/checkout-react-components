@@ -1,5 +1,5 @@
 export interface ShippingLines {
-  id: number,
+  id: string,
   amount: number,
   description: string
 };

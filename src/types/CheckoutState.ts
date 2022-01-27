@@ -9,7 +9,7 @@ export interface CheckoutState {
   applicationState: ApplicationState,
   initialData: InitialData,
   publicOrderId: string | null,
-  token: string | null,
+  token: string,
   storeIdentifier: string,
   apiBase: string,
   apiPath: string,

@@ -2,6 +2,8 @@ import React from 'react';
 import { LoadingState } from '../types/enums/LoadingState';
 import { OrderState } from '../types/enums/OrderState';
 import { CheckoutState } from '../types/CheckoutState';
+import { Action } from '../types/Action';
+import { ActionPayload } from '../types/ActionPayload';
 
 export const initialState: CheckoutState = {
   applicationState: {
@@ -24,7 +26,7 @@ export const initialState: CheckoutState = {
     supported_languages: []
   },
   publicOrderId: null,
-  token: null,
+  token: '',
   storeIdentifier: '',
   apiBase: 'https://api.boldcommerce.com/checkout/storefront',
   apiPath: '',
@@ -68,9 +70,11 @@ export const initialState: CheckoutState = {
 };
 
 export const CheckoutStore = React.createContext<{
-  state: CheckoutState | null,
-  dispatch: React.Dispatch<any>
+  state: CheckoutState,
+  dispatch: React.Dispatch<Action<ActionPayload[]>>,
+  onError: Function
 }>({
-  state: null,
-  dispatch: () => null
+  state: initialState,
+  dispatch: () => null,
+  onError: () => null
 });

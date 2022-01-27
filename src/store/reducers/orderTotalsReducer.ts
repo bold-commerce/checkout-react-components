@@ -9,7 +9,7 @@ export const calculateTotals = (applicationState: ApplicationState): OrderTotals
   const payments = applicationState?.payments;
   const subTotal = lineItems.reduce((acc, curr) => acc + curr.product_data.total_price, 0);
   const totalItems = lineItems.reduce((acc, item) => acc + item?.product_data?.quantity, 0);
-  const shippingTotal = applicationState?.shipping?.selected_shipping_line?.amount ?? 0;
+  const shippingTotal = applicationState?.shipping?.selected_shipping?.amount ?? 0;
   const excludedTaxes = taxes.reduce((acc, curr) => (!curr.is_included ? acc + curr.value : acc), 0);
   const discountTotal = applicationState?.discounts[0]?.value ?? 0;
   const totalPayments = payments.reduce((prevVal, currVal) => (prevVal + currVal.amount), 0) || 0;

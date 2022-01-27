@@ -3,7 +3,7 @@ import { ShippingLines } from "./ShippingLines";
 import { Tax } from "./Tax";
 
 export interface Shipping {
-  selected_shipping_line: ShippingLines | null, 
+  selected_shipping: ShippingLines | null, 
   available_shipping_lines: ShippingLines[], 
   taxes: Tax[],
   discounts: Discount[]
