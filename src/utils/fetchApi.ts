@@ -1,5 +1,5 @@
 import FetchError from './fetchError';
-import FetchResponse from './fetchResponse';
+import { FetchResponse } from '../types';
 
 const fetchApi = async (url: string, options: Object) : Promise<FetchResponse> => {
   try {

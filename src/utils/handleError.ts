@@ -1,6 +1,5 @@
 import OrderError from './orderError';
-import FetchResponse from './fetchResponse'
-import ErrorResponse from './errorResponse';
+import { ErrorResponse, FetchResponse } from '../types';
 import { ActionErrorType } from '../types/enums';
 
 const handleError = (actionType: ActionErrorType, response: FetchResponse) : ErrorResponse | null => {
