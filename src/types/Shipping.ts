@@ -1,10 +1,10 @@
 import { Discount } from "./Discount";
-import { ShippingLines } from "./ShippingLines";
+import { ShippingLine as ShippingLine } from "./ShippingLine";
 import { Tax } from "./Tax";
 
 export interface Shipping {
-  selected_shipping: ShippingLines | null, 
-  available_shipping_lines: ShippingLines[], 
+  selected_shipping: ShippingLine | null, 
+  available_shipping_lines: ShippingLine[], 
   taxes: Tax[],
   discounts: Discount[]
 };

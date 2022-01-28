@@ -21,6 +21,6 @@ export { Payment } from './Payment';
 export { ProductData } from './ProductData';
 export { ProvinceInfo } from './ProvinceInfo';
 export { Shipping } from './Shipping';
-export { ShippingLines } from './ShippingLines';
+export { ShippingLine as ShippingLines } from './ShippingLine';
 export { SupportedLanguages } from './SupportedLanguages';
 export { Tax } from './Tax';
