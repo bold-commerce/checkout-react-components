@@ -9,4 +9,5 @@ export enum ActionErrorType {
   Checkout_Order_SetErrors = 'checkout/order/setErrors',
   Checkout_Discount_SetErrors = 'checkout/discount/setErrors',
   Checkout_OrderMetadata_SetErrors = 'checkout/orderMetadata/setErrors',
+  Checkout_Taxes_SetErrors = 'checkout/taxes/setErrors',
 }
