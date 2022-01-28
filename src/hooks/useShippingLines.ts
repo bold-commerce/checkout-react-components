@@ -3,10 +3,16 @@ import { fetchShippingLines, setShippingLine } from '../api';
 import { CheckoutStore } from '../store';
 import { CheckoutError } from '../types';
 import { ActionType, ActionErrorType, LoadingState } from '../types/enums';
+import { ShippingLine } from '../types/ShippingLine';
 import { handleError, OrderError } from '../utils';
 
 const useShippingLines = () : {
-  data: any, 
+  data: {
+    shippingLines: ShippingLine[],
+    selectedShippingAmount: number,
+    selectedShippingDescription: string,
+    selectedShippingLineIndex: number,
+  }, 
   errors: CheckoutError[] | null,
   loadingStatus: LoadingState,
   updateShippingLine: (index: number) => Promise<void>,
@@ -14,12 +20,12 @@ const useShippingLines = () : {
 } => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
   const { token, apiPath, applicationState } = state;
-  const shippingLines = applicationState.shipping?.available_shipping_lines;
+  const shippingLines = applicationState.shipping?.available_shipping_lines ?? [];
   const selectedCountryCode = applicationState?.addresses?.shipping?.country_code;
   const shippingLinesLoadingStatus = state.loadingStatus.shippingLines;
   const selectedShippingLineIndex = parseInt(applicationState.shipping?.selected_shipping?.id ?? "0", 10);
-  const selectedShippingAmount = applicationState.shipping?.selected_shipping?.amount;
-  const selectedShippingDescription = applicationState.shipping?.selected_shipping?.description;
+  const selectedShippingAmount = applicationState.shipping?.selected_shipping?.amount ?? 0;
+  const selectedShippingDescription = applicationState.shipping?.selected_shipping?.description ?? '';
   const shippingLineErrors = state.errors.shippingLines;
   const memoizedShippingLines = useMemo(() => shippingLines, [JSON.stringify(shippingLines)]);
   const memoizedShippingLineErrors = useMemo(() => shippingLineErrors, [JSON.stringify(shippingLineErrors)]);

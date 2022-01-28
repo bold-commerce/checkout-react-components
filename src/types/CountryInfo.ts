@@ -6,5 +6,5 @@ export interface CountryInfo {
   province_label: string,
   provinces: ProvinceInfo[],
   show_postal_code: boolean,
-  show_provinces: boolean
+  show_province: boolean
 };
