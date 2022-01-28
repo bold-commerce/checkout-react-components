@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import {
   initialState, reducer, CheckoutStore, calculateTotals,
 } from '../../store';
+import { CheckoutState, ApplicationState, InitialData } from '../../types';
+import { OrderState } from '../../types/enums';
 
 const CheckoutProvider = ({
   applicationState,
@@ -14,14 +16,23 @@ const CheckoutProvider = ({
   children,
   apiBase = 'https://api.boldcommerce.com/checkout/storefront',
   onError,
+}: {
+  applicationState: ApplicationState,
+  initialData: InitialData,
+  publicOrderId: string | null,
+  token: string,
+  storeIdentifier: string,
+  children: any, //TODO
+  apiBase: string,
+  onError: Function
 }) => {
   const apiPath = `${apiBase}/${storeIdentifier}/${publicOrderId}`;
   const orderTotals = calculateTotals(applicationState);
-  const currentState = {
+  const currentState: CheckoutState = {
     ...initialState,
     applicationState,
     initialData,
-    isAuthenticated: applicationState?.customer?.platform_id && true,
+    isAuthenticated: applicationState?.customer?.platform_id ? true : false,
     publicOrderId,
     token,
     storeIdentifier,
@@ -30,7 +41,7 @@ const CheckoutProvider = ({
     orderTotals,
     orderInfo: {
       ...initialState.orderInfo,
-      orderStatus: orderTotals.remainingBalance === 0 ? 'completed' : 'pending',
+      orderStatus: orderTotals.remainingBalance === 0 ? OrderState.completed : OrderState.pending,
     },
   };
 

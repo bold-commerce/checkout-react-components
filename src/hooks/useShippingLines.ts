@@ -1,36 +1,44 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { fetchShippingLines, setShippingLine } from '../api';
 import { CheckoutStore } from '../store';
+import { CheckoutError } from '../types';
+import { ActionType, ActionErrorType, LoadingState } from '../types/enums';
 import { handleError, OrderError } from '../utils';
 
-const useShippingLines = () => {
+const useShippingLines = () : {
+  data: any, 
+  errors: CheckoutError[] | null,
+  loadingStatus: LoadingState,
+  updateShippingLine: (index: number) => Promise<void>,
+  getShippingLines: () => Promise<void>
+} => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
   const { token, apiPath, applicationState } = state;
-  const shippingLines = applicationState.shipping.available_shipping_lines;
+  const shippingLines = applicationState.shipping?.available_shipping_lines;
   const selectedCountryCode = applicationState?.addresses?.shipping?.country_code;
   const shippingLinesLoadingStatus = state.loadingStatus.shippingLines;
-  const selectedShippingLineIndex = parseInt(applicationState.shipping?.selected_shipping?.id ?? 0, 10);
+  const selectedShippingLineIndex = parseInt(applicationState.shipping?.selected_shipping?.id ?? "0", 10);
   const selectedShippingAmount = applicationState.shipping?.selected_shipping?.amount;
   const selectedShippingDescription = applicationState.shipping?.selected_shipping?.description;
   const shippingLineErrors = state.errors.shippingLines;
   const memoizedShippingLines = useMemo(() => shippingLines, [JSON.stringify(shippingLines)]);
   const memoizedShippingLineErrors = useMemo(() => shippingLineErrors, [JSON.stringify(shippingLineErrors)]);
 
-  const updateShippingLine = useCallback(async (index) => {
+  const updateShippingLine = useCallback(async (index): Promise<void> => {
     dispatch({
-      type: 'checkout/shippingLines/setting',
+      type: ActionType.Checkout_ShippingLines_Setting,
     });
 
     try {
       const response = await setShippingLine(token, apiPath, index);
-      const error = handleError('shippingLines', response);
+      const error = handleError(ActionErrorType.Checkout_ShippingLines_SetErrors, response);
       if (error) {
         if (onError) {
           onError(error.error);
         }
 
         dispatch({
-          type: `checkout/${error.type}/setErrors`,
+          type: error.type, 
           payload: error.payload,
         });
 
@@ -39,10 +47,10 @@ const useShippingLines = () => {
 
       if (response.data && response.data.application_state) {
         dispatch({
-          type: 'checkout/shippingLines/set',
+          type: ActionType.Checkout_ShippingLines_Set,
         });
         return dispatch({
-          type: 'checkout/update',
+          type: ActionType.Checkout_Update,
           payload: response.data.application_state,
         });
       }
@@ -52,10 +60,10 @@ const useShippingLines = () => {
       }
 
       dispatch({
-        type: 'checkout/order/setErrors',
+        type: ActionErrorType.Checkout_Order_SetErrors ,
         payload: [{
           field: 'order',
-          message: 'An error with your order has occured, please try again',
+          message: 'An error with your order has occurred, please try again',
         }],
       });
 
@@ -63,29 +71,29 @@ const useShippingLines = () => {
     }
 
     return dispatch({
-      type: 'checkout/shippingLines/set',
+      type: ActionType.Checkout_ShippingLines_Set,
     });
   }, [onError]);
 
-  const getShippingLines = useCallback(async () => {
+  const getShippingLines = useCallback(async (): Promise<void> => {
     // Don't get shipping lines if shipping address is not set
     if (!selectedCountryCode) {
       return Promise.resolve();
     }
 
     dispatch({
-      type: 'checkout/shippingLines/fetching',
+      type: ActionType.Checkout_ShippingLines_Fetching,
     });
     try {
       const response = await fetchShippingLines(token, apiPath);
-      const error = handleError('shippingLines', response);
+      const error = handleError(ActionErrorType.Checkout_ShippingLines_SetErrors, response);
       if (error) {
         if (onError) {
           onError(error.error);
         }
 
         dispatch({
-          type: `checkout/${error.type}/setErrors`,
+          type: error.type,
           payload: error.payload,
         });
 
@@ -94,10 +102,10 @@ const useShippingLines = () => {
 
       if (response.data && response.data.application_state) {
         dispatch({
-          type: 'checkout/shippingLines/fetched',
+          type: ActionType.Checkout_ShippingLines_Fetched,
         });
         return dispatch({
-          type: 'checkout/update',
+          type: ActionType.Checkout_Update,
           payload: response.data.application_state,
         });
       }
@@ -107,10 +115,10 @@ const useShippingLines = () => {
       }
 
       dispatch({
-        type: 'checkout/order/setErrors',
+        type: ActionErrorType.Checkout_Order_SetErrors,
         payload: [{
           field: 'order',
-          message: 'An error with your order has occured, please try again',
+          message: 'An error with your order has occurred, please try again',
         }],
       });
 
@@ -118,7 +126,7 @@ const useShippingLines = () => {
     }
 
     return dispatch({
-      type: 'checkout/shippingLines/fetched',
+      type: ActionType.Checkout_ShippingLines_Fetched,
     });
   }, [selectedCountryCode, onError]);
 
