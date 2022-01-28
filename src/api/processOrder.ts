@@ -1,4 +1,5 @@
-import { fetchApi, FetchResponse } from '../utils';
+import { FetchResponse } from '../types';
+import { fetchApi } from '../utils';
 
 const processOrder = async (token: string, apiPath: string): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/process_order`, {

@@ -1,5 +1,5 @@
-import { OrderMetaData } from '../types';
-import { fetchApi, FetchResponse } from '../utils';
+import { OrderMetaData, FetchResponse } from '../types';
+import { fetchApi } from '../utils';
 
 export const deleteOrderMetadata = async (token: string, apiPath: string): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/meta_data`, {

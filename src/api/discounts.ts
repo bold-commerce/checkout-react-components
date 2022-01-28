@@ -1,4 +1,5 @@
-import { fetchApi, FetchResponse } from '../utils';
+import { FetchResponse } from '../types';
+import { fetchApi} from '../utils';
 
 export const validateDiscount = async (token: string, apiPath: string, code: string): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/validate_discount_code?discount_code=${code}`, {

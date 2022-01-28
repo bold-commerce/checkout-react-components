@@ -1,5 +1,5 @@
-import { Address } from '../types';
-import { fetchApi, FetchResponse } from '../utils';
+import { Address, FetchResponse } from '../types';
+import { fetchApi } from '../utils';
 
 export const validateBillingAddress = async (token: string, apiPath: string, address: Address): Promise<FetchResponse> => {
   const response = await fetchApi(`${apiPath}/validate_address?country_code=${address.country_code}&province=${address.province}&postal_code=${address.postal_code}`, {
