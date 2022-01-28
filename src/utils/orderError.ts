@@ -1,4 +1,4 @@
-import { PromiseError } from '.';
+import PromiseError from './promiseError';
 
 export default class OrderError extends PromiseError {
   constructor() {

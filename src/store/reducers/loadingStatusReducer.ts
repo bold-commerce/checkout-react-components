@@ -1,4 +1,4 @@
-import { ActionType, LoadingState } from "../../types/enums";
+import { ActionType, ActionErrorType, LoadingState } from "../../types/enums";
 import { Action, LoadingStatus } from "../../types";
 
 const setLoadingState = (state: LoadingStatus, type: string, status: LoadingState): LoadingStatus => {
@@ -34,7 +34,7 @@ const loadingStatusReducer = (state: LoadingStatus, action: Action): LoadingStat
       return setLoadingState(state, 'customer', LoadingState.setting);
     case ActionType.Checkout_Customer_Set:
       return setLoadingState(state, 'customer', LoadingState.fulfilled);
-    case ActionType.Checkout_Customer_SetErrors:
+    case ActionErrorType.Checkout_Customer_SetErrors:
       return setLoadingState(state, 'customer', LoadingState.fulfilled);
 
     // Shipping Address Actions
@@ -44,7 +44,7 @@ const loadingStatusReducer = (state: LoadingStatus, action: Action): LoadingStat
       return setLoadingState(state, 'shippingAddress', LoadingState.setting);
     case ActionType.Checkout_ShippingAddress_Set:
       return setLoadingState(state, 'shippingAddress', LoadingState.fulfilled);
-    case ActionType.Checkout_ShippingAddress_SetErrors:
+    case ActionErrorType.Checkout_ShippingAddress_SetErrors:
       return setLoadingState(state, 'shippingAddress', LoadingState.fulfilled);
 
     // Billing Address Actions
@@ -54,7 +54,7 @@ const loadingStatusReducer = (state: LoadingStatus, action: Action): LoadingStat
       return setLoadingState(state, 'billingAddress', LoadingState.setting);
     case ActionType.Checkout_BillingAddress_Set:
       return setLoadingState(state, 'billingAddress', LoadingState.fulfilled);
-    case ActionType.Checkout_BillingAddress_SetErrors:
+    case ActionErrorType.Checkout_BillingAddress_SetErrors:
       return setLoadingState(state, 'billingAddress', LoadingState.fulfilled);
 
     // Shipping Line Actions
@@ -74,11 +74,11 @@ const loadingStatusReducer = (state: LoadingStatus, action: Action): LoadingStat
       return setLoadingState(state, 'paymentIframe', LoadingState.fulfilled);
     case ActionType.Checkout_PaymentIframe_Authorizing:
       return setLoadingState(state, 'paymentIframe', LoadingState.setting);
-    case ActionType.Checkout_PaymentIframe_SetPaymentIframeErrors:
+    case ActionErrorType.Checkout_PaymentIframe_SetPaymentIframeErrors:
       return setLoadingState(state, 'paymentIframe', LoadingState.fulfilled);
 
     // Order Actions
-    case ActionType.Checkout_Order_SetErrors:
+    case ActionErrorType.Checkout_Order_SetErrors:
       return clearLoadingState();
 
     // Line Item Actions
@@ -104,7 +104,7 @@ const loadingStatusReducer = (state: LoadingStatus, action: Action): LoadingStat
       return setLoadingState(state, 'discount', LoadingState.setting);
     case ActionType.Checkout_Discount_Removed:
       return setLoadingState(state, 'discount', LoadingState.fulfilled);
-    case ActionType.Checkout_Discount_SetErrors:
+    case ActionErrorType.Checkout_Discount_SetErrors:
       return setLoadingState(state, 'discount', LoadingState.fulfilled);
 
     // Order Metadata Actions

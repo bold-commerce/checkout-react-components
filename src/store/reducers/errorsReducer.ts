@@ -1,10 +1,10 @@
 import { Action, CheckoutErrors } from "../../types";
-import { ActionType } from "../../types/enums";
+import { ActionType, ActionErrorType } from "../../types/enums";
 
 const errorsReducer = (state : CheckoutErrors, action: Action): CheckoutErrors => {
   switch (action.type) {
     // Customer Actions
-    case ActionType.Checkout_Customer_SetErrors:
+    case ActionErrorType.Checkout_Customer_SetErrors:
       return {
         ...state,
         customer: action.payload,
@@ -17,7 +17,7 @@ const errorsReducer = (state : CheckoutErrors, action: Action): CheckoutErrors =
       };
 
     // Shipping Address Actions
-    case ActionType.Checkout_ShippingAddress_SetErrors:
+    case ActionErrorType.Checkout_ShippingAddress_SetErrors:
       return {
         ...state,
         shippingAddress: action.payload,
@@ -30,7 +30,7 @@ const errorsReducer = (state : CheckoutErrors, action: Action): CheckoutErrors =
       };
 
     // Billing Address Actions
-    case ActionType.Checkout_BillingAddress_SetErrors:
+    case ActionErrorType.Checkout_BillingAddress_SetErrors:
       return {
         ...state,
         billingAddress: action.payload,
@@ -43,7 +43,7 @@ const errorsReducer = (state : CheckoutErrors, action: Action): CheckoutErrors =
       };
 
     // Shipping Line Actions
-    case ActionType.Checkout_ShippingLines_SetErrors:
+    case ActionErrorType.Checkout_ShippingLines_SetErrors:
       return {
         ...state,
         shippingLines: action.payload,
@@ -56,7 +56,7 @@ const errorsReducer = (state : CheckoutErrors, action: Action): CheckoutErrors =
       };
 
     // Line Item Actions
-    case ActionType.Checkout_LineItem_SetErrors:
+    case ActionErrorType.Checkout_LineItem_SetErrors:
       return {
         ...state,
         lineItems: action.payload,
@@ -69,14 +69,14 @@ const errorsReducer = (state : CheckoutErrors, action: Action): CheckoutErrors =
       };
 
     // Payment Iframe Actions
-    case ActionType.Checkout_PaymentIframe_SetPaymentIframeErrors:
+    case ActionErrorType.Checkout_PaymentIframe_SetPaymentIframeErrors:
       return {
         ...state,
         paymentIframe: action.payload,
       };
 
     // Order Actions
-    case ActionType.Checkout_Order_SetErrors:
+    case ActionErrorType.Checkout_Order_SetErrors:
       return {
         ...state,
         order: action.payload,
@@ -93,7 +93,7 @@ const errorsReducer = (state : CheckoutErrors, action: Action): CheckoutErrors =
       };
 
     // Discount Actions
-    case ActionType.Checkout_Discount_SetErrors:
+    case ActionErrorType.Checkout_Discount_SetErrors:
       return {
         ...state,
         discount: action.payload,
@@ -112,7 +112,7 @@ const errorsReducer = (state : CheckoutErrors, action: Action): CheckoutErrors =
       };
 
     // Order Metadata Actions
-    case ActionType.Checkout_OrderMetadata_SetErrors:
+    case ActionErrorType.Checkout_OrderMetadata_SetErrors:
       return {
         ...state,
         orderMetadata: action.payload,

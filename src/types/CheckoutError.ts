@@ -1,7 +1,7 @@
 export interface CheckoutError {
   message: string,
-  type: string,
+  type?: string,
   field: string,
-  severity: string,
-  sub_type: string
+  severity?: string,
+  sub_type?: string
 };

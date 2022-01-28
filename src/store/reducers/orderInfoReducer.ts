@@ -1,4 +1,4 @@
-import { ActionType, OrderState } from "../../types/enums";
+import { ActionType, ActionErrorType, OrderState } from "../../types/enums";
 import { Action, OrderInfo } from "../../types";
 
 const orderInfoReducer = (state: OrderInfo, action: Action): OrderInfo => {
@@ -18,12 +18,12 @@ const orderInfoReducer = (state: OrderInfo, action: Action): OrderInfo => {
         ...state,
         orderStatus: OrderState.authorizing,
       };
-    case ActionType.Checkout_PaymentIframe_SetPaymentIframeErrors:
+    case ActionErrorType.Checkout_PaymentIframe_SetPaymentIframeErrors:
       return {
         ...state,
         orderStatus: OrderState.error,
       };
-    case ActionType.Checkout_Order_SetErrors:
+    case ActionErrorType.Checkout_Order_SetErrors:
       return {
         ...state,
         orderStatus: OrderState.error,

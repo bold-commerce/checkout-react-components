@@ -1,20 +1,8 @@
 import { ApplicationState } from "./ApplicationState";
 import { CheckoutError } from "./CheckoutError";
-import { ActionType } from "./enums/ActionType";
+import { ActionType, ActionErrorType } from "./enums";
 
 export type Action = 
-| { 
-  type: ActionType.Checkout_Customer_SetErrors |
-   ActionType.Checkout_ShippingAddress_SetErrors |
-   ActionType.Checkout_BillingAddress_SetErrors |
-   ActionType.Checkout_ShippingLines_SetErrors |
-   ActionType.Checkout_LineItem_SetErrors |
-   ActionType.Checkout_PaymentIframe_SetPaymentIframeErrors |
-   ActionType.Checkout_Discount_SetErrors |
-   ActionType.Checkout_Order_SetErrors |
-   ActionType.Checkout_OrderMetadata_SetErrors
-  payload: CheckoutError
-} 
 | { 
   type: ActionType.Checkout_Customer_Setting |
    ActionType.Checkout_Customer_Set |
@@ -55,3 +43,7 @@ export type Action =
   type: ActionType.Checkout_BillingAddress_SetBillingSameAsShipping,
   payload: boolean
 }
+| { 
+  type: ActionErrorType
+  payload: CheckoutError[]
+} 
