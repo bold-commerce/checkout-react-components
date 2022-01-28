@@ -1,7 +1,7 @@
 import { FetchError } from "../utils";
 
-export interface FetchResponse {
+export interface FetchResponse<T> {
   success: boolean,
-  data?: any,
+  data?: T,
   error?: FetchError
 }

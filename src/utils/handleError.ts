@@ -2,7 +2,7 @@ import OrderError from './orderError';
 import { ErrorResponse, FetchResponse } from '../types';
 import { ActionErrorType } from '../types/enums';
 
-const handleError = (actionType: ActionErrorType, response: FetchResponse) : ErrorResponse | null => {
+const handleError = (actionType: ActionErrorType, response: FetchResponse<any>) : ErrorResponse | null => {
   if (!response.success) {
     if (response.error?.body?.errors && response.error.status !== 500) {
       if (response.error.status === 401) {

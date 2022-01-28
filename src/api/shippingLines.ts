@@ -1,7 +1,7 @@
-import { FetchResponse } from '../types';
+import { ApplicationState, FetchResponse, ShippingLines } from '../types';
 import { fetchApi } from '../utils';
 
-export const setShippingLine = async (token: string, apiPath: string, index: number): Promise<FetchResponse> => {
+export const setShippingLine = async (token: string, apiPath: string, index: number): Promise<FetchResponse<{application_state: ApplicationState, selected_shipping: ShippingLines}>> => {
   const response = await fetchApi(`${apiPath}/shipping_lines`, {
     method: 'POST',
     headers: {
@@ -16,7 +16,7 @@ export const setShippingLine = async (token: string, apiPath: string, index: num
   return response;
 };
 
-export const fetchShippingLines = async (token: string, apiPath: string): Promise<FetchResponse> => {
+export const fetchShippingLines = async (token: string, apiPath: string): Promise<FetchResponse<{application_state: ApplicationState, selected_shipping: ShippingLines}>> => {
   const response = await fetchApi(`${apiPath}/shipping_lines`, {
     headers: {
       'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
-import { FetchResponse } from '../types';
+import { ApplicationState, FetchResponse, Tax } from '../types';
 import { fetchApi } from '../utils';
 
-const fetchTaxes = async (token: string, apiPath: string): Promise<FetchResponse> => {
+const fetchTaxes = async (token: string, apiPath: string): Promise<FetchResponse<{application_state: ApplicationState, taxes: Tax[]}>> => {
   const response = await fetchApi(`${apiPath}/taxes`, {
     method: 'POST',
     headers: {

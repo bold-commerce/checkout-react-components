@@ -1,7 +1,7 @@
-import { LineItem, FetchResponse } from '../types';
+import { LineItem, FetchResponse, ApplicationState } from '../types';
 import { fetchApi  } from '../utils';
 
-export const addLineItem = async (token: string, apiPath: string, data: LineItem): Promise<FetchResponse> => {
+export const addLineItem = async (token: string, apiPath: string, data: LineItem): Promise<FetchResponse<{application_state: ApplicationState, line_item: LineItem}>> => { 
   const response = await fetchApi(`${apiPath}/items`, {
     method: 'POST',
     headers: {
@@ -14,7 +14,7 @@ export const addLineItem = async (token: string, apiPath: string, data: LineItem
   return response;
 };
 
-export const updateLineItem = async (token: string, apiPath: string, data: LineItem): Promise<FetchResponse> => {
+export const updateLineItem = async (token: string, apiPath: string, data: LineItem): Promise<FetchResponse<{application_state: ApplicationState, line_item: LineItem}>> => {
   const response = await fetchApi(`${apiPath}/items`, {
     method: 'PUT',
     headers: {
@@ -27,7 +27,7 @@ export const updateLineItem = async (token: string, apiPath: string, data: LineI
   return response;
 };
 
-export const removeLineItem = async (token: string, apiPath: string, lineItemKey: string): Promise<FetchResponse> => {
+export const removeLineItem = async (token: string, apiPath: string, lineItemKey: string): Promise<FetchResponse<{application_state: ApplicationState}>> => {
   const response = await fetchApi(`${apiPath}/items`, {
     method: 'DELETE',
     headers: {

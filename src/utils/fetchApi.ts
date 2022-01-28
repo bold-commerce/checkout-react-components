@@ -1,7 +1,7 @@
 import FetchError from './fetchError';
 import { FetchResponse } from '../types';
 
-const fetchApi = async (url: string, options: Object) : Promise<FetchResponse> => {
+const fetchApi = async (url: string, options: Object) : Promise<FetchResponse<any>> => {
   try {
     const response = await fetch(url, {
       mode: 'cors',

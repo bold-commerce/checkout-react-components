@@ -1,7 +1,7 @@
-import { OrderMetaData, FetchResponse } from '../types';
+import { OrderMetaData, FetchResponse, ApplicationState } from '../types';
 import { fetchApi } from '../utils';
 
-export const deleteOrderMetadata = async (token: string, apiPath: string): Promise<FetchResponse> => {
+export const deleteOrderMetadata = async (token: string, apiPath: string): Promise<FetchResponse<{application_state: ApplicationState}>> => {
   const response = await fetchApi(`${apiPath}/meta_data`, {
     method: 'DELETE',
     headers: {
@@ -13,7 +13,7 @@ export const deleteOrderMetadata = async (token: string, apiPath: string): Promi
   return response;
 };
 
-export const postOrderMetadata = async (token: string, apiPath: string, newOrderMetadata: OrderMetaData): Promise<FetchResponse> => {
+export const postOrderMetadata = async (token: string, apiPath: string, newOrderMetadata: OrderMetaData): Promise<FetchResponse<{application_state: ApplicationState, order_meta_data: OrderMetaData}>> => {
   const response = await fetchApi(`${apiPath}/meta_data`, {
     method: 'POST',
     headers: {
@@ -28,7 +28,7 @@ export const postOrderMetadata = async (token: string, apiPath: string, newOrder
   return response;
 };
 
-export const patchOrderMetadata = async (token: string, apiPath: string, orderMetadata: OrderMetaData): Promise<FetchResponse> => {
+export const patchOrderMetadata = async (token: string, apiPath: string, orderMetadata: OrderMetaData): Promise<FetchResponse<{application_state: ApplicationState, order_meta_data: OrderMetaData}>> => {
   const response = await fetchApi(`${apiPath}/meta_data`, {
     method: 'PATCH',
     headers: {

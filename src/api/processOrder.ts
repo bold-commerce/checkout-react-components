@@ -1,7 +1,7 @@
-import { FetchResponse } from '../types';
+import { ApplicationState, FetchResponse } from '../types';
 import { fetchApi } from '../utils';
 
-const processOrder = async (token: string, apiPath: string): Promise<FetchResponse> => {
+const processOrder = async (token: string, apiPath: string): Promise<FetchResponse<{application_state: ApplicationState}>> => {
   const response = await fetchApi(`${apiPath}/process_order`, {
     method: 'POST',
     headers: {
