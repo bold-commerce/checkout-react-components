@@ -4,9 +4,22 @@ import {
 } from 'react';
 import { processOrder } from '../api';
 import { CheckoutStore } from '../store';
+import { CheckoutError } from '../types';
+import { ActionErrorType, ActionType, LoadingState, PigiActionType } from '../types/enums';
 import { handleError, OrderError } from '../utils';
 
-const usePaymentIframe = () => {
+const usePaymentIframe = () : {
+  data: {
+    url: string,
+    height: number
+  },
+  loadingStatus: LoadingState,
+  errors: CheckoutError[] | null,
+  processPaymentIframe: () => Promise<void>,
+  paymentIframeOnLoaded: () => Promise<void>,
+  displayErrorMessage: () => Promise<void>,
+  clearErrorMessage: () => Promise<void>
+} => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
   const [paymentIframeHeight, setPaymentIframeHeight] = useState(0);
   const { token, apiPath } = state;
@@ -15,8 +28,8 @@ const usePaymentIframe = () => {
   const paymentIframeUrl = `${apiPath}/payments/iframe?token=${token}`;
   const memoizedPaymentIframeErrors = useMemo(() => paymentIframeErrors, [JSON.stringify(paymentIframeErrors)]);
 
-  const dispatchIframeAction = async (actionType, payload) => new Promise((resolve, reject) => {
-    const iframeListener = (e) => {
+  const dispatchIframeAction = async (actionType: PigiActionType, payload?: any): Promise<void> => new Promise((resolve, reject) => {
+    const iframeListener = (e: any): void => {
       if (e?.data?.responseType === actionType) {
         if (e?.data?.payload?.success) {
           window.removeEventListener('message', iframeListener);
@@ -28,7 +41,7 @@ const usePaymentIframe = () => {
       }
     };
 
-    const paymentIframe = document.querySelector('[data-bold-pigi-iframe]');
+    const paymentIframe: HTMLIFrameElement | null = document.querySelector('[data-bold-pigi-iframe]');
 
     const payloadData = {
       actionType,
@@ -37,29 +50,29 @@ const usePaymentIframe = () => {
 
     if (paymentIframe) {
       window.addEventListener('message', iframeListener);
-        paymentIframe?.contentWindow.postMessage(payloadData, '*');
+        paymentIframe?.contentWindow?.postMessage(payloadData, '*');
     } else {
       reject();
     }
   });
 
-  const refreshOrder = () => dispatchIframeAction('PIGI_REFRESH_ORDER');
+  const refreshOrder = () => dispatchIframeAction(PigiActionType.PigiRefreshOrder);
 
   const submitOrder = useCallback(async () => {
     dispatch({
-      type: 'checkout/order/processing',
+      type: ActionType.Checkout_Order_Processing,
     });
 
     try {
       const response = await processOrder(token, apiPath);
-      const error = handleError('order', response);
+      const error = handleError(ActionErrorType.Checkout_Order_SetErrors, response);
       if (error) {
         if (onError) {
           onError(error.error);
         }
 
         dispatch({
-          type: `checkout/${error.type}/setErrors`,
+          type: error.type,
           payload: error.payload,
         });
 
@@ -67,19 +80,24 @@ const usePaymentIframe = () => {
       }
 
       dispatch({
-        type: 'checkout/order/processed',
+        type: ActionType.Checkout_Order_Processed,
       });
 
-      return dispatch({
-        type: 'checkout/update',
-        payload: response.data.application_state,
-      });
+      if(response.data?.application_state){
+        return dispatch({
+          type: ActionType.Checkout_Update,
+          payload: response.data.application_state,
+        });
+      } else {
+        return Promise.reject(new OrderError());
+      }
     } catch (e) {
+      const { message } = e as Error;
       dispatch({
-        type: 'checkout/order/setErrors',
+        type: ActionErrorType.Checkout_Order_SetErrors,
         payload: [{
           field: 'order',
-          message: e.message,
+          message: message,
         }],
       });
 
@@ -88,10 +106,10 @@ const usePaymentIframe = () => {
       }
 
       dispatch({
-        type: 'checkout/order/setErrors',
+        type: ActionErrorType.Checkout_Order_SetErrors,
         payload: [{
           field: 'order',
-          message: 'An error with your order has occured, please try again',
+          message: 'An error with your order has occurred, please try again',
         }],
       });
 
@@ -131,7 +149,7 @@ const usePaymentIframe = () => {
 
   const updateLanguage = useCallback((language) => dispatchIframeAction('PIGI_UPDATE_LANGUAGE', { language }));
 
-  const dispayErrorMessage = useCallback((message, subType) => {
+  const displayErrorMessage = useCallback((message, subType) => {
     const payload = {
       error: {
         message,
@@ -223,7 +241,7 @@ const usePaymentIframe = () => {
     errors: memoizedPaymentIframeErrors,
     processPaymentIframe,
     paymentIframeOnLoaded,
-    dispayErrorMessage,
+    displayErrorMessage,
     clearErrorMessage,
     selectPaymentMethod,
     updateLanguage,
