@@ -1,3 +1,4 @@
+import { Address } from ".";
 import { ApplicationState } from "./ApplicationState";
 import { CheckoutError } from "./CheckoutError";
 import { ActionType, ActionErrorType } from "./enums";
@@ -47,3 +48,7 @@ export type Action =
   type: ActionErrorType
   payload: CheckoutError[]
 } 
+| {
+  type: ActionType.Checkout_BillingAddress_Set,
+  payload: Address
+}
