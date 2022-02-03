@@ -4,7 +4,7 @@ import {
 } from 'react';
 import { processOrder } from '../api';
 import { CheckoutStore } from '../store';
-import { CheckoutError } from '../types';
+import { CheckoutError, PaymentMethodPayload } from '../types';
 import { ActionErrorType, ActionType, LoadingState, PigiActionType } from '../types/enums';
 import { handleError, OrderError } from '../utils';
 
@@ -16,12 +16,14 @@ const usePaymentIframe = () : {
   loadingStatus: LoadingState,
   errors: CheckoutError[] | null,
   processPaymentIframe: () => Promise<void>,
-  paymentIframeOnLoaded: () => Promise<void>,
-  displayErrorMessage: () => Promise<void>,
-  clearErrorMessage: () => Promise<void>
+  paymentIframeOnLoaded: () => void,
+  displayErrorMessage: (message: string, subType: string) => Promise<void>,
+  clearErrorMessage: () => Promise<void>,
+  selectPaymentMethod: (payload: PaymentMethodPayload) => Promise<void>,
+  updateLanguage: (language: string) => Promise<void>
 } => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
-  const [paymentIframeHeight, setPaymentIframeHeight] = useState(0);
+  const [paymentIframeHeight, setPaymentIframeHeight] = useState<number>(0);
   const { token, apiPath } = state;
   const paymentIframeLoadingStatus = state.loadingStatus.paymentIframe;
   const paymentIframeErrors = state.errors.paymentIframe;
@@ -29,7 +31,7 @@ const usePaymentIframe = () : {
   const memoizedPaymentIframeErrors = useMemo(() => paymentIframeErrors, [JSON.stringify(paymentIframeErrors)]);
 
   const dispatchIframeAction = async (actionType: PigiActionType, payload?: any): Promise<void> => new Promise((resolve, reject) => {
-    const iframeListener = (e: any): void => {
+    const iframeListener = (e: MessageEvent): void => {
       if (e?.data?.responseType === actionType) {
         if (e?.data?.payload?.success) {
           window.removeEventListener('message', iframeListener);
@@ -56,9 +58,9 @@ const usePaymentIframe = () : {
     }
   });
 
-  const refreshOrder = () => dispatchIframeAction(PigiActionType.PigiRefreshOrder);
+  const refreshOrder = (): Promise<void> => dispatchIframeAction(PigiActionType.PigiRefreshOrder);
 
-  const submitOrder = useCallback(async () => {
+  const submitOrder = useCallback(async (): Promise<void> => {
     dispatch({
       type: ActionType.Checkout_Order_Processing,
     });
@@ -117,14 +119,14 @@ const usePaymentIframe = () : {
     }
   }, [onError]);
 
-  const addPayment = useCallback(async () => {
+  const addPayment = useCallback(async (): Promise<void> => {
     try {
-      await dispatchIframeAction('PIGI_ADD_PAYMENT');
+      await dispatchIframeAction(PigiActionType.PigiAddPayment);
       await submitOrder();
       return Promise.resolve();
     } catch (e) {
       dispatch({
-        type: 'checkout/paymentIframe/setPaymentIframeErrors',
+        type: ActionErrorType.Checkout_PaymentIframe_SetPaymentIframeErrors,
         payload: [{
           field: 'payment',
           message: 'Unprocessable order',
@@ -136,10 +138,10 @@ const usePaymentIframe = () : {
       }
 
       dispatch({
-        type: 'checkout/order/setErrors',
+        type: ActionErrorType.Checkout_Order_SetErrors,
         payload: [{
           field: 'order',
-          message: 'An error with your order has occured, please try again',
+          message: 'An error with your order has occurred, please try again',
         }],
       });
 
@@ -147,9 +149,9 @@ const usePaymentIframe = () : {
     }
   }, [dispatchIframeAction, submitOrder, onError]);
 
-  const updateLanguage = useCallback((language) => dispatchIframeAction('PIGI_UPDATE_LANGUAGE', { language }));
+  const updateLanguage = useCallback((language: string): Promise<void> => dispatchIframeAction(PigiActionType.PigiUpdateLanguage, { language }), []);
 
-  const displayErrorMessage = useCallback((message, subType) => {
+  const displayErrorMessage = useCallback((message: string, subType: string): Promise<void> => {
     const payload = {
       error: {
         message,
@@ -157,23 +159,23 @@ const usePaymentIframe = () : {
       },
     };
 
-    return dispatchIframeAction('PIGI_DISPLAY_ERROR_MESSAGE', payload);
+    return dispatchIframeAction(PigiActionType.PigiDisplayErrorMessage, payload);
   }, [dispatchIframeAction]);
 
-  const clearErrorMessage = useCallback(() => dispatchIframeAction('PIGI_CLEAR_ERROR_MESSAGES'));
+  const clearErrorMessage = useCallback((): Promise<void> => dispatchIframeAction(PigiActionType.PigiClearErrorMessages), []);
 
-  const selectPaymentMethod = useCallback((payload) => {
+  const selectPaymentMethod = useCallback((payload: PaymentMethodPayload): Promise<void> => {
     const payloadData = {
       index: payload.index,
       gatewayName: payload.gatewayName,
     };
 
-    return dispatchIframeAction('PIGI_SELECT_PAYMENT_METHOD', payloadData);
-  });
+    return dispatchIframeAction(PigiActionType.PigiSelectPaymentMethod, payloadData);
+  }, []);
 
-  const processPaymentIframe = useCallback(async () => {
+  const processPaymentIframe = useCallback(async (): Promise<void> => {
     dispatch({
-      type: 'checkout/paymentIframe/authorizing',
+      type: ActionType.Checkout_PaymentIframe_Authorizing,
     });
 
     try {
@@ -183,7 +185,7 @@ const usePaymentIframe = () : {
       return Promise.resolve();
     } catch (e) {
       dispatch({
-        type: 'checkout/paymentIframe/setPaymentIframeErrors',
+        type: ActionErrorType.Checkout_PaymentIframe_SetPaymentIframeErrors,
         payload: [{
           field: 'payment',
           message: 'Payment iframe does not exist',
@@ -195,10 +197,10 @@ const usePaymentIframe = () : {
       }
 
       dispatch({
-        type: 'checkout/order/setErrors',
+        type: ActionErrorType.Checkout_Order_SetErrors,
         payload: [{
           field: 'order',
-          message: 'An error with your order has occured, please try again',
+          message: 'An error with your order has occurred, please try again',
         }],
       });
 
@@ -206,13 +208,13 @@ const usePaymentIframe = () : {
     }
   }, [onError, refreshOrder, addPayment]);
 
-  const paymentIframeOnLoaded = () => {
+  const paymentIframeOnLoaded = (): void => {
     dispatch({
-      type: 'checkout/paymentIframe/fetched',
+      type: ActionType.Checkout_PaymentIframe_Fetched,
     });
   };
 
-  const heightChangeListener = (event) => {
+  const heightChangeListener = (event: MessageEvent): void => {
     const height = event?.data?.height || event?.data?.payload?.height;
 
     if (height) {
@@ -220,13 +222,13 @@ const usePaymentIframe = () : {
     }
   };
 
-  useEffect(() => {
+  useEffect((): void => {
     dispatch({
-      type: 'checkout/paymentIframe/fetching',
+      type: ActionType.Checkout_PaymentIframe_Fetching,
     });
   }, []);
 
-  useEffect(() => {
+  useEffect((): (() => void) => {
     window.addEventListener('message', heightChangeListener);
 
     return () => window.removeEventListener('message', heightChangeListener);

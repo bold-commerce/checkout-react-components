@@ -30,7 +30,7 @@ const useShippingLines = () : {
   const memoizedShippingLines = useMemo(() => shippingLines, [JSON.stringify(shippingLines)]);
   const memoizedShippingLineErrors = useMemo(() => shippingLineErrors, [JSON.stringify(shippingLineErrors)]);
 
-  const updateShippingLine = useCallback(async (index): Promise<void> => {
+  const updateShippingLine = useCallback(async (index: number): Promise<void> => {
     dispatch({
       type: ActionType.Checkout_ShippingLines_Setting,
     });

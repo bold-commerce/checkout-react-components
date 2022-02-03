@@ -26,7 +26,7 @@ const emptyAddress: Address = {
  * @param {string[]} requiredAddressFields
  */
 const useShippingAddress = (requiredAddressFields: (keyof Address)[]): {
-  data: any,
+  data: Address | null,
   errors: CheckoutError[] | null,
   loadingStatus: LoadingState,
   submitShippingAddress: (shippingAddressData: Address) => Promise<void>
@@ -43,7 +43,7 @@ const useShippingAddress = (requiredAddressFields: (keyof Address)[]): {
   const memoizedShippingAddressErrors = useMemo(() => shippingAddressErrors, [JSON.stringify(shippingAddressErrors)]);
   const memoizedCountryInfo = useMemo(() => countryInfo, []); // country info never changes, so no need to update it
 
-  const submitShippingAddress = useCallback(async (shippingAddressData: Address) => {
+  const submitShippingAddress = useCallback(async (shippingAddressData: Address): Promise<void> => {
     if (requiredAddressFields) {
       const requiredAddressFieldErrors = requiredAddressFieldValidation(shippingAddressData, memoizedRequiredAddressFields);
       if (requiredAddressFieldErrors) {
