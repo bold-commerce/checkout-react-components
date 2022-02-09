@@ -90,6 +90,11 @@ const errorsReducer = (state, action) => {
         ...state,
         order: action.payload,
       };
+    case 'checkout/order/clearErrors':
+      return {
+        ...state,
+        order: null,
+      };
     case 'checkout/order/set':
       return {
         ...state,
