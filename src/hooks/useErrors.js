@@ -5,7 +5,7 @@ import { OrderError } from '../utils';
 const useErrors = () => {
   const { state, dispatch, onError } = useContext(CheckoutStore);
 
-  const setOrderError = useCallback(async (message) => {
+  const setOrderError = useCallback(async (message = 'An error with your order has occurred, please try again') => {
     if (onError) {
       onError(new OrderError());
     }
