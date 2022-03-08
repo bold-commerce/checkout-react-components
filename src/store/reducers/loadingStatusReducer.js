@@ -13,6 +13,7 @@ const setLoadingState = (state, type, status) => {
 };
 
 const clearLoadingState = () => ({
+  appHook: 'fulfilled',
   customer: 'fulfilled',
   shippingAddress: 'fulfilled',
   billingAddress: 'fulfilled',
@@ -26,6 +27,14 @@ const clearLoadingState = () => ({
 
 const loadingStatusReducer = (state, action) => {
   switch (action.type) {
+    // App Hook Actions
+    case 'checkout/appHook/setting':
+      return setLoadingState(state, 'appHook', 'setting');
+    case 'checkout/appHook/set':
+      return setLoadingState(state, 'appHook', 'fulfilled');
+    case 'checkout/appHook/setErrors':
+      return setLoadingState(state, 'appHook', 'fulfilled');
+
     // Customer Actions
     case 'checkout/customer/setting':
       return setLoadingState(state, 'customer', 'setting');

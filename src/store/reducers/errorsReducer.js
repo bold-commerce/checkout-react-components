@@ -1,5 +1,17 @@
 const errorsReducer = (state, action) => {
   switch (action.type) {
+    // App Hook Actions
+    case 'checkout/appHook/setErrors':
+      return {
+        ...state,
+        appHook: action.payload,
+      };
+    case 'checkout/appHook/set':
+      return {
+        ...state,
+        appHook: null,
+      };
+
     // Customer Actions
     case 'checkout/customer/setErrors':
       return {
@@ -85,8 +97,8 @@ const errorsReducer = (state, action) => {
       };
     case 'checkout/order/processing':
       return {
-        ...state, 
-        order: null
+        ...state,
+        order: null,
       };
 
     // Discount Actions

@@ -1,4 +1,4 @@
-import { OrderError } from '.';
+import OrderError from './orderError';
 
 const handleError = (actionType, response) => {
   if (!response.success) {

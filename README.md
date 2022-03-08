@@ -109,6 +109,47 @@ const App = (props) => {
 
 ## Hooks
 
+### useAppHook
+Dispatches the `app_hook` plugin event to the plugin with the matching UUID provided in the request (given this plugin is registered for the `app_hook` event).
+
+```javascript
+import { useAppHook } from '@boldcommerce/checkout-react-components';
+
+const CustomWidget = () => {
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(null);
+
+  const { invokeAppHook } = useAppHook();
+
+  const handleAction = async () => {
+    const hook = 'add_payment';
+    const uuid = 'xxxxxxxx-yyyy-zzzz-1111-111111111111';
+    const data = {
+        "order": {
+        "currency": "CAD",
+        "order_total": 2500
+      }
+    };
+
+    setLoading(true);
+    try {
+      setErrors(null);
+      await invokeAppHook(hook, uuid, data);
+    } catch (e) {
+      setErrors(e.body.errors);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div>
+      { errors && <p>{errors[0].message}</p>}
+      <button type="button" onClick={handleAction}>Action</button>
+    </div>
+  );
+};
+```
+
 ### useApplicationState
 Returns entire application state and allows you to manually update application state.
 
@@ -489,7 +530,7 @@ const OrderMetadata = () => {
   const handleOverwrite = async () => {
     setLoading(true);
     try {
-      await handleOverwrite({
+      await overwriteOrderMetadata({
         tags: [
           "order-1-other",
         ],
