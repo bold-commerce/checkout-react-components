@@ -15,3 +15,4 @@ export { default as useApplicationState } from './useApplicationState';
 export { default as useBillingSameAsShipping } from './useBillingSameAsShipping';
 export { default as useSavedAddresses } from './useSavedAddresses';
 export { default as useErrors } from './useErrors';
+export { default as useAppHook } from './useAppHook';

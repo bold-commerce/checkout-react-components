@@ -24,6 +24,7 @@ export const initialState = {
     totalItems: 0,
   },
   errors: {
+    appHook: null,
     customer: null,
     shippingAddress: null,
     billingAddress: null,
@@ -35,6 +36,7 @@ export const initialState = {
     order: null,
   },
   loadingStatus: {
+    appHook: 'fulfilled',
     customer: 'fulfilled',
     shippingAddress: 'fulfilled',
     billingAddress: 'fulfilled',

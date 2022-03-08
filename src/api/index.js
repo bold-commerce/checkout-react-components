@@ -7,3 +7,4 @@ export { default as processOrder } from './processOrder';
 export * from './lineItems';
 export * from './discounts';
 export * from './orderMetadata';
+export { default as runAppHook } from './appHook';
