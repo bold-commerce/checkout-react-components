@@ -76,7 +76,7 @@ const useShippingAddress = (requiredAddressFields) => {
     // Prevent user from submitting shipping address that is already in app state
     if (appShipping === localShipping) {
       if (memoizedShippingAddressErrors && Object.keys(memoizedShippingAddressErrors).length > 0) {
-        return dispatch({
+        dispatch({
           type: 'checkout/shippingAddress/set',
         });
       }

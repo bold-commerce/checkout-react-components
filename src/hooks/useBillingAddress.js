@@ -82,7 +82,7 @@ const useBillingAddress = (requiredAddressFields) => {
     // Prevent user from submitting shipping address that is already in app state
     if (appShipping === localShipping) {
       if (memoizedBillingAddressErrors && Object.keys(memoizedBillingAddressErrors).length > 0) {
-        return dispatch({
+        dispatch({
           type: 'checkout/billingAddress/set',
         });
       }
@@ -176,10 +176,12 @@ const useBillingAddress = (requiredAddressFields) => {
         payload: response.data.application_state,
       });
 
-      return dispatch({
+      dispatch({
         type: 'checkout/billingAddress/set',
         payload: response.data.address,
       });
+
+      return Promise.resolve(response);
     } catch (e) {
       if (onError) {
         onError(e);

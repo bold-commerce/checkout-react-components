@@ -20,15 +20,19 @@ const getShippingLines = async (token, apiPath, dispatch) => {
     dispatch({
       type: 'checkout/shippingLines/fetched',
     });
-    return dispatch({
+    dispatch({
       type: 'checkout/update',
       payload: response.data.application_state,
     });
+
+    return Promise.resolve(response);
   }
 
-  return dispatch({
+  dispatch({
     type: 'checkout/shippingLines/fetched',
   });
+
+  return Promise.resolve();
 };
 
 export default getShippingLines;

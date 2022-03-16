@@ -37,10 +37,12 @@ const useDiscount = () => {
         type: 'checkout/discount/added',
       });
 
-      return dispatch({
+      dispatch({
         type: 'checkout/update',
         payload: response.data.application_state,
       });
+
+      return Promise.resolve(response);
     } catch (e) {
       if (onError) {
         onError(e);
@@ -83,10 +85,12 @@ const useDiscount = () => {
         type: 'checkout/discount/removed',
       });
 
-      return dispatch({
+      dispatch({
         type: 'checkout/update',
         payload: response.data.application_state,
       });
+
+      return Promise.resolve(response);
     } catch (e) {
       if (onError) {
         onError(e);

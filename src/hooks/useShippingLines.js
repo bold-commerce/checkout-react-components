@@ -41,10 +41,13 @@ const useShippingLines = () => {
         dispatch({
           type: 'checkout/shippingLines/set',
         });
-        return dispatch({
+
+        dispatch({
           type: 'checkout/update',
           payload: response.data.application_state,
         });
+
+        return Promise.resolve(response);
       }
     } catch (e) {
       if (onError) {
@@ -62,9 +65,11 @@ const useShippingLines = () => {
       return Promise.reject(new OrderError());
     }
 
-    return dispatch({
+    dispatch({
       type: 'checkout/shippingLines/set',
     });
+
+    return Promise.resolve();
   }, [onError]);
 
   const getShippingLines = useCallback(async () => {
@@ -96,10 +101,13 @@ const useShippingLines = () => {
         dispatch({
           type: 'checkout/shippingLines/fetched',
         });
-        return dispatch({
+
+        dispatch({
           type: 'checkout/update',
           payload: response.data.application_state,
         });
+
+        return Promise.resolve(response);
       }
     } catch (e) {
       if (onError) {
@@ -117,9 +125,11 @@ const useShippingLines = () => {
       return Promise.reject(new OrderError());
     }
 
-    return dispatch({
+    dispatch({
       type: 'checkout/shippingLines/fetched',
     });
+
+    return Promise.resolve();
   }, [selectedCountryCode, onError]);
 
   return {

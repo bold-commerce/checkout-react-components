@@ -70,10 +70,12 @@ const usePaymentIframe = () => {
         type: 'checkout/order/processed',
       });
 
-      return dispatch({
+      dispatch({
         type: 'checkout/update',
         payload: response.data.application_state,
       });
+
+      return Promise.resolve(response);
     } catch (e) {
       dispatch({
         type: 'checkout/order/setErrors',
@@ -139,7 +141,9 @@ const usePaymentIframe = () => {
       },
     };
 
-    return dispatchIframeAction('PIGI_DISPLAY_ERROR_MESSAGE', payload);
+    dispatchIframeAction('PIGI_DISPLAY_ERROR_MESSAGE', payload);
+
+    return Promise.resolve(payload);
   }, [dispatchIframeAction]);
 
   const clearErrorMessage = useCallback(() => dispatchIframeAction('PIGI_CLEAR_ERROR_MESSAGES'));
@@ -150,7 +154,9 @@ const usePaymentIframe = () => {
       gatewayName: payload.gatewayName,
     };
 
-    return dispatchIframeAction('PIGI_SELECT_PAYMENT_METHOD', payloadData);
+    dispatchIframeAction('PIGI_SELECT_PAYMENT_METHOD', payloadData);
+
+    return Promise.resolve(payloadData);
   });
 
   const processPaymentIframe = useCallback(async () => {

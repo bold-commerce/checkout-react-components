@@ -39,10 +39,12 @@ const useAppHook = () => {
           type: 'checkout/appHook/set',
         });
 
-        return dispatch({
+        dispatch({
           type: 'checkout/update',
           payload: response.data.application_state,
         });
+
+        return Promise.resolve(response);
       } catch (e) {
         if (onError) {
           onError(e);

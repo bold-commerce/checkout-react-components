@@ -46,10 +46,12 @@ const useBillingSameAsShipping = () => {
             payload: response.data.application_state,
           });
 
-          return dispatch({
+          dispatch({
             type: 'checkout/billingAddress/set',
             payload: response.data.address,
           });
+
+          return Promise.resolve(response);
         } catch (e) {
           if (onError) {
             onError(e);

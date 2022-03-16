@@ -14,10 +14,12 @@ const generateTaxes = async (token, apiPath, dispatch) => {
   }
 
   if (response.data && response.data.application_state) {
-    return dispatch({
+    dispatch({
       type: 'checkout/update',
       payload: response.data.application_state,
     });
+
+    return Promise.resolve(response);
   }
   return Promise.resolve();
 };
