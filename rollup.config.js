@@ -3,11 +3,12 @@ import babel from 'rollup-plugin-babel';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import typescript from '@rollup/plugin-typescript';
 
 const packageJson = require('./package.json');
 
 export default {
-  input: 'src/index.js',
+  input: 'src/index.ts',
   external: ['react', 'react-dom'],
   globals: {
     react: 'React',
@@ -31,8 +32,9 @@ export default {
       exclude: 'node_modules/**',
     }),
     resolve({
-      extensions: ['.js', '.jsx'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
     }),
     commonjs(),
+    typescript(),
   ],
 };

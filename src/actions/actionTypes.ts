@@ -1,0 +1,2 @@
+export const INITIALIZE_APP = 'INITIALIZE_APP';
+export const UPDATE_APP_STATE = 'UPDATE_APP_STATE';

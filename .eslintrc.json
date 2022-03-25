@@ -1,46 +1,40 @@
 {
-  "extends": "airbnb",
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+    "import"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "globals": {
-      "window": true,
-      "document": true,
-      "localStorage": true,
-      "expect": true,
-      "fetch": true,
-      "describe": true,
-      "test": true,
-      "jest": true,
-      "beforeEach": true,
-      "sessionStorage": true
+    "require": false,
+    "module": true
   },
-  "parser": "babel-eslint",
   "rules": {
-      "indent": ["error", 2, {"SwitchCase": 1}],
-      "camelcase": "off",
-      "react/jsx-filename-extension": [
-          1,
-          {
-              "extensions": [
-                  ".js",
-                  ".jsx"
-              ]
-          }
-      ],
-      "no-underscore-dangle": ["error", { "allowAfterThis": true }],
-      "no-template-curly-in-string": "off",
-      "react/require-default-props": "off",
-      "no-multi-assign": "off",
-      "react/prefer-stateless-function": "off",
-      "react/no-find-dom-node": "off",
-      "react/no-array-index-key": "off",
-      "jsx-a11y/click-events-have-key-events": "off",
-      "jsx-a11y/no-static-element-interactions": "off",
-      "jsx-a11y/label-has-for": [ "error", {"required": {"some": [ "nesting", "id" ]}}],
-      "jsx-a11y/no-noninteractive-element-interactions": "off",
-      "jsx-a11y/no-autofocus": "off",
-      "max-len": "off",
-      "no-unused-expressions": ["error", {"allowTernary": true, "allowShortCircuit": true}],
-      "react/sort-comp": "off",
-      "no-plusplus": "off",
-      "no-mixed-operators": ["error", {"allowSamePrecedence": true}]
+    "curly": "error",
+    "no-console": ["error"],
+    "no-var": "error",
+    "indent": [ "error", 4, {"SwitchCase": 1}],
+    "linebreak-style": ["error", "unix"],
+    "quotes": ["error", "single", {"avoidEscape": true}],
+    "semi": ["error", "always"],
+    "semi-spacing": ["error", {"before": false, "after": true}],
+    "eol-last": ["error", "always"],
+    "import/order": "error",
+    "comma-dangle": "off",
+    "@typescript-eslint/comma-dangle": ["error", {
+      "arrays": "always-multiline",
+      "objects": "always-multiline",
+      "imports": "always-multiline",
+      "exports": "always-multiline",
+      "functions": "ignore",
+      "enums": "always-multiline",
+      "generics": "always-multiline",
+      "tuples": "always-multiline"
+    }]
   }
 }
