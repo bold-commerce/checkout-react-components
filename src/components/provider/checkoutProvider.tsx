@@ -1,10 +1,11 @@
-import React, { useEffect, useCallback, useReducer } from 'react';
+import React, { useEffect, useCallback, useReducer, useRef, useMemo } from 'react';
 import { IApiReturnObject, IInitializeOrderResponse, initialize } from '@bold-commerce/checkout-frontend-library';
-import { CheckoutContext, defaultState } from 'src/store';
+import { CheckoutContext, defaultState, IState } from 'src/store';
 import { rootReducer } from 'src/reducer';
 import { actionInitializeApp } from 'src/actions';
-import { handleErrors } from 'src/utils';
+import { handleErrors, getState } from 'src/utils';
 import { ICheckoutProviderProps } from 'src/types';
+import { updateCustomerMethod } from 'src/common';
 
 export const CheckoutProvider = (props: ICheckoutProviderProps): React.ReactElement => {
     const {
@@ -25,6 +26,7 @@ export const CheckoutProvider = (props: ICheckoutProviderProps): React.ReactElem
     };
 
     const [state, dispatch] = useReducer(rootReducer, defaultState);
+    const stateRef = useRef<IState>(state);
 
     const init = useCallback(async () => {
         const response:IApiReturnObject = await initialize(initData,
@@ -38,12 +40,20 @@ export const CheckoutProvider = (props: ICheckoutProviderProps): React.ReactElem
         }
     }, [initData, shop_identifier, environment]);
 
+    const methods = useMemo(() => ({
+        updateCustomer: updateCustomerMethod(dispatch, getState(stateRef)),
+    }), [stateRef]);
+
+    useEffect(() => {
+        stateRef.current = state;
+    }, [state]);
+
     useEffect(() => {
         init();
     }, []);
 
     return (
-        <CheckoutContext.Provider value={{ state, dispatch }}>
+        <CheckoutContext.Provider value={{ state, dispatch, methods }}>
             {children}
         </CheckoutContext.Provider>
     );

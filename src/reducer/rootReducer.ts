@@ -1,7 +1,8 @@
 import { appSettingsReducer, dataReducer, errorsReducer, loadingReducer } from 'src/reducer';
+import { IState, DispatchActions } from 'src/store';
 import { statusReducer } from './statusReducer';
 
-export const rootReducer = (state, action) => {
+export const rootReducer = (state: IState, action: DispatchActions): IState => {
     return {
         appSettings: appSettingsReducer(state.appSettings, action),
         status: statusReducer(state.status, action),
