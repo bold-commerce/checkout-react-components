@@ -1,5 +1,5 @@
 import { useCallback, useContext, useMemo } from 'react';
-import { updateBillingAddress, updateShippingAddress } from '../api';
+import { setShippingLine, updateBillingAddress, updateShippingAddress, validateShippingAddress } from '../api';
 import { CheckoutStore } from '../store';
 import { handleError, OrderError, PromiseError } from '../utils';
 import { generateTaxes, getShippingLines, requiredAddressFieldValidation } from './shared';
@@ -28,12 +28,14 @@ const useShippingAddress = (requiredAddressFields) => {
   const shippingAddress = state.applicationState.addresses.shipping;
   const shippingAddressLoadingStatus = state.loadingStatus.shippingAddress;
   const shippingAddressErrors = state.errors.shippingAddress;
+  const shippingLines = state.applicationState.shipping;
   const countryInfo = state.initialData.country_info;
   const { billingSameAsShipping } = state.orderInfo;
   const memoizedShippingAddress = useMemo(() => shippingAddress, [JSON.stringify(shippingAddress)]);
   const memoizedRequiredAddressFields = useMemo(() => requiredAddressFields, [JSON.stringify(requiredAddressFields)]);
   const memoizedShippingAddressErrors = useMemo(() => shippingAddressErrors, [JSON.stringify(shippingAddressErrors)]);
   const memoizedCountryInfo = useMemo(() => countryInfo, []); // country info never changes, so no need to update it
+  const memoizedShippingLines = useMemo(() => shippingLines, [JSON.stringify(shippingLines)]);
 
   const submitShippingAddress = useCallback(async (shippingAddressData) => {
     if (requiredAddressFields) {
@@ -188,13 +190,68 @@ const useShippingAddress = (requiredAddressFields) => {
     }
 
     if (shippingAddressData.country_code) {
-      await getShippingLines(token, apiPath, dispatch);
+      const getShippingLinesResponse = await getShippingLines(token, apiPath, dispatch);
+      
+      if(getShippingLinesResponse.success && 
+        memoizedShippingLines.selected_shipping === null &&
+        getShippingLinesResponse.data?.shipping_lines?.length > 0){
+
+        const shippingLineId = getShippingLinesResponse.data.shipping_lines[0].id;
+        
+        dispatch({
+          type: 'checkout/shippingLines/setting',
+        });
+    
+        try {
+          const setShippingLineResponse = await setShippingLine(token, apiPath, shippingLineId);
+          const error = handleError('shippingLines', setShippingLineResponse);
+          if (error) {
+            if (onError) {
+              onError(error.error);
+            }
+    
+            dispatch({
+              type: `checkout/${error.type}/setErrors`,
+              payload: error.payload,
+            });
+    
+            return Promise.reject(error.error);
+          }
+    
+          if (setShippingLineResponse.data && setShippingLineResponse.data.application_state) {
+            dispatch({
+              type: 'checkout/shippingLines/set',
+            });
+    
+            dispatch({
+              type: 'checkout/update',
+              payload: setShippingLineResponse.data.application_state,
+            });
+          }
+        } catch (e) {
+          if (onError) {
+            onError(e);
+          }
+    
+          dispatch({
+            type: 'checkout/order/setErrors',
+            payload: [{
+              field: 'order',
+              message: 'An error with your order has occurred, please try again',
+            }],
+          });
+        }
+    
+        dispatch({
+          type: 'checkout/shippingLines/set',
+        }); 
+      }
     }
 
     // Set billing address if same as shipping is selected
     if (billingSameAsShipping) {
       const billingAddressResponse = await updateBillingAddress(token, apiPath, completeAddress);
-      const error = handleError('billingAddress', shippingAddressResponse);
+      const error = handleError('billingAddress', billingAddressResponse);
       if (error) {
         if (onError) {
           onError(error.error);
@@ -227,7 +284,7 @@ const useShippingAddress = (requiredAddressFields) => {
     });
 
     return generateTaxes(token, apiPath, dispatch);
-  }, [memoizedShippingAddress, memoizedCountryInfo, memoizedShippingAddressErrors, memoizedRequiredAddressFields, billingSameAsShipping, onError]);
+  }, [memoizedShippingAddress, memoizedCountryInfo, memoizedShippingAddressErrors, memoizedRequiredAddressFields, memoizedShippingLines, billingSameAsShipping, onError]);
 
   return {
     data: shippingAddress,
