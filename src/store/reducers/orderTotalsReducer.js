@@ -6,7 +6,7 @@ export const calculateTotals = (applicationState) => {
   const totalItems = lineItems.reduce((acc, item) => acc + item?.product_data?.quantity, 0);
   const shippingTotal = applicationState?.shipping?.selected_shipping?.amount ?? 0;
   const excludedTaxes = taxes.reduce((acc, curr) => (!curr.is_included ? acc + curr.value : acc), 0);
-  const discountTotal = applicationState?.discounts[0]?.value ?? 0;
+  const discountTotal = applicationState?.discounts.reduce((acc, curr) => acc + curr.value, 0);
   const totalPayments = payments.reduce((prevVal, currVal) => (prevVal + currVal.value), 0) || 0;
   const taxesTotal = taxes.reduce((acc, curr) => acc + curr.value, 0);
   const total = subTotal + shippingTotal + excludedTaxes - discountTotal;
