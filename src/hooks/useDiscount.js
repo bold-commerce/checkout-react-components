@@ -111,8 +111,17 @@ const useDiscount = () => {
   return {
     data: {
       discounts: memoizedDiscounts,
+      /**
+       * @deprecated
+       */
       discountApplied: discounts?.length > 0,
+      /**
+       * @deprecated
+       */
       discountCode: discounts[0]?.code ?? '',
+      /**
+       * @deprecated
+       */
       discountTotal: discounts[0]?.value ?? 0,
     },
     errors: memoizedDiscountErrors,
