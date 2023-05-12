@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.6",
-    "jest-config": "^27.0.6",
+    "jest-config": "^27.5.1",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {
