@@ -24,7 +24,7 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "jest-config": "^27.0.6",
-    "prop-types": "^15.7.2"
+    "prop-types": "^15.8.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
